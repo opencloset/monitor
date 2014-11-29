@@ -48,4 +48,5 @@ get '/dashboard' => sub {
     );
 };
 
+app->secrets( app->defaults->{secrets} );
 app->start;

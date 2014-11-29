@@ -28,4 +28,5 @@ $db_opts->{AutoCommit} //= 1;
         pass => $ENV{OPENCLOSET_DATABASE_PASS} // 'opencloset',
         opts => $db_opts,
     },
+    secrets => ['yolo'],
 };
