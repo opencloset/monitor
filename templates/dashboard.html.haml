@@ -1,8 +1,11 @@
 - layout 'default', jses => ['dashboard.js'];
 - title 'Dashboard';
+
+- my %STATUS_MAP = (6 => 'repair', 13 => 'visit', 16 => 'mesure', 17 => 'select', 18 => 'undress', 19 => 'boxing', 20 => 'payment');
+
 %h1 Dashboard
 %ul
 - while (my $order = $orders->next) {
-  %li
-    %pre= $order
+  - my $template = "partials/status/$STATUS_MAP{$order->status_id}";
+  %li= include $template, order => $order;
 - }

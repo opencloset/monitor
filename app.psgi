@@ -8,7 +8,7 @@ app->defaults(
     }
 );
 
-our @ACTIVE_STATUS = qw/3 13 16 17 18 19 20/;
+our @ACTIVE_STATUS = qw/6 13 16 17 18 19 20/;
 my $DB = OpenCloset::Schema->connect(
     {
         dsn      => app->config->{database}{dsn},
@@ -32,8 +32,10 @@ get '/' => sub {
 
 get '/dashboard' => sub {
     my $self = shift;
-    my $rs   = $DB->resultset('Order')
-        ->search( { status_id => { -in => [@ACTIVE_STATUS] } } );
+    my $rs   = $DB->resultset('Order')->search(
+        { status_id => { -in  => [@ACTIVE_STATUS] } },
+        { order_by  => { -asc => 'update_date' } }
+    );
     $self->respond_to(
         json => sub {
             my @orders;
