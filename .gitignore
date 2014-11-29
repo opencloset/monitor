@@ -1,1 +1,8 @@
+public/assets/coffee/js/
 public/assets/components/
+public/assets/css/
+public/assets/js/
+app.conf
+app.psgi.conf
+node_modules/
+.sass-cache/
