@@ -1,0 +1,8 @@
+- layout 'default', jses => ['dashboard.js'];
+- title 'Dashboard';
+%h1 Dashboard
+%ul
+- while (my $order = $orders->next) {
+  %li
+    %pre= $order
+- }
