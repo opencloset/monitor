@@ -3,7 +3,7 @@
 
 - my %STATUS_MAP = (6 => 'repair', 13 => 'visit', 16 => 'mesure', 17 => 'select', 18 => 'undress', 19 => 'boxing', 20 => 'payment');
 
-%h1 Dashboard
+%h2 Dashboard
 %ul
 - while (my $order = $orders->next) {
   - my $template = "partials/status/$STATUS_MAP{$order->status_id}";
@@ -11,6 +11,10 @@
 - }
 
 %h2 Events
+- if (@$events) {
+  %audio{:src => "/assets/audio/whisper.ogg", :autoplay => ''}
+    %p Your browser does not support the audio element.
+- }
 %ul
   - for my $event (@$events) {
     - my ($order, $status) = ($event->{order}, $event->{status});
