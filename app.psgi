@@ -1,5 +1,8 @@
 #!/usr/bin/env perl
 use Mojolicious::Lite;
+use Directory::Queue;
+use JSON;
+
 use OpenCloset::Schema;
 
 app->defaults(
@@ -50,5 +53,29 @@ get '/dashboard' => sub {
     );
 };
 
+post '/events' => sub {
+    my $self = shift;
+
+    my $validator = $self->create_validator;
+    $validator->field( [qw/order_id from to/] )
+        ->each( sub { shift->required(1) } );
+    return $self->error( 400,
+        { str => 'parameter `order_id`, `from` and `to` are required' } )
+        unless $self->validate($validator);
+
+    $DIRQ->add(
+        encode_json(
+            {
+                order_id => $self->param('order_id'),
+                from     => $self->param('from'),
+                to       => $self->param('to')
+            }
+        )
+    );
+
+    $self->render( text => 'Successfully posted event', status => 201 );
+};
+
+app->sessions->cookie_name('opencloset-monitor');
 app->secrets( app->defaults->{secrets} );
 app->start;
