@@ -11,9 +11,8 @@ app->defaults(
     }
 );
 
-our $STATUS_VISIT   = 6;
-our $STATUS_PAYMENT = 20;
-our @ACTIVE_STATUS  = qw/6 13 16 17 18 19 20/;
+our @ACTIVE_STATUS       = qw/6 13 16 17 18 19 20/;
+our @NOTIFICATION_STATUS = qw/16 18 20/;
 my $DIRQ = Directory::Queue->new( path => "/tmp/opencloset/monitor" );
 my $DB = OpenCloset::Schema->connect(
     {
@@ -81,15 +80,18 @@ post '/events' => sub {
         { str => 'parameter `order_id`, `from` and `to` are required' } )
         unless $self->validate($validator);
 
-    $DIRQ->add(
-        encode_json(
-            {
-                order_id => $self->param('order_id'),
-                from     => $self->param('from'),
-                to       => $self->param('to')
-            }
-        )
-    );
+    my $to = $self->param('to');
+    if ( grep { $to == $_ } @NOTIFICATION_STATUS ) {
+        $DIRQ->add(
+            encode_json(
+                {
+                    order_id => $self->param('order_id'),
+                    from     => $self->param('from'),
+                    to       => $self->param('to')
+                }
+            )
+        );
+    }
 
     $self->render( text => 'Successfully posted event', status => 201 );
 };
