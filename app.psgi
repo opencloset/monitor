@@ -11,7 +11,10 @@ app->defaults(
     }
 );
 
-our @ACTIVE_STATUS = qw/6 13 16 17 18 19 20/;
+our $STATUS_VISIT   = 6;
+our $STATUS_PAYMENT = 20;
+our @ACTIVE_STATUS  = qw/6 13 16 17 18 19 20/;
+my $DIRQ = Directory::Queue->new( path => "/tmp/opencloset/monitor" );
 my $DB = OpenCloset::Schema->connect(
     {
         dsn      => app->config->{database}{dsn},
@@ -22,6 +25,8 @@ my $DB = OpenCloset::Schema->connect(
 );
 
 plugin 'haml_renderer';
+plugin 'opencloset';
+plugin 'validator';
 
 helper order_flatten => sub {
     my ( $self, $order ) = @_;
@@ -29,16 +34,12 @@ helper order_flatten => sub {
 };
 
 get '/' => sub {
-    my $c = shift;
-    $c->render('index');
-};
-
-get '/dashboard' => sub {
     my $self = shift;
     my $rs   = $DB->resultset('Order')->search(
         { status_id => { -in  => [@ACTIVE_STATUS] } },
         { order_by  => { -asc => 'update_date' } }
     );
+
     $self->respond_to(
         json => sub {
             my @orders;
@@ -48,7 +49,24 @@ get '/dashboard' => sub {
             return [@orders];
         },
         html => sub {
-            $self->stash( orders => $rs, template => 'dashboard' );
+            my @events;
+            for ( my $name = $DIRQ->first(); $name; $name = $DIRQ->next() ) {
+                next unless $DIRQ->lock($name);
+                my $data = decode_json( $DIRQ->get($name) );
+                push @events,
+                    {
+                    order => $DB->resultset('Order')
+                        ->find( { id => $data->{order_id} } ),
+                    status => { from => $data->{from}, to => $data->{to} }
+                    };
+                $DIRQ->remove($name);
+            }
+
+            $self->stash(
+                orders   => $rs,
+                events   => [@events],
+                template => 'index'
+            );
         }
     );
 };

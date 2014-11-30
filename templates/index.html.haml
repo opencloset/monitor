@@ -1,4 +1,4 @@
-- layout 'default', jses => ['dashboard.js'];
+- layout 'default', jses => ['index.js'];
 - title 'Dashboard';
 
 - my %STATUS_MAP = (6 => 'repair', 13 => 'visit', 16 => 'mesure', 17 => 'select', 18 => 'undress', 19 => 'boxing', 20 => 'payment');
@@ -9,3 +9,11 @@
   - my $template = "partials/status/$STATUS_MAP{$order->status_id}";
   %li= include $template, order => $order;
 - }
+
+%h2 Events
+%ul
+  - for my $event (@$events) {
+    - my ($order, $status) = ($event->{order}, $event->{status});
+    - my $template = "partials/event/$STATUS_MAP{$order->status_id}";
+    %li= include $template, order => $order, from => $status->{from}, to => $status->{to};
+  - }
