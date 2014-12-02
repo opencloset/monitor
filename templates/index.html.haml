@@ -3,23 +3,38 @@
 - title 'Dashboard';
 - my %STATUS_MAP = (6 => 'repair', 13 => 'visit', 16 => 'mesure', 17 => 'select', 18 => 'undress', 19 => 'boxing', 20 => 'payment');
 
-#dashboard
-  %ul.list-group
-  - while (my $order = $orders->next) {
-    - my $template = "partials/status/$STATUS_MAP{$order->status_id}";
-    %li.list-group-item= include $template, order => $order;
-  - }
-
-%hr
-
-#event
-  - if (@$events) {
-    %audio{:src => "/assets/audio/whisper.ogg", :autoplay => ''}
-      %p Your browser does not support the audio element.
-  - }
-  %ul.list-group
-    - for my $event (@$events) {
-      - my ($order, $status) = ($event->{order}, $event->{status});
-      - my $template = "partials/event/$STATUS_MAP{$order->status_id}";
-      %li.list-group-item= include $template, order => $order, from => $status->{from}, to => $status->{to};
-    - }
+.row
+  .col-md-6
+    #dashboard
+      %table.table.table-striped.table-bordered.table-condensed
+        %thead
+          %tr
+            %th 대기중
+            %th 치수측정
+            %th 의류준비
+            %th 탈의
+            %th 수선
+            %th 포장
+            %th 결제대기
+        %tbody
+          %tr
+          - for my $s (@$orders) {
+            %td.text-left
+              - for my $order (@$s) {
+                %p
+                  = $order->user->name
+                  %abbr.timeago{:title => '#{$order->update_date->ymd}T#{$order->update_date->hms}Z'}= $order->update_date
+              - }
+          - }
+  .col-md-6
+    #event
+      - if (@$events) {
+        %audio{:src => "/assets/audio/whisper.ogg", :autoplay => ''}
+          %p Your browser does not support the audio element.
+      - }
+      %ul.list-group
+        - for my $event (@$events) {
+          - my ($order, $status) = ($event->{order}, $event->{status});
+          - my $template = "partials/event/$STATUS_MAP{$order->status_id}";
+          %li.list-group-item= include $template, order => $order, from => $status->{from}, to => $status->{to};
+        - }

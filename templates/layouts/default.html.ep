@@ -19,7 +19,11 @@
     <![endif]-->
   </head>
   <body>
-    <%= content %>
+    <div class="container-fluid">
+      <div id="content">
+        <%= content %>
+      </div>
+    </div>
     <script src="/assets/components/jquery/dist/jquery.min.js"></script>
     <script src="/assets/components/bootstrap/dist/js/bootstrap.min.js"></script>
     % for my $js (@$jses) {
