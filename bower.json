@@ -19,6 +19,7 @@
   "dependencies": {
     "jquery": "~2.1.1",
     "underscore": "~1.7.0",
-    "bootstrap": "~3.3.1"
+    "bootstrap": "~3.3.1",
+    "jquery-timeago": "~1.4.1"
   }
 }

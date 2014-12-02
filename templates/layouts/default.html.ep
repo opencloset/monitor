@@ -23,12 +23,7 @@
     <script src="/assets/components/jquery/dist/jquery.min.js"></script>
     <script src="/assets/components/bootstrap/dist/js/bootstrap.min.js"></script>
     % for my $js (@$jses) {
-    %   if ( $js =~ m{^(https?://|/)} ) {
-          <script type="text/javascript" src="<%= $js %>"></script>
-    %   }
-    %   else {
-          <script type="text/javascript" src="/assets/js/<%= $js %>"></script>
-    %   }
+      <script type="text/javascript" src="<%= $js %>"></script>
     % }
   </body>
 </html>
