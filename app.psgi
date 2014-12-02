@@ -1,7 +1,9 @@
 #!/usr/bin/env perl
 use Mojolicious::Lite;
+
 use Directory::Queue;
 use JSON;
+use feature qw/switch/;
 
 use OpenCloset::Schema;
 
@@ -11,8 +13,21 @@ app->defaults(
     }
 );
 
-our @ACTIVE_STATUS       = qw/6 13 16 17 18 19 20/;
-our @NOTIFICATION_STATUS = qw/16 18 20/;
+our $STATUS_REPAIR  = 6;
+our $STATUS_VISIT   = 13;
+our $STATUS_MESURE  = 16;
+our $STATUS_SELECT  = 17;
+our $STATUS_UNDRESS = 18;
+our $STATUS_BOXING  = 19;
+our $STATUS_PAYMENT = 20;
+
+our @ACTIVE_STATUS = (
+    $STATUS_REPAIR,  $STATUS_VISIT,   $STATUS_MESURE, $STATUS_SELECT,
+    $STATUS_UNDRESS, $STATUS_UNDRESS, $STATUS_BOXING, $STATUS_PAYMENT
+);
+our @NOTIFICATION_STATUS
+    = ( $STATUS_MESURE, $STATUS_UNDRESS, $STATUS_PAYMENT );
+
 my $DIRQ = Directory::Queue->new( path => "/tmp/opencloset/monitor" );
 my $DB = OpenCloset::Schema->connect(
     {
@@ -39,6 +54,23 @@ get '/' => sub {
         { order_by  => { -asc => 'update_date' } }
     );
 
+    my ( @visit, @mesure, @select, @undress, @repair, @boxing, @payment );
+    while ( my $order = $rs->next ) {
+        my $status_id = $order->status_id;
+        given ($status_id) {
+            when ($STATUS_VISIT)   { push @visit,   $order }
+            when ($STATUS_MESURE)  { push @mesure,  $order }
+            when ($STATUS_SELECT)  { push @select,  $order }
+            when ($STATUS_UNDRESS) { push @undress, $order }
+            when ($STATUS_REPAIR)  { push @repair,  $order }
+            when ($STATUS_BOXING)  { push @boxing,  $order }
+            when ($STATUS_PAYMENT) { push @payment, $order }
+            default {
+                $self->app->log->warn("Unknown status: $status_id, $order");
+            }
+        }
+    }
+
     $self->respond_to(
         json => sub {
             my @orders;
@@ -62,7 +94,10 @@ get '/' => sub {
             }
 
             $self->stash(
-                orders   => $rs,
+                orders => [
+                    [@visit], [@mesure], [@select], [@undress],
+                    [@repair], [@boxing], [@payment]
+                ],
                 events   => [@events],
                 template => 'index'
             );
