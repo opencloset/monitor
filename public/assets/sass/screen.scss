@@ -4,3 +4,38 @@
 #event h3 small {
     color: #fff;
 }
+#fitting-room {
+    .room {
+        font-size: 1.2em;
+        background-color: #000;
+        min-height: 350px;
+        ul {
+            margin-left: 0;
+            padding-left: 0;
+            list-style-type: none;
+            li {
+                display: inline;
+            }
+        }
+        .clothes {
+            li:after {
+                content: ", ";
+            }
+            li:last-child:after {
+                content: "";
+            }
+        }
+    }
+    .room.male {
+        .fa {
+            color: #5555ee;
+        }
+        //border-color: #5555ee;
+    }
+    .room.female {
+        .fa {
+            color: #ee3333;
+        }
+        //border-color: #ee3333;
+    }
+}

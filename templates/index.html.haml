@@ -1,7 +1,16 @@
 - use utf8;
-- layout 'default', jses => ['/assets/js/index.js', '/assets/components/jquery-timeago/jquery.timeago.js', '/assets/components/jquery-timeago/locales/jquery.timeago.ko.js'];
+- layout 'default', jses => ['/assets/components/jquery-timeago/jquery.timeago.js', '/assets/components/jquery-timeago/locales/jquery.timeago.ko.js', '/assets/js/index.js'];
 - title 'Dashboard';
-- my %STATUS_MAP = (6 => 'repair', 13 => 'visit', 16 => 'mesure', 17 => 'select', 18 => 'undress', 19 => 'boxing', 20 => 'payment');
+- my %STATUS_MAP = (
+-   6 => 'repair', 
+-   13 => 'visit', 
+-   16 => 'mesure', 
+-   17 => 'select', 
+-   18 => 'boxing', 
+-   19 => 'payment', 
+-   20 => 'fitting', 21 => 'fitting', 22 => 'fitting', 23 => 'fitting', 24 => 'fitting', 
+-   25 => 'fitting', 26 => 'fitting', 27 => 'fitting', 28 => 'fitting', 29 => 'fitting', 
+- );
 
 .row
   .col-md-6

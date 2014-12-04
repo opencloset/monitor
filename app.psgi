@@ -17,16 +17,29 @@ our $STATUS_REPAIR  = 6;
 our $STATUS_VISIT   = 13;
 our $STATUS_MESURE  = 16;
 our $STATUS_SELECT  = 17;
-our $STATUS_UNDRESS = 18;
-our $STATUS_BOXING  = 19;
-our $STATUS_PAYMENT = 20;
+our $STATUS_BOXING  = 18;
+our $STATUS_PAYMENT = 19;
+
+our $STATUS_FITTING_ROOM1  = 20;
+our $STATUS_FITTING_ROOM2  = 21;
+our $STATUS_FITTING_ROOM3  = 22;
+our $STATUS_FITTING_ROOM4  = 23;
+our $STATUS_FITTING_ROOM5  = 24;
+our $STATUS_FITTING_ROOM6  = 25;
+our $STATUS_FITTING_ROOM7  = 26;
+our $STATUS_FITTING_ROOM8  = 27;
+our $STATUS_FITTING_ROOM9  = 28;
+our $STATUS_FITTING_ROOM10 = 29;
 
 our @ACTIVE_STATUS = (
-    $STATUS_REPAIR,  $STATUS_VISIT,   $STATUS_MESURE, $STATUS_SELECT,
-    $STATUS_UNDRESS, $STATUS_UNDRESS, $STATUS_BOXING, $STATUS_PAYMENT
+    $STATUS_REPAIR, $STATUS_VISIT, $STATUS_MESURE, $STATUS_SELECT,
+    $STATUS_BOXING, $STATUS_PAYMENT,
+    $STATUS_FITTING_ROOM1 .. $STATUS_FITTING_ROOM10
 );
-our @NOTIFICATION_STATUS
-    = ( $STATUS_MESURE, $STATUS_UNDRESS, $STATUS_PAYMENT );
+our @NOTIFICATION_STATUS = (
+    $STATUS_MESURE, $STATUS_PAYMENT, $STATUS_PAYMENT,
+    $STATUS_FITTING_ROOM1 .. $STATUS_FITTING_ROOM10
+);
 
 my $DIRQ = Directory::Queue->new( path => "/tmp/opencloset/monitor" );
 my $DB = OpenCloset::Schema->connect(
@@ -59,10 +72,12 @@ get '/' => sub {
         my $status_id = $order->status_id;
         use experimental qw/ smartmatch /;
         given ($status_id) {
-            when ($STATUS_VISIT)   { push @visit,   $order }
-            when ($STATUS_MESURE)  { push @mesure,  $order }
-            when ($STATUS_SELECT)  { push @select,  $order }
-            when ($STATUS_UNDRESS) { push @undress, $order }
+            when ($STATUS_VISIT)  { push @visit,  $order }
+            when ($STATUS_MESURE) { push @mesure, $order }
+            when ($STATUS_SELECT) { push @select, $order }
+            when ( [$STATUS_FITTING_ROOM1 .. $STATUS_FITTING_ROOM10] ) {
+                push @undress, $order
+            }
             when ($STATUS_REPAIR)  { push @repair,  $order }
             when ($STATUS_BOXING)  { push @boxing,  $order }
             when ($STATUS_PAYMENT) { push @payment, $order }
@@ -130,6 +145,32 @@ post '/events' => sub {
     }
 
     $self->render( text => 'Successfully posted event', status => 201 );
+};
+
+get '/fittingroom' => sub {
+    my $self = shift;
+    $self->stash(
+        room1 => $DB->resultset('Order')
+            ->search( { status_id => $STATUS_FITTING_ROOM1 } )->next,
+        room2 => $DB->resultset('Order')
+            ->search( { status_id => $STATUS_FITTING_ROOM2 } )->next,
+        room3 => $DB->resultset('Order')
+            ->search( { status_id => $STATUS_FITTING_ROOM3 } )->next,
+        room4 => $DB->resultset('Order')
+            ->search( { status_id => $STATUS_FITTING_ROOM4 } )->next,
+        room5 => $DB->resultset('Order')
+            ->search( { status_id => $STATUS_FITTING_ROOM5 } )->next,
+        room6 => $DB->resultset('Order')
+            ->search( { status_id => $STATUS_FITTING_ROOM6 } )->next,
+        room7 => $DB->resultset('Order')
+            ->search( { status_id => $STATUS_FITTING_ROOM7 } )->next,
+        room8 => $DB->resultset('Order')
+            ->search( { status_id => $STATUS_FITTING_ROOM8 } )->next,
+        room9 => $DB->resultset('Order')
+            ->search( { status_id => $STATUS_FITTING_ROOM9 } )->next,
+        room10 => $DB->resultset('Order')
+            ->search( { status_id => $STATUS_FITTING_ROOM10 } )->next
+    );
 };
 
 app->sessions->cookie_name('opencloset-monitor');
