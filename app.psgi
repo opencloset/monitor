@@ -57,6 +57,7 @@ get '/' => sub {
     my ( @visit, @mesure, @select, @undress, @repair, @boxing, @payment );
     while ( my $order = $rs->next ) {
         my $status_id = $order->status_id;
+        use experimental qw/ smartmatch /;
         given ($status_id) {
             when ($STATUS_VISIT)   { push @visit,   $order }
             when ($STATUS_MESURE)  { push @mesure,  $order }
