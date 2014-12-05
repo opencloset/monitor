@@ -20,21 +20,20 @@ our $STATUS_SELECT  = 17;
 our $STATUS_BOXING  = 18;
 our $STATUS_PAYMENT = 19;
 
-our $STATUS_FITTING_ROOM1  = 20;
-our $STATUS_FITTING_ROOM2  = 21;
-our $STATUS_FITTING_ROOM3  = 22;
-our $STATUS_FITTING_ROOM4  = 23;
-our $STATUS_FITTING_ROOM5  = 24;
-our $STATUS_FITTING_ROOM6  = 25;
-our $STATUS_FITTING_ROOM7  = 26;
-our $STATUS_FITTING_ROOM8  = 27;
-our $STATUS_FITTING_ROOM9  = 28;
-our $STATUS_FITTING_ROOM10 = 29;
+our $STATUS_FITTING_ROOM1 = 20;
+our $STATUS_FITTING_ROOM2 = 21;
+our $STATUS_FITTING_ROOM3 = 22;
+our $STATUS_FITTING_ROOM4 = 23;
+our $STATUS_FITTING_ROOM5 = 24;
+our $STATUS_FITTING_ROOM6 = 25;
+our $STATUS_FITTING_ROOM7 = 26;
+our $STATUS_FITTING_ROOM8 = 27;
+our $STATUS_FITTING_ROOM9 = 28;
 
 our @ACTIVE_STATUS = (
     $STATUS_REPAIR, $STATUS_VISIT, $STATUS_MESURE, $STATUS_SELECT,
     $STATUS_BOXING, $STATUS_PAYMENT,
-    $STATUS_FITTING_ROOM1 .. $STATUS_FITTING_ROOM10
+    $STATUS_FITTING_ROOM1 .. $STATUS_FITTING_ROOM9
 );
 our @NOTIFICATION_STATUS = @ACTIVE_STATUS;
 
@@ -72,7 +71,7 @@ get '/' => sub {
             when ($STATUS_VISIT)  { push @visit,  $order }
             when ($STATUS_MESURE) { push @mesure, $order }
             when ($STATUS_SELECT) { push @select, $order }
-            when ( [$STATUS_FITTING_ROOM1 .. $STATUS_FITTING_ROOM10] ) {
+            when ( [$STATUS_FITTING_ROOM1 .. $STATUS_FITTING_ROOM9] ) {
                 push @undress, $order
             }
             when ($STATUS_REPAIR)  { push @repair,  $order }
@@ -165,8 +164,6 @@ get '/fittingroom' => sub {
             ->search( { status_id => $STATUS_FITTING_ROOM8 } )->next,
         room9 => $DB->resultset('Order')
             ->search( { status_id => $STATUS_FITTING_ROOM9 } )->next,
-        room10 => $DB->resultset('Order')
-            ->search( { status_id => $STATUS_FITTING_ROOM10 } )->next
     );
 };
 
