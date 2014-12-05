@@ -7,7 +7,7 @@
   %h3= "#$n"
 
   %p
-    %i.fa.fa-male
+    %i.fa{:class => "fa-#{$gender}"}
     = $user->name
     %small
       %abbr.timeago{:title => '#{$order->update_date->ymd}T#{$order->update_date->hms}Z'}= $order->update_date
