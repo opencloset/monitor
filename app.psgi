@@ -36,10 +36,7 @@ our @ACTIVE_STATUS = (
     $STATUS_BOXING, $STATUS_PAYMENT,
     $STATUS_FITTING_ROOM1 .. $STATUS_FITTING_ROOM10
 );
-our @NOTIFICATION_STATUS = (
-    $STATUS_MESURE, $STATUS_PAYMENT, $STATUS_PAYMENT,
-    $STATUS_FITTING_ROOM1 .. $STATUS_FITTING_ROOM10
-);
+our @NOTIFICATION_STATUS = @ACTIVE_STATUS;
 
 my $DIRQ = Directory::Queue->new( path => "/tmp/opencloset/monitor" );
 my $DB = OpenCloset::Schema->connect(
