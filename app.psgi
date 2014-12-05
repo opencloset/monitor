@@ -15,7 +15,7 @@ app->defaults(
 
 our $STATUS_REPAIR  = 6;
 our $STATUS_VISIT   = 13;
-our $STATUS_MESURE  = 16;
+our $STATUS_MEASURE = 16;
 our $STATUS_SELECT  = 17;
 our $STATUS_BOXING  = 18;
 our $STATUS_PAYMENT = 19;
@@ -31,7 +31,7 @@ our $STATUS_FITTING_ROOM8 = 27;
 our $STATUS_FITTING_ROOM9 = 28;
 
 our @ACTIVE_STATUS = (
-    $STATUS_REPAIR, $STATUS_VISIT, $STATUS_MESURE, $STATUS_SELECT,
+    $STATUS_REPAIR, $STATUS_VISIT, $STATUS_MEASURE, $STATUS_SELECT,
     $STATUS_BOXING, $STATUS_PAYMENT,
     $STATUS_FITTING_ROOM1 .. $STATUS_FITTING_ROOM9
 );
@@ -68,9 +68,9 @@ get '/' => sub {
         my $status_id = $order->status_id;
         use experimental qw/ smartmatch /;
         given ($status_id) {
-            when ($STATUS_VISIT)  { push @visit,   $order }
-            when ($STATUS_MESURE) { push @measure, $order }
-            when ($STATUS_SELECT) { push @select,  $order }
+            when ($STATUS_VISIT)   { push @visit,   $order }
+            when ($STATUS_MEASURE) { push @measure, $order }
+            when ($STATUS_SELECT)  { push @select,  $order }
             when ( [$STATUS_FITTING_ROOM1 .. $STATUS_FITTING_ROOM9] ) {
                 push @undress, $order
             }
