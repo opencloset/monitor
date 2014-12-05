@@ -22,9 +22,17 @@
     %li
       %span.label.label-default{:title => '허리'}= $user_info->waist || 0
     %li
-      %span.label.label-default{:title => '허벅지'}= $user_info->thigh || 0
+      - if ($gender eq 'male') {
+        %span.label.label-default{:title => '허벅지'}= $user_info->thigh || 0
+      - } else {
+        %span.label.label-default{:title => '엉덩이'}= $user_info->hip || 0
+      - }
     %li
-      %span.label.label-default{:title => '다리'}= $user_info->leg || 0
+      - if ($gender eq 'male') {
+        %span.label.label-default{:title => '다리'}= $user_info->leg || 0
+      - } else {
+        %span.label.label-default{:title => '무릎'}= $user_info->knee || 0
+      - }
   %ul
     %li
       %span.label.label-info{:title => '발'}= $user_info->foot || 0
