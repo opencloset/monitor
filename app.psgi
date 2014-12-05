@@ -143,7 +143,8 @@ post '/events' => sub {
     $self->render( text => 'Successfully posted event', status => 201 );
 };
 
-get '/fittingroom' => sub {
+# fitting room
+get '/room' => sub {
     my $self = shift;
     $self->stash(
         room1 => $DB->resultset('Order')
