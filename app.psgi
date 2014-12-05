@@ -168,6 +168,14 @@ get '/room' => sub {
     );
 };
 
+get '/select' => sub {
+    my $self = shift;
+    my $rs = $DB->resultset('Order')->search( { status_id => $STATUS_SELECT },
+        { order_by => { -asc => 'update_date' } } );
+
+    $self->stash( orders => $rs );
+};
+
 app->sessions->cookie_name('opencloset-monitor');
 app->secrets( app->defaults->{secrets} );
 app->start;

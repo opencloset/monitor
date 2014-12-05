@@ -44,3 +44,56 @@
         border-color: #ee3333;
     }
 }
+#select {
+    list-style-type: none;
+    padding-left: 0;
+    .select {
+        font-size: 2em;
+        background-color: #000;
+        border-width: 0.3em;
+        ul {
+            margin-left: 20px;
+            padding-left: 0;
+            list-style-type: none;
+            li {
+                display: inline;
+                margin-left: 10px;
+            }
+        }
+        .clothes {
+            li:after {
+                content: ", ";
+            }
+            li:last-child:after {
+                content: "";
+            }
+        }
+        p.timeago {
+            font-size: 0.6em;
+        }
+        .name {
+            min-width: 180px;
+        }
+        .age {
+            min-width: 50px;
+        }
+        p.timeago {
+            min-width: 100px;
+        }
+    }
+    .select.male {
+        .fa {
+            color: #5555ee;
+        }
+        border-color: #5555ee;
+    }
+    .select.female {
+        .fa {
+            color: #ee3333;
+        }
+        border-color: #ee3333;
+    }
+    p, ul {
+        display: inline-block;
+    }
+}

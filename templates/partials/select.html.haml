@@ -1,0 +1,67 @@
+- use utf8;
+- my $user = $order->user;
+- my $user_info = $user->user_info;
+- my $gender = $user_info->gender;
+- my $details = $order->order_details;
+.well.select{:class => $gender}
+  %p.name
+    %i.fa{:class => "fa-#{$gender}"}
+    = $user->name
+  %p.age= age($user_info->birth)
+  %p.timeago
+    %abbr.timeago{:title => '#{$order->update_date->ymd}T#{$order->update_date->hms}Z'}= $order->update_date
+  %ul
+    %li
+      %span.label.label-default{:title => '가슴'}
+        가슴
+        = $user_info->bust || 0
+    %li
+      %span.label.label-default{:title => '배'}
+        배
+        = $user_info->belly || 0
+    %li
+      %span.label.label-default{:title => '팔'}
+        팔
+        = $user_info->arm || 0
+  %ul
+    %li
+      %span.label.label-default{:title => '허리'}
+        허리
+        = $user_info->waist || 0
+    %li
+      - if ($gender eq 'male') {
+        %span.label.label-default{:title => '허벅지'}
+          허벅지
+          = $user_info->thigh || 0
+      - } else {
+        %span.label.label-default{:title => '엉덩이'}
+          엉덩이
+          = $user_info->hip || 0
+      - }
+    %li
+      - if ($gender eq 'male') {
+        %span.label.label-default{:title => '다리'}
+          다리
+          = $user_info->leg || 0
+      - } else {
+        %span.label.label-default{:title => '무릎'}
+          무릎
+          = $user_info->knee || 0
+      - }
+  %ul
+    %li
+      %span.label.label-info{:title => '발'}
+        = $user_info->foot || 0
+    %li
+      %span.label.label-info{:title => '키/몸무게'}
+        = $user_info->height || 0
+        \/
+        = $user_info->weight || 0
+  %p= $user_info->comment || ''
+  %ul.clothes
+    - while (my $detail = $details->next) {
+      %li
+        %em= $detail->clothes->category
+    - }
+  %p= $user_info->purpose
+  %p= $user_info->purpose2
