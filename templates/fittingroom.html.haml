@@ -2,48 +2,8 @@
 - layout 'default', jses => ['/assets/components/jquery-timeago/jquery.timeago.js', '/assets/components/jquery-timeago/locales/jquery.timeago.ko.js', '/assets/js/fittingroom.js'];
 - title 'Fitting room';
 
-%h1 Fitting room
-
 #fitting-room
   .row
-    .col-md-offset-1.col-md-2
-      - if ($room1) {
-        = include 'partials/room', order => $room1, n => 1;
-      - } else {
-        = include 'partials/room-empty', n => 1;
-      - }
-    .col-md-2
-      - if ($room2) {
-        = include 'partials/room', order => $room2, n => 2;
-      - } else {
-        = include 'partials/room-empty', n => 2;
-      - }
-    .col-md-2
-      - if ($room3) {
-        = include 'partials/room', order => $room3, n => 3;
-      - } else {
-        = include 'partials/room-empty', n => 3;
-      - }
-    .col-md-2
-      - if ($room4) {
-        = include 'partials/room', order => $room4, n => 4;
-      - } else {
-        = include 'partials/room-empty', n => 4;
-      - }
-    .col-md-2
-      - if ($room5) {
-        = include 'partials/room', order => $room5, n => 5;
-      - } else {
-        = include 'partials/room-empty', n => 5;
-      - }
-  %hr
-  .row
-    .col-md-offset-1.col-md-2
-      - if ($room6) {
-        = include 'partials/room', order => $room6, n => 6;
-      - } else {
-        = include 'partials/room-empty', n => 6;
-      - }
     .col-md-2
       - if ($room7) {
         = include 'partials/room', order => $room7, n => 7;
@@ -62,9 +22,41 @@
       - } else {
         = include 'partials/room-empty', n => 9;
       - }
+  %hr
+  .row
     .col-md-2
-      - if ($room10) {
-        = include 'partials/room', order => $room10, n => 10;
+      - if ($room6) {
+        = include 'partials/room', order => $room6, n => 6;
       - } else {
-        = include 'partials/room-empty', n => 10;
+        = include 'partials/room-empty', n => 6;
+      - }
+    .col-md-2
+      - if ($room5) {
+        = include 'partials/room', order => $room5, n => 5;
+      - } else {
+        = include 'partials/room-empty', n => 5;
+      - }
+    .col-md-2
+      - if ($room4) {
+        = include 'partials/room', order => $room4, n => 4;
+      - } else {
+        = include 'partials/room-empty', n => 4;
+      - }
+    .col-md-2
+      - if ($room3) {
+        = include 'partials/room', order => $room3, n => 3;
+      - } else {
+        = include 'partials/room-empty', n => 3;
+      - }
+    .col-md-2
+      - if ($room2) {
+        = include 'partials/room', order => $room2, n => 2;
+      - } else {
+        = include 'partials/room-empty', n => 2;
+      - }
+    .col-md-2
+      - if ($room1) {
+        = include 'partials/room', order => $room1, n => 1;
+      - } else {
+        = include 'partials/room-empty', n => 1;
       - }
