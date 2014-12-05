@@ -15,7 +15,7 @@ app->defaults(
 
 our $STATUS_REPAIR  = 6;
 our $STATUS_VISIT   = 13;
-our $STATUS_MESURE  = 16;
+our $STATUS_MEASURE = 16;
 our $STATUS_SELECT  = 17;
 our $STATUS_BOXING  = 18;
 our $STATUS_PAYMENT = 19;
@@ -31,7 +31,7 @@ our $STATUS_FITTING_ROOM8 = 27;
 our $STATUS_FITTING_ROOM9 = 28;
 
 our @ACTIVE_STATUS = (
-    $STATUS_REPAIR, $STATUS_VISIT, $STATUS_MESURE, $STATUS_SELECT,
+    $STATUS_REPAIR, $STATUS_VISIT, $STATUS_MEASURE, $STATUS_SELECT,
     $STATUS_BOXING, $STATUS_PAYMENT,
     $STATUS_FITTING_ROOM1 .. $STATUS_FITTING_ROOM9
 );
@@ -68,9 +68,9 @@ get '/' => sub {
         my $status_id = $order->status_id;
         use experimental qw/ smartmatch /;
         given ($status_id) {
-            when ($STATUS_VISIT)  { push @visit,   $order }
-            when ($STATUS_MESURE) { push @measure, $order }
-            when ($STATUS_SELECT) { push @select,  $order }
+            when ($STATUS_VISIT)   { push @visit,   $order }
+            when ($STATUS_MEASURE) { push @measure, $order }
+            when ($STATUS_SELECT)  { push @select,  $order }
             when ( [$STATUS_FITTING_ROOM1 .. $STATUS_FITTING_ROOM9] ) {
                 push @undress, $order
             }
@@ -143,7 +143,8 @@ post '/events' => sub {
     $self->render( text => 'Successfully posted event', status => 201 );
 };
 
-get '/fittingroom' => sub {
+# fitting room
+get '/room' => sub {
     my $self = shift;
     $self->stash(
         room1 => $DB->resultset('Order')
@@ -165,6 +166,14 @@ get '/fittingroom' => sub {
         room9 => $DB->resultset('Order')
             ->search( { status_id => $STATUS_FITTING_ROOM9 } )->next,
     );
+};
+
+get '/select' => sub {
+    my $self = shift;
+    my $rs = $DB->resultset('Order')->search( { status_id => $STATUS_SELECT },
+        { order_by => { -asc => 'update_date' } } );
+
+    $self->stash( orders => $rs );
 };
 
 app->sessions->cookie_name('opencloset-monitor');
