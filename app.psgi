@@ -63,14 +63,14 @@ get '/' => sub {
         { order_by  => { -asc => 'update_date' } }
     );
 
-    my ( @visit, @mesure, @select, @undress, @repair, @boxing, @payment );
+    my ( @visit, @measure, @select, @undress, @repair, @boxing, @payment );
     while ( my $order = $rs->next ) {
         my $status_id = $order->status_id;
         use experimental qw/ smartmatch /;
         given ($status_id) {
-            when ($STATUS_VISIT)  { push @visit,  $order }
-            when ($STATUS_MESURE) { push @mesure, $order }
-            when ($STATUS_SELECT) { push @select, $order }
+            when ($STATUS_VISIT)  { push @visit,   $order }
+            when ($STATUS_MESURE) { push @measure, $order }
+            when ($STATUS_SELECT) { push @select,  $order }
             when ( [$STATUS_FITTING_ROOM1 .. $STATUS_FITTING_ROOM9] ) {
                 push @undress, $order
             }
@@ -107,7 +107,7 @@ get '/' => sub {
 
             $self->stash(
                 orders => [
-                    [@visit], [@mesure], [@select], [@undress],
+                    [@visit], [@measure], [@select], [@undress],
                     [@repair], [@boxing], [@payment]
                 ],
                 events   => [@events],
