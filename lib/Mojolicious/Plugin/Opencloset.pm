@@ -2,9 +2,12 @@ package Mojolicious::Plugin::Opencloset;
 
 use Mojo::Base 'Mojolicious::Plugin';
 
+use DateTime::Tiny;
+
 sub register {
     my ( $self, $app, $conf ) = @_;
     $app->helper( error => \&_error );
+    $app->helper( age   => \&_age );
 }
 
 sub _error {
@@ -31,6 +34,12 @@ sub _error {
     );
 
     return;
+}
+
+sub _age {
+    my ( $self, $birth ) = @_;
+    my $now = DateTime::Tiny->now;
+    return $now->year - $birth;
 }
 
 1;
