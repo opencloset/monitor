@@ -160,7 +160,7 @@ get '/select' => sub {
         { order_by => { -asc => 'update_date' } } );
 
     my $brain = OpenCloset::Brain->new;
-    $brain->clear unless $rs->count;
+    $brain->{data}{orders} = {} unless $rs->count;
     my @active = keys %{ $brain->{data}{orders} ||= {} };
     $self->stash( orders => $rs, active => [@active] );
 };
