@@ -146,26 +146,11 @@ post '/events' => sub {
 # fitting room
 get '/room' => sub {
     my $self = shift;
-    $self->stash(
-        room1 => $DB->resultset('Order')
-            ->search( { status_id => $STATUS_FITTING_ROOM1 } )->next,
-        room2 => $DB->resultset('Order')
-            ->search( { status_id => $STATUS_FITTING_ROOM2 } )->next,
-        room3 => $DB->resultset('Order')
-            ->search( { status_id => $STATUS_FITTING_ROOM3 } )->next,
-        room4 => $DB->resultset('Order')
-            ->search( { status_id => $STATUS_FITTING_ROOM4 } )->next,
-        room5 => $DB->resultset('Order')
-            ->search( { status_id => $STATUS_FITTING_ROOM5 } )->next,
-        room6 => $DB->resultset('Order')
-            ->search( { status_id => $STATUS_FITTING_ROOM6 } )->next,
-        room7 => $DB->resultset('Order')
-            ->search( { status_id => $STATUS_FITTING_ROOM7 } )->next,
-        room8 => $DB->resultset('Order')
-            ->search( { status_id => $STATUS_FITTING_ROOM8 } )->next,
-        room9 => $DB->resultset('Order')
-            ->search( { status_id => $STATUS_FITTING_ROOM9 } )->next,
-    );
+    for my $n ( 1 .. 9 ) {
+        $self->stash( "room$n" => $DB->resultset('Order')
+                ->search( { status_id => $STATUS_FITTING_ROOM1 + $n - 1 } )
+                ->next );
+    }
 };
 
 get '/select' => sub {
