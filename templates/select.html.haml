@@ -3,5 +3,9 @@
 - title '의류준비';
 %ul#select
   - while (my $order = $orders->next) {
-    %li.text-left{:data-order-id => '#{$order->id}'}= include 'partials/select', order => $order;
+    - if (grep { $order->id == $_ } @$active) {
+      %li.text-left.active{:data-order-id => '#{$order->id}'}= include 'partials/select', order => $order;
+    - } else {
+      %li.text-left{:data-order-id => '#{$order->id}'}= include 'partials/select', order => $order;
+    - }
   - }
