@@ -1,3 +1,6 @@
+#content {
+    margin-top: 1em;
+}
 .list-group-item {
     background-color: #333;
 }
@@ -47,10 +50,16 @@
 #select {
     list-style-type: none;
     padding-left: 0;
+    > li {
+        cursor: pointer;
+    }
+    .active .select {
+        border-width: 0.1em;
+    }
     .select {
         font-size: 2em;
         background-color: #000;
-        border-width: 0.3em;
+        border-width: 0;
         ul {
             margin-left: 20px;
             padding-left: 0;

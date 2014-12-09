@@ -6,6 +6,7 @@ use JSON;
 use feature qw/switch/;
 
 use OpenCloset::Schema;
+use OpenCloset::Brain;
 
 app->defaults(
     %{ plugin 'Config' =>
@@ -146,26 +147,11 @@ post '/events' => sub {
 # fitting room
 get '/room' => sub {
     my $self = shift;
-    $self->stash(
-        room1 => $DB->resultset('Order')
-            ->search( { status_id => $STATUS_FITTING_ROOM1 } )->next,
-        room2 => $DB->resultset('Order')
-            ->search( { status_id => $STATUS_FITTING_ROOM2 } )->next,
-        room3 => $DB->resultset('Order')
-            ->search( { status_id => $STATUS_FITTING_ROOM3 } )->next,
-        room4 => $DB->resultset('Order')
-            ->search( { status_id => $STATUS_FITTING_ROOM4 } )->next,
-        room5 => $DB->resultset('Order')
-            ->search( { status_id => $STATUS_FITTING_ROOM5 } )->next,
-        room6 => $DB->resultset('Order')
-            ->search( { status_id => $STATUS_FITTING_ROOM6 } )->next,
-        room7 => $DB->resultset('Order')
-            ->search( { status_id => $STATUS_FITTING_ROOM7 } )->next,
-        room8 => $DB->resultset('Order')
-            ->search( { status_id => $STATUS_FITTING_ROOM8 } )->next,
-        room9 => $DB->resultset('Order')
-            ->search( { status_id => $STATUS_FITTING_ROOM9 } )->next,
-    );
+    for my $n ( 1 .. 9 ) {
+        $self->stash( "room$n" => $DB->resultset('Order')
+                ->search( { status_id => $STATUS_FITTING_ROOM1 + $n - 1 } )
+                ->next );
+    }
 };
 
 get '/select' => sub {
@@ -173,7 +159,32 @@ get '/select' => sub {
     my $rs = $DB->resultset('Order')->search( { status_id => $STATUS_SELECT },
         { order_by => { -asc => 'update_date' } } );
 
-    $self->stash( orders => $rs );
+    my $brain = OpenCloset::Brain->new;
+    $brain->clear unless $rs->count;
+    my @active = keys %{ $brain->{data}{orders} ||= {} };
+    $self->stash( orders => $rs, active => [@active] );
+};
+
+post '/select' => sub {
+    my $self     = shift;
+    my $order_id = $self->param('order_id');
+    my $brain    = OpenCloset::Brain->new;
+    $brain->{data}{orders}{$order_id} = 1;
+    $self->render(
+        text   => "Successfully posted order_id($order_id)",
+        status => 201
+    );
+};
+
+del '/select/:order_id' => sub {
+    my $self     = shift;
+    my $order_id = $self->param('order_id');
+    my $brain    = OpenCloset::Brain->new;
+    delete $brain->{data}{orders}{$order_id};
+    $self->render(
+        text   => "Successfully deleted order_id($order_id)",
+        status => 201
+    );
 };
 
 app->sessions->cookie_name('opencloset-monitor');
