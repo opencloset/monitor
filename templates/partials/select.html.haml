@@ -16,7 +16,7 @@
         가슴
         = $user_info->bust || 0
     %li
-      %span.label.label-default{:title => '배'}
+      %span.label.label-success{:title => '배'}
         배
         = $user_info->belly || 0
     %li
@@ -30,11 +30,11 @@
         = $user_info->waist || 0
     %li
       - if ($gender eq 'male') {
-        %span.label.label-default{:title => '허벅지'}
+        %span.label.label-success{:title => '허벅지'}
           허벅지
           = $user_info->thigh || 0
       - } else {
-        %span.label.label-default{:title => '엉덩이'}
+        %span.label.label-success{:title => '엉덩이'}
           엉덩이
           = $user_info->hip || 0
       - }
