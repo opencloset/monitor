@@ -1,7 +1,10 @@
 #!/usr/bin/env perl
+
 use strict;
 use warnings;
+
 use Mojo::JSON;
+
 my $db_opts
     = $ENV{OPENCLOSET_DATABASE_OPTS}
     ? Mojo::JSON::decode_json( $ENV{OPENCLOSET_DATABASE_OPTS} )
@@ -21,6 +24,15 @@ $db_opts->{RaiseError} //= 1;
 $db_opts->{AutoCommit} //= 1;
 
 {
+    #
+    # for Mojolicious hypnotoad server
+    #
+    hypnotoad => {
+        listen   => [ 'http://*:8002' ],
+        workers  => 3,
+        pid_file => 'hypnotoad.pid',
+    },
+
     #
     # 기본 데이터베이스 설정은 mysql 기준입니다.
     #
