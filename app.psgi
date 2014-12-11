@@ -57,6 +57,18 @@ helper order_flatten => sub {
     return { $order->get_columns };
 };
 
+under sub {
+    my $self    = shift;
+    my $address = $self->tx->remote_address;
+    my $method  = $self->tx->req->method;
+    return 1 if $method ne 'GET';
+    unless ( grep { $address eq $_ } @{ $self->config->{whitelist} } ) {
+        $self->render( text => 'Permission denied' );
+        return;
+    }
+    return 1;
+};
+
 get '/' => sub {
     my $self = shift;
     my $rs   = $DB->resultset('Order')->search(

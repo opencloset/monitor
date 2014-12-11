@@ -10,6 +10,10 @@ my $db_opts
     mysql_enable_utf8 => 1,
     on_connect_do     => 'SET NAMES utf8',
     };
+
+my @WHITELIST = split /,/, $ENV{OPENCLOSET_WHITELIST} || '';
+push @WHITELIST, '127.0.0.1', 'localhost';
+
 #
 # RaiseError와 AutoCommit을 명시적으로 껐을때를 제외하고는 항상 켜줍니다.
 #
@@ -28,5 +32,6 @@ $db_opts->{AutoCommit} //= 1;
         pass => $ENV{OPENCLOSET_DATABASE_PASS} // 'opencloset',
         opts => $db_opts,
     },
-    secrets => ['yolo'],
+    secrets   => ['yolo'],
+    whitelist => [@WHITELIST]
 };
