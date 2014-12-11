@@ -64,16 +64,16 @@
         \/
         = $user_info->weight || 0
 .col-md-1
-  %ul.color.text-right.pull-right
+  %ul.color
     - for my $color (@colors) {
       %li
         %span.label{:class => $color}= $color_map{$color}
     - }
 .col-md-4
   %ul.clothes
-    - for my $item (@clothes) {
+    - for my $clothes (@clothes) {
       %li
-        %strong= $clothes_map{$item}
+        %strong= $clothes_map{$clothes}
     - }
   .purpose
     %p= $user_info->purpose || ''
