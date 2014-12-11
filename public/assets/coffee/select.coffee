@@ -4,7 +4,7 @@ $ ->
     location.reload()
   , 10000
 
-  $('#select > li').click (e) ->
+  $('.select').click (e) ->
     e.preventDefault()
     $this = $(@)
     order_id = $this.data('order-id')

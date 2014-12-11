@@ -45,9 +45,10 @@
         = $user_info->weight || 0
   %p= $user_info->comment || ''
   %ul.clothes
-    - while (my $detail = $details->next) {
+    - for my $item ($user_info->pre_category, $user_info->pre_color) {
+      - next unless $item;
       %li
-        %em= $detail->clothes->category
+        %em= $item
     - }
   %p= $user_info->purpose
   %p= $user_info->purpose2
