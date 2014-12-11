@@ -12,7 +12,7 @@
         font-size: 2em;
         background-color: #000;
         min-height: 500px;
-        border-width: 0.5em;
+        border-width: 0.3em;
         padding: 0;
         ul {
             margin-left: 0;
@@ -46,30 +46,91 @@
         }
         border-color: #ee3333;
     }
+    .purpose, .comment, .color {
+        font-size: 0.6em;
+    }
+    
+    .purpose {
+        margin-top: 1em;
+    }
+    .clothes {
+        font-size: 0.5em;
+    }
+    .color {
+        .label.black { background-color: lighten(black, 25%) }
+        .label.navy  { background-color: navy }
+        .label.gray  { background-color: gray }
+        .label.brown { background-color: #8b4513 }
+        .label.etc   { background-color: darken(yellow, 20%) }
+        .label.staff { background-color: orange }
+    }
+    .comment {
+        color: darken(#fff, 30%);
+    }
 }
 #select {
-    list-style-type: none;
-    padding-left: 0;
-    > li {
-        cursor: pointer;
-    }
-    .active .select {
-        border-width: 0.1em;
-    }
+    font-size: 1.1em;
+    text-align: left;
     .select {
-        font-size: 2em;
-        background-color: #000;
-        border-width: 0;
-        ul {
-            margin-left: 20px;
-            padding-left: 0;
+        border: 1px solid darken(#fff, 50%);
+        padding: 0.5em 0.5em 0 0.5em;
+        margin: 0.5em;
+        cursor: pointer;
+        &.active {
+            border-width: 2px;
+            border-color: #fff;
+            h1 {
+                font-weight: bold;
+            }
+        }
+        .profile {
+            h1 { font-size: 2em }
+            h2 { font-size: 1.8em }
+            text-align: center;
+            .fa-male {
+                color: #5555ee;
+            }
+            .fa-female {
+                color: #ee3333;
+            }
+        }
+        .size {
+            font-size: 2em;
             list-style-type: none;
             li {
                 display: inline;
-                margin-left: 10px;
+                span {
+                    width: 30%;
+                    display: inline-block;
+                }
             }
         }
+        .color {
+            font-size: 2em;
+            list-style-type: none;
+            padding-left: 0;
+            width: 100%;
+            li {
+                margin-bottom: 10px;
+                span {
+                    display: inline-block;
+                    width:100%;
+                }
+            }
+            .label.black { background-color: lighten(black, 25%) }
+            .label.navy  { background-color: navy }
+            .label.gray  { background-color: gray }
+            .label.brown { background-color: #8b4513 }
+            .label.etc   { background-color: darken(yellow, 20%) }
+            .label.staff { background-color: orange }
+        }
         .clothes {
+            font-size: 1.5em;
+            list-style-type: none;
+            padding-left: 0;
+            li {
+                display: inline;
+            }
             li:after {
                 content: ", ";
             }
@@ -77,32 +138,14 @@
                 content: "";
             }
         }
-        p.timeago {
-            font-size: 0.6em;
+        .purpose {
+            font-size: 1.5em;
+            p {
+                display: inline;
+            }
         }
-        .name {
-            min-width: 180px;
+        .comment {
+            color: darken(#fff, 30%);
         }
-        .age {
-            min-width: 50px;
-        }
-        p.timeago {
-            min-width: 100px;
-        }
-    }
-    .select.male {
-        .fa {
-            color: #5555ee;
-        }
-        border-color: #5555ee;
-    }
-    .select.female {
-        .fa {
-            color: #ee3333;
-        }
-        border-color: #ee3333;
-    }
-    p, ul {
-        display: inline-block;
     }
 }

@@ -1,33 +1,35 @@
 - use utf8;
+- my %clothes_map = (jacket => '자켓', pants => '팬츠', shirt => '셔츠', tie => '타이', shoes => '구두', belt => '벨트', skirt => '스커트', blouse => '블라우스');
+- my %color_map = (black => '검정', navy => '남색', gray => '회색', brown => '갈색', etc => '기타', staff => '직원추천');
 - my $user = $order->user;
 - my $user_info = $user->user_info;
 - my $gender = $user_info->gender;
 - my $details = $order->order_details;
-.well.select{:class => $gender}
-  %p.name
+- my @clothes = split /,/, $user_info->pre_category;
+- my @colors  = split /,/, $user_info->pre_color;
+
+.col-md-2.profile
+  %h1.name
     %i.fa{:class => "fa-#{$gender}"}
     = $user->name
-  %p.age= age($user_info->birth)
+  %h2.age= age($user_info->birth)
   %p.timeago
     %abbr.timeago{:title => '#{$order->update_date->ymd}T#{$order->update_date->hms}Z'}= $order->update_date
+.col-md-5.size
   %ul
+    %li
+      %span.label.label-success{:title => '중동'}
+        중동
+        = $user_info->belly || 0
     %li
       %span.label.label-default{:title => '가슴'}
         가슴
         = $user_info->bust || 0
     %li
-      %span.label.label-success{:title => '배'}
-        배
-        = $user_info->belly || 0
-    %li
       %span.label.label-default{:title => '팔'}
         팔
         = $user_info->arm || 0
   %ul
-    %li
-      %span.label.label-default{:title => '허리'}
-        허리
-        = $user_info->waist || 0
     %li
       - if ($gender eq 'male') {
         %span.label.label-success{:title => '허벅지'}
@@ -38,6 +40,10 @@
           엉덩이
           = $user_info->hip || 0
       - }
+    %li
+      %span.label.label-default{:title => '허리'}
+        허리
+        = $user_info->waist || 0
     %li
       - if ($gender eq 'male') {
         %span.label.label-default{:title => '다리'}
@@ -57,11 +63,20 @@
         = $user_info->height || 0
         \/
         = $user_info->weight || 0
-  %p= $user_info->comment || ''
-  %ul.clothes
-    - while (my $detail = $details->next) {
+.col-md-1
+  %ul.color
+    - for my $color (@colors) {
       %li
-        %em= $detail->clothes->category
+        %span.label{:class => $color}= $color_map{$color}
     - }
-  %p= $user_info->purpose
-  %p= $user_info->purpose2
+.col-md-4
+  %ul.clothes
+    - for my $clothes (@clothes) {
+      %li
+        %strong= $clothes_map{$clothes}
+    - }
+  .purpose
+    %p= $user_info->purpose || ''
+    \/
+    %p= $user_info->purpose2 || ''
+  %p.comment= $user_info->comment || ''
