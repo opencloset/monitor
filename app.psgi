@@ -52,11 +52,6 @@ plugin 'OpenCloset::Plugin::Helpers';
 plugin 'haml_renderer';
 plugin 'validator';
 
-helper order_flatten => sub {
-    my ( $self, $order ) = @_;
-    return { $order->get_columns };
-};
-
 under sub {
     my $self    = shift;
     my $address = $self->tx->remote_address;

@@ -6,8 +6,14 @@ use DateTime::Tiny;
 
 sub register {
     my ( $self, $app, $conf ) = @_;
-    $app->helper( error => \&error );
-    $app->helper( age   => \&age );
+    $app->helper( error         => \&error );
+    $app->helper( age           => \&age );
+    $app->helper( order_flatten => \&order_flatten );
+}
+
+sub order_flatten {
+    my ( $self, $order ) = @_;
+    return { $order->get_columns };
 }
 
 sub error {
