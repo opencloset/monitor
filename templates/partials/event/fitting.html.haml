@@ -2,5 +2,7 @@
 %h1
   = $order->user->name . '님'
   %small
-    = $order->status_id - 19
-    번 탈의실로 입장해주세요
+    %strong
+      = $order->status_id - 19
+      번 탈의실
+    로 입장해주세요

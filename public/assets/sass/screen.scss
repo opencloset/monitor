@@ -1,11 +1,22 @@
 #content {
     margin-top: 1em;
 }
+#dashboard {
+    font-size: 2em;
+    th {
+        text-align: center;
+    }
+    abbr {
+        font-size: 0.5em;
+    }
+}
 .list-group-item {
     background-color: #333;
 }
-#event h3 small {
-    color: #fff;
+#event {
+    small {
+        color: #fff;
+    }
 }
 #fitting-room {
     .room {
