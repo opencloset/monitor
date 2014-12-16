@@ -48,8 +48,8 @@ my $DB = OpenCloset::Schema->connect(
     }
 );
 
+plugin 'OpenCloset::Plugin::Helpers';
 plugin 'haml_renderer';
-plugin 'opencloset';
 plugin 'validator';
 
 helper order_flatten => sub {
