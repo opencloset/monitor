@@ -200,5 +200,5 @@ del '/select/:order_id' => sub {
 };
 
 app->sessions->cookie_name('opencloset-monitor');
-app->secrets( app->defaults->{secrets} );
+app->secrets( [time] );
 app->start;
