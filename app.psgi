@@ -58,6 +58,7 @@ under sub {
     my $method  = $self->tx->req->method;
     return 1 if $method ne 'GET';
     unless ( grep { $address eq $_ } @{ $self->config->{whitelist} } ) {
+        app->log->warn( "denied address: $address" );
         $self->render( text => 'Permission denied' );
         return;
     }
