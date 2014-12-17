@@ -9,7 +9,7 @@
 - );
 
 .row
-  .col-md-6
+  .col-md-7
     #dashboard
       %table.table.table-striped.table-bordered.table-condensed
         %thead
@@ -26,12 +26,11 @@
           - for my $s (@$orders) {
             %td.text-left
               - for my $order (@$s) {
-                %p
-                  = $order->user->name
-                  %abbr.timeago{:title => '#{$order->update_date->ymd}T#{$order->update_date->hms}Z'}= $order->update_date
+                %span.label.label-info= $order->user->name
+                %abbr.timeago{:title => '#{$order->update_date->ymd}T#{$order->update_date->hms}Z'}= $order->update_date
               - }
           - }
-  .col-md-6
+  .col-md-5
     #event
       - if (@$events) {
         %audio{:src => "/assets/audio/whisper.ogg", :autoplay => ''}
