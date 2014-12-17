@@ -13,7 +13,14 @@ sub register {
 
 sub order_flatten {
     my ( $self, $order ) = @_;
-    return { $order->get_columns };
+    my $user      = $order->user;
+    my $user_info = $user->user_info;
+    my %columns   = $order->get_columns;
+    $columns{user}      = { $user->get_columns };
+    $columns{user_info} = { $user->get_columns };
+    delete $columns{user}{password};
+    delete $columns{user_info}{password};
+    return {%columns};
 }
 
 sub error {

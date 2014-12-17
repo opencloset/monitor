@@ -31,21 +31,6 @@ our $STATUS_FITTING_ROOM7 = 26;
 our $STATUS_FITTING_ROOM8 = 27;
 our $STATUS_FITTING_ROOM9 = 28;
 
-our %STATUS_MAP = (
-    16 => 'measure',
-    19 => 'payment',
-    20 => 'fitting',
-    21 => 'fitting',
-    22 => 'fitting',
-    23 => 'fitting',
-    24 => 'fitting',
-    25 => 'fitting',
-    26 => 'fitting',
-    27 => 'fitting',
-    28 => 'fitting',
-    29 => 'fitting'
-);
-
 our @ACTIVE_STATUS = (
     $STATUS_REPAIR, $STATUS_VISIT, $STATUS_MEASURE, $STATUS_SELECT,
     $STATUS_BOXING, $STATUS_PAYMENT,
@@ -135,21 +120,18 @@ post '/events' => sub {
     return $self->error( 400,
         { str => 'parameter `order_id`, `from` and `to` are required' } )
         unless $self->validate($validator);
-
-    my $to = $self->param('to');
-
     my $order
         = $DB->resultset('Order')->find( { id => $self->param('order_id') } );
-    my $template = $STATUS_MAP{ $order->status_id };
     for my $key ( keys %sock_clients ) {
-        $sock_clients{$key}->send('') unless $template;
-        my $html = $self->render_to_string(
-            "partials/event/$template",
-            order => $order,
-            from  => $self->param('from'),
-            to    => $self->param('to')
-        )->to_string;
-        $sock_clients{$key}->send($html);
+        $sock_clients{$key}->send(
+            {
+                json => {
+                    order => $self->order_flatten($order),
+                    from  => $self->param('from'),
+                    to    => $self->param('to')
+                }
+            }
+        );
     }
 
     $self->render( text => 'Successfully posted event', status => 201 );
