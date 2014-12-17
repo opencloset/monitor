@@ -70,13 +70,29 @@ class NotificationRow extends Backbone.View
   '''
   render: =>
     $('#event audio').trigger('play')
+    to = @model.get('to')
+    status_id = if to > 19 and to < 29 then 20 else to
+    userlabel = $("#order-#{@model.get('order_id')}").get(0)
+    unless _.contains(_.keys(statusMap), '' + status_id)
+      $(userlabel).remove()
+      return @
+
+    return @ unless @model.get 'desc'
+
     @$el.append(@template(@model.attributes)).appendTo('#event ul')
     setTimeout =>
       @remove()
     , 1000 * 15
-    to = @model.get('to')
-    status_id = if to > 19 and to < 29 then 20 else to
-    $("#order-#{@model.get('order_id')}").appendTo($("#status-#{status_id}"))
+    unless userlabel
+      compiled = _.template '''
+        <p class="user" id="order-<%= order_id %>">
+          <span class="label label-info"><%= username %></span>
+        </p>
+      '''
+      userlabel = compiled
+        order_id: @model.get('order_id')
+        username: @model.get('username')
+    $(userlabel).appendTo($("#status-#{status_id}"))
     return @
 
 ## main
