@@ -12,3 +12,7 @@ Dashboard in waiting room
     
     # use OpenCloset::Schema
     $ export PERL5LIB=/path/to/opencloset/lib:$PERL5LIB
+
+## Run ##
+
+    $ morbo -l 'http://*:5000' ./app.psgi    # http://localhost:5000

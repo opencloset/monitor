@@ -18,6 +18,11 @@ html, body {
         font-size: 0.5em;
         display: none;
     }
+    p .label {
+        font-size: 1.2em;
+        display: inline-block;
+        width: 100%;
+    }
 }
 .list-group-item {
     background-color: #333;

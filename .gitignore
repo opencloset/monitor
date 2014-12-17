@@ -7,3 +7,4 @@ app.psgi.conf
 node_modules/
 .sass-cache/
 .opencloset.json
+run

@@ -1,4 +1,4 @@
-package Mojolicious::Plugin::Opencloset;
+package OpenCloset::Plugin::Helpers;
 
 use Mojo::Base 'Mojolicious::Plugin';
 
@@ -6,14 +6,27 @@ use DateTime::Tiny;
 
 sub register {
     my ( $self, $app, $conf ) = @_;
-    $app->helper( error => \&_error );
-    $app->helper( age   => \&_age );
+    $app->helper( error         => \&error );
+    $app->helper( age           => \&age );
+    $app->helper( order_flatten => \&order_flatten );
 }
 
-sub _error {
+sub order_flatten {
+    my ( $self, $order ) = @_;
+    my $user      = $order->user;
+    my $user_info = $user->user_info;
+    my %columns   = $order->get_columns;
+    $columns{user}      = { $user->get_columns };
+    $columns{user_info} = { $user->get_columns };
+    delete $columns{user}{password};
+    delete $columns{user_info}{password};
+    return {%columns};
+}
+
+sub error {
     my ( $self, $status, $error ) = @_;
 
-    app->log->error( $error->{str} );
+    $self->app->log->error( $error->{str} );
 
     no warnings 'experimental';
     my $template;
@@ -27,8 +40,8 @@ sub _error {
     $self->respond_to(
         json => { status => $status, json => { error => $error || q{} } },
         html => {
-            status   => $status,
-            error    => $error->{str} || q{},
+            status => $status,
+            error => $error->{str} || q{},
             template => $template
         },
     );
@@ -36,7 +49,7 @@ sub _error {
     return;
 }
 
-sub _age {
+sub age {
     my ( $self, $birth ) = @_;
     my $now = DateTime::Tiny->now;
     return $now->year - $birth;
@@ -50,12 +63,12 @@ sub _age {
 
 =head1 NAME
 
-Mojolicious::Plugin::Opencloset - provide helpers for opencloset
+OpenCloset::Plugin::Helpers - provide helpers for opencloset
 
 =head1 SYNOPSIS
 
     # Mojolicious::Lite
-    plugin 'opencloset';
+    plugin 'OpenCloset::Plugin::Helpers';
 
 =head1 HELPERS
 

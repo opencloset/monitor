@@ -1,13 +1,15 @@
 - use utf8;
-- layout 'default', jses => ['/assets/components/jquery-timeago/jquery.timeago.js', '/assets/components/jquery-timeago/locales/jquery.timeago.ko.js', '/assets/js/index.js'];
+- layout 'default',
+- jses => [
+-   '/assets/components/reconnectingWebsocket/reconnecting-websocket.js',
+-   '/assets/components/underscore/underscore-min.js',
+-   '/assets/components/backbone/backbone.js',
+-   '/assets/js/index.js'
+- ];
 - title 'Dashboard';
-- my %STATUS_MAP = (
--   16 => 'measure', 
--   19 => 'payment', 
--   20 => 'fitting', 21 => 'fitting', 22 => 'fitting', 23 => 'fitting', 24 => 'fitting', 
--   25 => 'fitting', 26 => 'fitting', 27 => 'fitting', 28 => 'fitting', 29 => 'fitting', 
-- );
 
+- my @sid = qw/13 16 17 20 6 18 19/;
+- my $i = 0;
 .row
   .col-md-7
     #dashboard
@@ -24,23 +26,14 @@
         %tbody
           %tr
           - for my $s (@$orders) {
-            %td.text-left
+            %td.text-left{:id => "status-#{$sid[$i++]}"}
               - for my $order (@$s) {
-                %span.label.label-info= $order->user->name
-                %abbr.timeago{:title => '#{$order->update_date->ymd}T#{$order->update_date->hms}Z'}= $order->update_date
+                %p.user{:id => "order-#{$order->id}"}
+                  %span.label.label-info= $order->user->name
               - }
           - }
   .col-md-5
     #event
-      - if (@$events) {
-        %audio{:src => "/assets/audio/whisper.ogg", :autoplay => ''}
-          %p Your browser does not support the audio element.
-      - }
+      %audio{:src => "/assets/audio/whisper.ogg"}
+        %p Your browser does not support the audio element.
       %ul.list-group
-        - for my $event (@$events) {
-          - my ($order, $status) = ($event->{order}, $event->{status});
-          - my $template = $STATUS_MAP{$order->status_id};
-          - if ($template) {
-            %li.list-group-item= include "partials/event/$template", order => $order, from => $status->{from}, to => $status->{to};
-          - }
-        - }
