@@ -22,6 +22,7 @@
     "bootstrap": "~3.3.1",
     "jquery-timeago": "~1.4.1",
     "font-awesome": "~4.2.0",
-    "reconnectingWebsocket": "*"
+    "reconnectingWebsocket": "*",
+    "backbone": "~1.1.2"
   }
 }
