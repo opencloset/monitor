@@ -1,8 +1,8 @@
 #!/usr/bin/env perl
 use Mojolicious::Lite;
 
-use Directory::Queue;
 use JSON;
+use Time::HiRes 'time';
 use feature qw/switch/;
 
 use OpenCloset::Schema;
@@ -31,14 +31,27 @@ our $STATUS_FITTING_ROOM7 = 26;
 our $STATUS_FITTING_ROOM8 = 27;
 our $STATUS_FITTING_ROOM9 = 28;
 
+our %STATUS_MAP = (
+    16 => 'measure',
+    19 => 'payment',
+    20 => 'fitting',
+    21 => 'fitting',
+    22 => 'fitting',
+    23 => 'fitting',
+    24 => 'fitting',
+    25 => 'fitting',
+    26 => 'fitting',
+    27 => 'fitting',
+    28 => 'fitting',
+    29 => 'fitting'
+);
+
 our @ACTIVE_STATUS = (
     $STATUS_REPAIR, $STATUS_VISIT, $STATUS_MEASURE, $STATUS_SELECT,
     $STATUS_BOXING, $STATUS_PAYMENT,
     $STATUS_FITTING_ROOM1 .. $STATUS_FITTING_ROOM9
 );
-our @NOTIFICATION_STATUS = @ACTIVE_STATUS;
 
-my $DIRQ = Directory::Queue->new( path => "/tmp/opencloset/monitor" );
 my $DB = OpenCloset::Schema->connect(
     {
         dsn      => app->config->{database}{dsn},
@@ -47,6 +60,8 @@ my $DB = OpenCloset::Schema->connect(
         %{ app->config->{database}{opts} },
     }
 );
+
+my %sock_clients;
 
 plugin 'OpenCloset::Plugin::Helpers';
 plugin 'haml_renderer';
@@ -100,25 +115,11 @@ get '/' => sub {
             return [@orders];
         },
         html => sub {
-            my @events;
-            for ( my $name = $DIRQ->first(); $name; $name = $DIRQ->next() ) {
-                next unless $DIRQ->lock($name);
-                my $data = decode_json( $DIRQ->get($name) );
-                push @events,
-                    {
-                    order => $DB->resultset('Order')
-                        ->find( { id => $data->{order_id} } ),
-                    status => { from => $data->{from}, to => $data->{to} }
-                    };
-                $DIRQ->remove($name);
-            }
-
             $self->stash(
                 orders => [
                     [@visit], [@measure], [@select], [@undress],
                     [@repair], [@boxing], [@payment]
                 ],
-                events   => [@events],
                 template => 'index'
             );
         }
@@ -136,16 +137,19 @@ post '/events' => sub {
         unless $self->validate($validator);
 
     my $to = $self->param('to');
-    if ( grep { $to == $_ } @NOTIFICATION_STATUS ) {
-        $DIRQ->add(
-            encode_json(
-                {
-                    order_id => $self->param('order_id'),
-                    from     => $self->param('from'),
-                    to       => $self->param('to')
-                }
-            )
-        );
+
+    my $order
+        = $DB->resultset('Order')->find( { id => $self->param('order_id') } );
+    my $template = $STATUS_MAP{ $order->status_id };
+    for my $key ( keys %sock_clients ) {
+        $sock_clients{$key}->send('') unless $template;
+        my $html = $self->render_to_string(
+            "partials/event/$template",
+            order => $order,
+            from  => $self->param('from'),
+            to    => $self->param('to')
+        )->to_string;
+        $sock_clients{$key}->send($html);
     }
 
     $self->render( text => 'Successfully posted event', status => 201 );
@@ -191,6 +195,29 @@ del '/select/:order_id' => sub {
     $self->render(
         text   => "Successfully deleted order_id($order_id)",
         status => 201
+    );
+};
+
+websocket '/socket' => sub {
+    my $self = shift;
+    $self->app->log->debug('WebSocket opened');
+    $self->inactivity_timeout(300);
+    my $tx = $self->tx;
+    my $t0 = time;
+    $sock_clients{$t0} = $tx;
+    $self->on(
+        message => sub {
+            my ( $self, $msg ) = @_;
+            $self->app->log->debug("[ws] < $msg");
+        }
+    );
+
+    $self->on(
+        finish => sub {
+            my ( $self, $code, $reason ) = @_;
+            $self->app->log->debug("WebSocket closed with status $code");
+            delete $sock_clients{$t0};
+        }
     );
 };
 
