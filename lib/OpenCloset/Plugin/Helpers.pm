@@ -26,7 +26,7 @@ sub order_flatten {
 sub error {
     my ( $self, $status, $error ) = @_;
 
-    app->log->error( $error->{str} );
+    $self->app->log->error( $error->{str} );
 
     no warnings 'experimental';
     my $template;
