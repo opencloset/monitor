@@ -11,3 +11,6 @@ run
 
 # editor swap files
 *.swp
+
+# hypnotoad pid file
+hypnotoad.pid
