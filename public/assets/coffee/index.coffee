@@ -79,7 +79,7 @@ class NotificationRow extends Backbone.View
 
     return @ unless @model.get 'desc'
 
-    @$el.append(@template(@model.attributes)).appendTo('#event ul')
+    @$el.append(@template(@model.attributes)).prependTo('#event ul')
     setTimeout =>
       @remove()
     , 1000 * 15
