@@ -1,8 +1,6 @@
 - use utf8;
 - layout 'default',
 - jses => [
--   '/assets/components/jquery-timeago/jquery.timeago.js',
--   '/assets/components/jquery-timeago/locales/jquery.timeago.ko.js',
 -   '/assets/components/reconnectingWebsocket/reconnecting-websocket.js',
 -   '/assets/components/underscore/underscore-min.js',
 -   '/assets/components/backbone/backbone.js',
@@ -10,6 +8,8 @@
 - ];
 - title 'Dashboard';
 
+- my @sid = qw/13 16 17 20 6 18 19/;
+- my $i = 0;
 .row
   .col-md-7
     #dashboard
@@ -26,10 +26,10 @@
         %tbody
           %tr
           - for my $s (@$orders) {
-            %td.text-left
+            %td.text-left{:id => "status-#{$sid[$i++]}"}
               - for my $order (@$s) {
-                %span.label.label-info= $order->user->name
-                %abbr.timeago{:title => '#{$order->update_date->ymd}T#{$order->update_date->hms}Z'}= $order->update_date
+                %p.user{:id => "order-#{$order->id}"}
+                  %span.label.label-info= $order->user->name
               - }
           - }
   .col-md-5
