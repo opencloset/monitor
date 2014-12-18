@@ -3,12 +3,14 @@ package OpenCloset::Plugin::Helpers;
 use Mojo::Base 'Mojolicious::Plugin';
 
 use DateTime::Tiny;
+use Mojo::Redis2;
 
 sub register {
     my ( $self, $app, $conf ) = @_;
     $app->helper( error         => \&error );
     $app->helper( age           => \&age );
     $app->helper( order_flatten => \&order_flatten );
+    $app->helper( redis         => \&redis );
 }
 
 sub order_flatten {
@@ -53,6 +55,22 @@ sub age {
     my ( $self, $birth ) = @_;
     my $now = DateTime::Tiny->now;
     return $now->year - $birth;
+}
+
+sub redis {
+    my $self = shift;
+
+    $self->stash->{redis} ||= do {
+        my $log   = $self->app->log;
+        my $redis = Mojo::Redis2->new;    # just use `redis://localhost:6379`
+        $redis->on(
+            error => sub {
+                $log->error("[REDIS ERROR] $_[1]");
+            }
+        );
+
+        $redis;
+    };
 }
 
 1;
