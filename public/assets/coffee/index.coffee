@@ -32,7 +32,9 @@ class EventStream
         model: new NotificationModel { stream: @ }
       @trigger 'receiveMessage', e
     @socket.onerror = (e) =>
-      @trigger 'receiveError', e
+      @trigger 'error', e
+    @socket.onclose = (e) =>
+      @trigger 'close', e
 
 ## Model
 class NotificationModel extends Backbone.Model
@@ -98,3 +100,7 @@ class NotificationRow extends Backbone.View
 ## main
 $ ->
   stream = new EventStream
+  stream.on 'error', (e) ->
+    location.reload()
+  stream.on 'close', (e) ->
+    location.reload()
