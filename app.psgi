@@ -2,6 +2,7 @@
 use Mojolicious::Lite;
 
 use JSON;
+use Net::IP::AddrRanges;
 use Time::HiRes 'time';
 use feature qw/switch/;
 
@@ -52,13 +53,16 @@ plugin 'OpenCloset::Plugin::Helpers';
 plugin 'haml_renderer';
 plugin 'validator';
 
+my $ranges = Net::IP::AddrRanges->new();
+$ranges->add( @{ app->config->{whitelist} } );
+
 under sub {
     my $self    = shift;
     my $address = $self->tx->remote_address;
     my $method  = $self->tx->req->method;
     return 1 if $method ne 'GET';
-    unless ( grep { $address eq $_ } @{ $self->config->{whitelist} } ) {
-        app->log->warn( "denied address: $address" );
+    unless ( $ranges->find($address) ) {
+        app->log->warn("denied address: $address");
         $self->render( text => 'Permission denied' );
         return;
     }
