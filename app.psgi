@@ -188,7 +188,7 @@ del '/select/:order_id' => sub {
 websocket '/socket' => sub {
     my $self = shift;
     $self->app->log->debug('WebSocket opened');
-    $self->inactivity_timeout(300);
+    $self->inactivity_timeout(60);    # 1 min
     my $tx = $self->tx;
     my $t0 = time;
     $sock_clients{$t0} = $tx;
