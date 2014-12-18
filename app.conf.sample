@@ -15,7 +15,7 @@ my $db_opts
     };
 
 my @WHITELIST = split /,/, $ENV{OPENCLOSET_WHITELIST} || '';
-push @WHITELIST, '127.0.0.1', 'localhost';
+push @WHITELIST, '127.0.0.1';
 
 #
 # RaiseError와 AutoCommit을 명시적으로 껐을때를 제외하고는 항상 켜줍니다.
