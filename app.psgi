@@ -1,7 +1,9 @@
 #!/usr/bin/env perl
 use Mojolicious::Lite;
 
+use Encode 'decode_utf8';
 use JSON;
+use Mojo::JSON 'j';
 use Net::IP::AddrRanges;
 use Time::HiRes 'time';
 use feature qw/switch/;
@@ -47,7 +49,7 @@ my $DB = OpenCloset::Schema->connect(
     }
 );
 
-my %sock_clients;
+my $REDIS_CHANNEL = 'opencloset:monitor';
 
 plugin 'OpenCloset::Plugin::Helpers';
 plugin 'haml_renderer';
@@ -127,17 +129,18 @@ post '/events' => sub {
         unless $self->validate($validator);
     my $order
         = $DB->resultset('Order')->find( { id => $self->param('order_id') } );
-    for my $key ( keys %sock_clients ) {
-        $sock_clients{$key}->send(
-            {
-                json => {
+
+    $self->redis->publish(
+        $REDIS_CHANNEL => decode_utf8(
+            j(
+                {
                     order => $self->order_flatten($order),
                     from  => $self->param('from'),
                     to    => $self->param('to')
                 }
-            }
-        );
-    }
+            )
+        )
+    );
 
     $self->render( text => 'Successfully posted event', status => 201 );
 };
@@ -187,23 +190,41 @@ del '/select/:order_id' => sub {
 
 websocket '/socket' => sub {
     my $self = shift;
+
     $self->app->log->debug('WebSocket opened');
     $self->inactivity_timeout(60);    # 1 min
-    my $tx = $self->tx;
-    my $t0 = time;
-    $sock_clients{$t0} = $tx;
+    Scalar::Util::weaken($self);
+
+    my $log = $self->app->log;
     $self->on(
         message => sub {
             my ( $self, $msg ) = @_;
-            $self->app->log->debug("[ws] < $msg");
+            $log->debug("[ws] < $msg");
         }
     );
 
     $self->on(
         finish => sub {
             my ( $self, $code, $reason ) = @_;
-            $self->app->log->debug("WebSocket closed with status $code");
-            delete $sock_clients{$t0};
+            $log->debug("WebSocket closed with status $code");
+            delete $self->stash->{redis};
+        }
+    );
+
+    $self->redis->on(
+        message => sub {
+            my ( $redis, $message, $ch ) = @_;
+            return if $ch ne $REDIS_CHANNEL;
+
+            return unless $self;
+            $self->send($message);
+        }
+    );
+
+    $self->redis->subscribe(
+        $REDIS_CHANNEL => sub {
+            my ( $redis, $err ) = @_;
+            $log->error("[REDIS ERROR] subscribe error: $err") if $err;
         }
     );
 };

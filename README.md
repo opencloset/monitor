@@ -4,6 +4,7 @@ Dashboard in waiting room
 
 ## 요구사항 ##
 
+    $ sudo apt-get install redis-server
     $ npm install
 
     # install front-end pkg deps & build
