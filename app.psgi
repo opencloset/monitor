@@ -192,7 +192,7 @@ websocket '/socket' => sub {
     my $self = shift;
 
     $self->app->log->debug('WebSocket opened');
-    $self->inactivity_timeout(60);    # 1 min
+    $self->inactivity_timeout(300);
     Scalar::Util::weaken($self);
 
     my $log = $self->app->log;

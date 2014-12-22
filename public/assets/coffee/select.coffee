@@ -11,8 +11,6 @@ $ ->
       location.reload()
   sock.onerror = (e) ->
     location.reload()
-  sock.onclose = (e) ->
-    location.reload()
 
   $("abbr.timeago").timeago()
 
