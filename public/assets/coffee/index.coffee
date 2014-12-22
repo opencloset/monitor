@@ -26,10 +26,11 @@ class EventStream
     protocol = location.protocol
     schema = if protocol is 'https:' then 'wss:' else 'ws:'
     url = "#{schema}//#{hostname}:#{port}/socket"
+    @count = 0
     @socket = new ReconnectingWebSocket url, null, { debug: false }
     @socket.onmessage = (e) =>
       new NotificationRow
-        model: new NotificationModel { stream: @ }
+        model: new NotificationModel { stream: @, count: @count }
       @trigger 'receiveMessage', e
     @socket.onerror = (e) =>
       @trigger 'error', e
@@ -44,6 +45,7 @@ class NotificationModel extends Backbone.Model
       data = JSON.parse(e.data)
       return if @get 'order_id'
       @set
+        count: opts.count
         order_id: data.order.id
         from: data.from
         to: data.to
@@ -84,6 +86,7 @@ class NotificationRow extends Backbone.View
     @$el.append(@template(@model.attributes)).prependTo('#event ul')
     setTimeout =>
       @remove()
+      location.reload() if @model.get('count') > 10
     , 1000 * 15
     unless userlabel
       compiled = _.template '''
@@ -101,6 +104,4 @@ class NotificationRow extends Backbone.View
 $ ->
   stream = new EventStream
   stream.on 'error', (e) ->
-    location.reload()
-  stream.on 'close', (e) ->
     location.reload()
