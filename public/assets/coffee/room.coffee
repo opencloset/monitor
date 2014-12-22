@@ -12,3 +12,23 @@ $ ->
       location.reload()
   sock.onerror = (e) ->
     location.reload()
+
+  $('.room').click (e) ->
+    e.preventDefault()
+    $this = $(@)
+    order_id = $this.parent().data('order-id')
+    if $this.parent().hasClass('active')
+      path = "/room/#{order_id}"
+      method = 'DELETE'
+    else
+      path = "/room"
+      method = 'POST'
+      data = { order_id: order_id }
+    $.ajax path,
+      type: method
+      data: data
+      success: (data, textStatus, jqXHR) ->
+        $this.parent().toggleClass('active')
+      error: (jqXHR, textStatus, errorThrown) ->
+        console.log textStatus
+      complete: (jqXHR, textStatus) ->

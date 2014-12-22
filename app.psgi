@@ -147,12 +147,41 @@ post '/events' => sub {
 
 # fitting room
 get '/room' => sub {
-    my $self = shift;
+    my $self  = shift;
+    my $brain = OpenCloset::Brain->new;
+    my ( @active, @room );
     for my $n ( 1 .. 9 ) {
-        $self->stash( "room$n" => $DB->resultset('Order')
-                ->search( { status_id => $STATUS_FITTING_ROOM1 + $n - 1 } )
-                ->next );
+        my $room;
+        my $order = $DB->resultset('Order')
+            ->search( { status_id => $STATUS_FITTING_ROOM1 + $n - 1 } )->next;
+        $active[$n] = $brain->{data}{orders}{room}{ $order->id } if $order;
+        $room[$n] = $order;
     }
+
+    $brain->{data}{orders}{room} = {} unless @active;
+    $self->stash( rooms => [@room], active => [@active] );
+};
+
+post '/room' => sub {
+    my $self     = shift;
+    my $order_id = $self->param('order_id');
+    my $brain    = OpenCloset::Brain->new;
+    $brain->{data}{orders}{room}{$order_id} = 1;
+    $self->render(
+        text   => "Successfully posted order_id($order_id)",
+        status => 201
+    );
+};
+
+del '/room/:order_id' => sub {
+    my $self     = shift;
+    my $order_id = $self->param('order_id');
+    my $brain    = OpenCloset::Brain->new;
+    delete $brain->{data}{orders}{room}{$order_id};
+    $self->render(
+        text   => "Successfully deleted order_id($order_id)",
+        status => 201
+    );
 };
 
 get '/select' => sub {
@@ -162,7 +191,7 @@ get '/select' => sub {
 
     my $brain = OpenCloset::Brain->new;
     $brain->{data}{orders} = {} unless $rs->count;
-    my @active = keys %{ $brain->{data}{orders} ||= {} };
+    my @active = keys %{ $brain->{data}{orders}{select} ||= {} };
     $self->stash( orders => $rs, active => [@active] );
 };
 
@@ -170,7 +199,7 @@ post '/select' => sub {
     my $self     = shift;
     my $order_id = $self->param('order_id');
     my $brain    = OpenCloset::Brain->new;
-    $brain->{data}{orders}{$order_id} = 1;
+    $brain->{data}{orders}{select}{$order_id} = 1;
     $self->render(
         text   => "Successfully posted order_id($order_id)",
         status => 201
@@ -181,7 +210,7 @@ del '/select/:order_id' => sub {
     my $self     = shift;
     my $order_id = $self->param('order_id');
     my $brain    = OpenCloset::Brain->new;
-    delete $brain->{data}{orders}{$order_id};
+    delete $brain->{data}{orders}{select}{$order_id};
     $self->render(
         text   => "Successfully deleted order_id($order_id)",
         status => 201

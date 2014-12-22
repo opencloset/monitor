@@ -41,12 +41,16 @@ html, body {
     }
 }
 #fitting-room {
+    .active .room {
+        border-color: purple !important;
+    }
     .room {
         font-size: 2em;
         background-color: #000;
         min-height: 500px;
         border-width: 0.3em;
         padding: 0;
+        cursor: pointer;
         ul {
             margin-left: 0;
             padding-left: 0;
