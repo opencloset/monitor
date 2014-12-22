@@ -11,59 +11,29 @@
 
 #fitting-room
   .row
-    .col-md-2
-      - if ($room7) {
-        = include 'partials/room', order => $room7, n => 7;
-      - } else {
-        = include 'partials/room-empty', n => 7;
-      - }
-    .col-md-2
-      - if ($room8) {
-        = include 'partials/room', order => $room8, n => 8;
-      - } else {
-        = include 'partials/room-empty', n => 8;
-      - }
-    .col-md-2
-      - if ($room9) {
-        = include 'partials/room', order => $room9, n => 9;
-      - } else {
-        = include 'partials/room-empty', n => 9;
-      - }
+    - for my $n (qw/7 8 9/) {
+      .col-md-2
+        - if (my $order = $rooms->[$n]) {
+          - if ($active->[$n]) {
+            .active{:data-order-id => '#{$order->id}'}= include 'partials/room', order => $order, n => $n;
+          - } else {
+            %div{:data-order-id => '#{$order->id}'}= include 'partials/room', order => $order, n => $n;
+          - }
+        - } else {
+          = include 'partials/room-empty', n => $n, active => $active->[$n];
+        - }
+    - }
   %hr
   .row
-    .col-md-2
-      - if ($room6) {
-        = include 'partials/room', order => $room6, n => 6;
-      - } else {
-        = include 'partials/room-empty', n => 6;
-      - }
-    .col-md-2
-      - if ($room5) {
-        = include 'partials/room', order => $room5, n => 5;
-      - } else {
-        = include 'partials/room-empty', n => 5;
-      - }
-    .col-md-2
-      - if ($room4) {
-        = include 'partials/room', order => $room4, n => 4;
-      - } else {
-        = include 'partials/room-empty', n => 4;
-      - }
-    .col-md-2
-      - if ($room3) {
-        = include 'partials/room', order => $room3, n => 3;
-      - } else {
-        = include 'partials/room-empty', n => 3;
-      - }
-    .col-md-2
-      - if ($room2) {
-        = include 'partials/room', order => $room2, n => 2;
-      - } else {
-        = include 'partials/room-empty', n => 2;
-      - }
-    .col-md-2
-      - if ($room1) {
-        = include 'partials/room', order => $room1, n => 1;
-      - } else {
-        = include 'partials/room-empty', n => 1;
-      - }
+    - for my $n (qw/6 5 4 3 2 1/) {
+      .col-md-2
+        - if (my $order = $rooms->[$n]) {
+          - if ($active->[$n]) {
+            .active{:data-order-id => '#{$order->id}'}= include 'partials/room', order => $order, n => $n;
+          - } else {
+            %div{:data-order-id => '#{$order->id}'}= include 'partials/room', order => $order, n => $n;
+          - }
+        - } else {
+          = include 'partials/room-empty', n => $n, active => $active->[$n];
+        - }
+    - }
