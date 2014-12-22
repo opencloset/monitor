@@ -29,7 +29,7 @@ $db_opts->{AutoCommit} //= 1;
     #
     hypnotoad => {
         listen   => [ 'http://*:8002' ],
-        workers  => 1, # GH 4 항목의 연유로 워커는 1개로 제한합니다.
+        workers  => 3,
         pid_file => 'hypnotoad.pid',
     },
 
