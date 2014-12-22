@@ -30,7 +30,7 @@ class EventStream
     @socket = new ReconnectingWebSocket url, null, { debug: false }
     @socket.onmessage = (e) =>
       new NotificationRow
-        model: new NotificationModel { stream: @, count: @count }
+        model: new NotificationModel { stream: @, count: @count++ }
       @trigger 'receiveMessage', e
     @socket.onerror = (e) =>
       @trigger 'error', e
@@ -86,7 +86,8 @@ class NotificationRow extends Backbone.View
     @$el.append(@template(@model.attributes)).prependTo('#event ul')
     setTimeout =>
       @remove()
-      location.reload() if @model.get('count') > 10
+      if @model.get('count') > 30 and $('#event ul li').size() is 0
+        location.reload()
     , 1000 * 15
     unless userlabel
       compiled = _.template '''
