@@ -15,6 +15,8 @@ statusMap =
   26: 'undress'
   27: 'undress'
   28: 'undress'
+  29: 'undress'
+  30: 'undress'
 
 
 ## Event
