@@ -18,7 +18,6 @@ statusMap =
   29: 'undress'
   30: 'undress'
 
-
 ## Event
 class EventStream
   constructor: ->
@@ -49,6 +48,7 @@ class NotificationModel extends Backbone.Model
       @set
         count: opts.count
         order_id: data.order.id
+        create_date: data.order.create_date.replace(' ', 'T') + 'Z'
         from: data.from
         to: data.to
         username: data.order.user.name
@@ -95,16 +95,49 @@ class NotificationRow extends Backbone.View
       compiled = _.template '''
         <p class="user" id="order-<%= order_id %>">
           <span class="label label-info"><%= username %></span>
+          <abbr title="<%= create_date %>"><%= create_date %></abbr>
         </p>
       '''
       userlabel = compiled
         order_id: @model.get('order_id')
         username: @model.get('username')
-    $(userlabel).appendTo($("#status-#{status_id}"))
+        create_date: @model.get('create_date')
+    guessBooking($(userlabel)).appendTo($("#status-#{status_id}"))
     return @
+
+## functions
+guessBooking = ($el) ->
+  now = new Date().getTime()
+  createTime = $el.find('abbr').text()
+  if distanceMinutes(now - new Date(createTime).getTime()) < 30
+    # 예약안한 사람
+    $el.find('span.label').removeClass().addClass('label label-default')
+  else
+    # 예약한 사람
+    $el.find('span.label').removeClass().addClass('label label-info')
+  return $el
+
+distanceHours = (millis) ->
+  seconds = Math.abs(millis) / 1000;
+  minutes = seconds / 60
+  hours = minutes / 60
+  days = hours / 24
+  years = days / 365
+  return hours
+
+distanceMinutes = (millis) ->
+  seconds = Math.abs(millis) / 1000;
+  minutes = seconds / 60
+  hours = minutes / 60
+  days = hours / 24
+  years = days / 365
+  return minutes
 
 ## main
 $ ->
+  $('.user').each (i, el) ->
+    guessBooking($(el))
   stream = new EventStream
   stream.on 'error', (e) ->
     location.reload()
+

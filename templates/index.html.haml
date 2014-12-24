@@ -30,6 +30,7 @@
               - for my $order (@$s) {
                 %p.user{:id => "order-#{$order->id}"}
                   %span.label.label-info= $order->user->name
+                  %abbr{:title => '#{$order->create_date}Z'}= $order->create_date . 'Z'
               - }
           - }
   .col-md-5
