@@ -80,3 +80,21 @@
     \/
     %p= $user_info->purpose2 || ''
   %p.comment= $user_info->comment || ''
+- my $pre_order = $order->result_source->schema->resultset('Order')->search({ user_id => $user->id, -not => {id => $order->id } })->next;
+- if ($pre_order) {
+  .pre_order
+    %p 
+      %small 최근 대여했던 품목
+    %ul
+      - for my $detail ($pre_order->order_details) {
+        - my $code = $detail->clothes_code;
+        - my $name = $detail->name;
+        - if ($code) {
+          %li
+            %a{:href => "https://staff.theopencloset.net/clothes/#{$code}", :target => '_blank'}
+              %span.order-status.label{ 'data-order-detail-status' => "#{ $detail->clothes->status->name }" }
+                = $name
+                %small= $detail->clothes->status->name
+        - }
+      - }
+- }
