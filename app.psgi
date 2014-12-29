@@ -124,25 +124,61 @@ post '/events' => sub {
     my $self = shift;
 
     my $validator = $self->create_validator;
-    $validator->field( [qw/order_id from to/] )
-        ->each( sub { shift->required(1) } );
-    return $self->error( 400,
-        { str => 'parameter `order_id`, `from` and `to` are required' } )
-        unless $self->validate($validator);
-    my $order
-        = $DB->resultset('Order')->find( { id => $self->param('order_id') } );
+    $validator->field('sender')->required(1);
 
-    $self->redis->publish(
-        $REDIS_CHANNEL => decode_utf8(
-            j(
-                {
-                    order => $self->order_flatten($order),
-                    from  => $self->param('from'),
-                    to    => $self->param('to')
-                }
-            )
-        )
+    # 주문서가 변경
+    $validator->when('sender')->regexp(qw/order/)->then(
+        sub {
+            shift->field( [qw/order_id from to/] )
+                ->each( sub { shift->required(1) } );
+        }
     );
+
+    # 사용자정보가변경
+    $validator->when('sender')->regexp(qw/user/)->then(
+        sub {
+            shift->field('user_id')->required(1);
+        }
+    );
+
+    unless ( $self->validate($validator) ) {
+        my $errors = $validator->errors;
+        my @error;
+        map { push @error, "$_ is $errors->{$_}" } keys %$errors;
+        my $str = join( ', ', @error );
+        return $self->error( 400, { str => $str } );
+    }
+
+    my $sender = $self->param('sender');
+    if ( $sender eq 'order' ) {
+        my $order = $DB->resultset('Order')
+            ->find( { id => $self->param('order_id') } );
+
+        $self->redis->publish(
+            "$REDIS_CHANNEL:order" => decode_utf8(
+                j(
+                    {
+                        sender => $sender,
+                        order  => $self->order_flatten($order),
+                        from   => $self->param('from'),
+                        to     => $self->param('to')
+                    }
+                )
+            )
+        );
+    }
+    elsif ( $sender eq 'user' ) {
+        my $user = $DB->resultset('User')
+            ->find( { id => $self->param('user_id') } );
+        $self->redis->publish(
+            "$REDIS_CHANNEL:user" => decode_utf8(
+                j( { sender => $sender, user => $self->user_flatten($user) } )
+            )
+        );
+    }
+    else {
+        $self->app->log->warn("Unknown sender: $sender");
+    }
 
     $self->render( text => 'Successfully posted event', status => 201 );
 };
@@ -231,6 +267,16 @@ websocket '/socket' => sub {
         message => sub {
             my ( $self, $msg ) = @_;
             $log->debug("[ws] < $msg");
+
+            if ( my ($channel) = $msg =~ /^\/subscribe:? +([a-z]+)/i ) {
+                $self->redis->subscribe(
+                    "$REDIS_CHANNEL:$channel" => sub {
+                        my ( $redis, $err ) = @_;
+                        $log->error("[REDIS ERROR] subscribe error: $err")
+                            if $err;
+                    }
+                );
+            }
         }
     );
 
@@ -245,17 +291,9 @@ websocket '/socket' => sub {
     $self->redis->on(
         message => sub {
             my ( $redis, $message, $ch ) = @_;
-            return if $ch ne $REDIS_CHANNEL;
-
+            return if $ch !~ /$REDIS_CHANNEL/;
             return unless $self;
             $self->send($message);
-        }
-    );
-
-    $self->redis->subscribe(
-        $REDIS_CHANNEL => sub {
-            my ( $redis, $err ) = @_;
-            $log->error("[REDIS ERROR] subscribe error: $err") if $err;
         }
     );
 };

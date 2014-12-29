@@ -10,6 +10,7 @@ sub register {
     $app->helper( error         => \&error );
     $app->helper( age           => \&age );
     $app->helper( order_flatten => \&order_flatten );
+    $app->helper( user_flatten  => \&user_flatten );
     $app->helper( redis         => \&redis );
 }
 
@@ -19,7 +20,17 @@ sub order_flatten {
     my $user_info = $user->user_info;
     my %columns   = $order->get_columns;
     $columns{user}      = { $user->get_columns };
-    $columns{user_info} = { $user->get_columns };
+    $columns{user_info} = { $user_info->get_columns };
+    delete $columns{user}{password};
+    delete $columns{user_info}{password};
+    return {%columns};
+}
+
+sub user_flatten {
+    my ( $self, $user ) = @_;
+    my $user_info = $user->user_info;
+    my %columns   = $user->get_columns;
+    $columns{user_info} = { $user_info->get_columns };
     delete $columns{user}{password};
     delete $columns{user_info}{password};
     return {%columns};
