@@ -231,6 +231,16 @@ websocket '/socket' => sub {
         message => sub {
             my ( $self, $msg ) = @_;
             $log->debug("[ws] < $msg");
+
+            if ( my ($channel) = $msg =~ /^\/subscribe:? +([a-z]+)/i ) {
+                $self->redis->subscribe(
+                    "$REDIS_CHANNEL:$channel" => sub {
+                        my ( $redis, $err ) = @_;
+                        $log->error("[REDIS ERROR] subscribe error: $err")
+                            if $err;
+                    }
+                );
+            }
         }
     );
 
@@ -245,17 +255,9 @@ websocket '/socket' => sub {
     $self->redis->on(
         message => sub {
             my ( $redis, $message, $ch ) = @_;
-            return if $ch ne $REDIS_CHANNEL;
-
+            return if $ch !~ /$REDIS_CHANNEL/;
             return unless $self;
             $self->send($message);
-        }
-    );
-
-    $self->redis->subscribe(
-        $REDIS_CHANNEL => sub {
-            my ( $redis, $err ) = @_;
-            $log->error("[REDIS ERROR] subscribe error: $err") if $err;
         }
     );
 };
