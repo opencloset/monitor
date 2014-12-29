@@ -29,6 +29,8 @@ class EventStream
     url = "#{schema}//#{hostname}:#{port}/socket"
     @count = 0
     @socket = new ReconnectingWebSocket url, null, { debug: false }
+    @socket.onopen = (e) =>
+      @socket.send '/subscribe order'
     @socket.onmessage = (e) =>
       new NotificationRow
         model: new NotificationModel { stream: @, count: @count++ }
