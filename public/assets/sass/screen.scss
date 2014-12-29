@@ -99,6 +99,8 @@ html, body {
         .label.brown { background-color: #8b4513 }
         .label.etc   { background-color: darken(yellow, 20%) }
         .label.staff { background-color: orange }
+        .label.dark  { background-color: lighten(#000, 15%) }
+        .label.charcoalgray { background-color: #666 }
     }
     .comment {
         font-size: 0.5em;
@@ -160,6 +162,8 @@ html, body {
             .label.brown { background-color: #8b4513 }
             .label.etc   { background-color: darken(yellow, 20%) }
             .label.staff { background-color: orange }
+            .label.dark  { background-color: lighten(#000, 15%) }
+            .label.charcoalgray { background-color: #666 }
         }
         .clothes {
             font-size: 1.5em;
