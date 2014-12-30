@@ -79,7 +79,7 @@ class NotificationRow extends Backbone.View
   render: =>
     $('#event audio').trigger('play')
     to = @model.get('to')
-    status_id = if to > 19 and to < 29 then 20 else to
+    status_id = if to > 19 and to < 40 then 20 else to
     userlabel = $("#order-#{@model.get('order_id')}").get(0)
     unless _.contains(_.keys(statusMap), '' + status_id)
       $(userlabel).remove()
