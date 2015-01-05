@@ -1,4 +1,5 @@
 package OpenCloset::Status;
+use utf8;
 
 our $STATUS_REPAIR  = 6;
 our $STATUS_VISIT   = 13;
@@ -23,6 +24,26 @@ our @ACTIVE_STATUS = (
     $STATUS_REPAIR, $STATUS_VISIT, $STATUS_MEASURE, $STATUS_SELECT,
     $STATUS_BOXING, $STATUS_PAYMENT,
     $STATUS_FITTING_ROOM1 .. $STATUS_FITTING_ROOM11
+);
+
+our %MAP = (
+    $STATUS_REPAIR         => '수선',
+    $STATUS_VISIT          => '방문',
+    $STATUS_MEASURE        => '치수측정',
+    $STATUS_SELECT         => '의류선택',
+    $STATUS_BOXING         => '포장',
+    $STATUS_PAYMENT        => '결제대기',
+    $STATUS_FITTING_ROOM1  => '탈의01',
+    $STATUS_FITTING_ROOM2  => '탈의02',
+    $STATUS_FITTING_ROOM3  => '탈의03',
+    $STATUS_FITTING_ROOM4  => '탈의04',
+    $STATUS_FITTING_ROOM5  => '탈의05',
+    $STATUS_FITTING_ROOM6  => '탈의06',
+    $STATUS_FITTING_ROOM7  => '탈의07',
+    $STATUS_FITTING_ROOM8  => '탈의08',
+    $STATUS_FITTING_ROOM9  => '탈의09',
+    $STATUS_FITTING_ROOM10 => '탈의10',
+    $STATUS_FITTING_ROOM11 => '탈의11'
 );
 
 1;
