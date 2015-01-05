@@ -107,6 +107,24 @@ get '/' => sub {
     );
 };
 
+get '/dashboard';
+get '/statistics/elapsed' => sub {
+    my $self    = shift;
+    my $brain   = OpenCloset::Brain->new;
+    my $elapsed = $brain->{data}{statistics}{elapsed_time};
+    my @gdata;
+
+    for my $key ( keys %$elapsed ) {
+        my @xy;
+        for my $status_id ( keys %{ $elapsed->{$key} } ) {
+            push @xy, { x => $status_id, y => $elapsed->{$key}{$status_id} };
+        }
+        push @gdata, { key => $key, values => [@xy] };
+    }
+
+    $self->respond_to( json => { json => { gdata => [@gdata] } } );
+};
+
 post '/events' => sub {
     my $self = shift;
 
