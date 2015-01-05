@@ -21,7 +21,6 @@ $ ->
   $("abbr.timeago").timeago()
 
   $('.select').click (e) ->
-    e.preventDefault()
     $this = $(@)
     order_id = $this.data('order-id')
     if $this.hasClass('active')
