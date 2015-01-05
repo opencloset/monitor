@@ -1,6 +1,7 @@
 - use utf8;
 - my %clothes_map = (jacket => '자켓', pants => '팬츠', shirt => '셔츠', tie => '타이', shoes => '구두', belt => '벨트', skirt => '스커트', blouse => '블라우스');
 - my %color_map = (black => '검정', navy => '남색', gray => '회색', brown => '갈색', etc => '기타', staff => '직추', charcoalgray => '차콜', dark => '다크');
+- my %label_map = ('대여가능' => 'label-success', '대여중' => 'label-important');
 - my $user = $order->user;
 - my $user_info = $user->user_info;
 - my $gender = $user_info->gender;
@@ -80,3 +81,26 @@
     \/
     %p= $user_info->purpose2 || ''
   %p.comment= $user_info->comment || ''
+
+  -#
+  -# 최근대여
+  -#
+  - my $pre_order = $order->result_source->schema->resultset('Order')->search({ user_id => $user->id, -not => {id => $order->id } })->next;
+  - if ($pre_order) {
+    .row
+      %hr
+      .pre_order
+        %ul
+          - for my $detail ($pre_order->order_details) {
+            - my $code = $detail->clothes_code;
+            - my $name = $detail->name;
+            - if ($code) {
+              %li
+                %a{:href => "https://staff.theopencloset.net/clothes/#{$code}", :target => '_blank'}
+                  - my $class = $label_map{$detail->clothes->status->name} || 'label-default';
+                  %span.order-status.label{ class => "#{$class}" }
+                    = $name
+                    %small= $detail->clothes->status->name
+            - }
+          - }
+  - }

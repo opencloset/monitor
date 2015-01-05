@@ -188,5 +188,19 @@ html, body {
         .comment {
             color: darken(#fff, 30%);
         }
+        .pre_order {
+            .label {
+                font-family: monospace;
+            }
+            ul {
+                margin-left: 0;
+                padding-left: 0;
+                list-style-type: none;
+                li {
+                    display: inline;
+                    padding-left: 0.3em;
+                }
+            }
+        }
     }
 }
