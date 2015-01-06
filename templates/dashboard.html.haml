@@ -1,0 +1,18 @@
+- use utf8;
+- layout 'default',
+- jses => [
+-   '/assets/components/d3/d3.min.js',
+-   '/assets/components/nvd3/nv.d3.min.js',
+-   '/assets/js/dashboard.js'
+- ],
+- csses => ['/assets/components/nvd3/nv.d3.min.css'];
+- title 'Dashboard';
+
+%h1 Dashboard
+#elapsed-chart.chart.visits-chart
+  %h4 male
+  %div.well
+    %svg.male
+  %h4 female
+  %div.well
+    %svg.female

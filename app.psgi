@@ -8,38 +8,14 @@ use Net::IP::AddrRanges;
 use Time::HiRes 'time';
 use feature qw/switch/;
 
-use OpenCloset::Schema;
 use OpenCloset::Brain;
+use OpenCloset::Schema;
+use OpenCloset::Status;
 
 app->defaults(
     %{ plugin 'Config' =>
             { default => { jses => [], csses => [], page_id => q{} } }
     }
-);
-
-our $STATUS_REPAIR  = 6;
-our $STATUS_VISIT   = 13;
-our $STATUS_MEASURE = 16;
-our $STATUS_SELECT  = 17;
-our $STATUS_BOXING  = 18;
-our $STATUS_PAYMENT = 19;
-
-our $STATUS_FITTING_ROOM1  = 20;
-our $STATUS_FITTING_ROOM2  = 21;
-our $STATUS_FITTING_ROOM3  = 22;
-our $STATUS_FITTING_ROOM4  = 23;
-our $STATUS_FITTING_ROOM5  = 24;
-our $STATUS_FITTING_ROOM6  = 25;
-our $STATUS_FITTING_ROOM7  = 26;
-our $STATUS_FITTING_ROOM8  = 27;
-our $STATUS_FITTING_ROOM9  = 28;
-our $STATUS_FITTING_ROOM10 = 29;
-our $STATUS_FITTING_ROOM11 = 30;
-
-our @ACTIVE_STATUS = (
-    $STATUS_REPAIR, $STATUS_VISIT, $STATUS_MEASURE, $STATUS_SELECT,
-    $STATUS_BOXING, $STATUS_PAYMENT,
-    $STATUS_FITTING_ROOM1 .. $STATUS_FITTING_ROOM11
 );
 
 my $DB = OpenCloset::Schema->connect(
@@ -75,25 +51,36 @@ under sub {
 
 get '/' => sub {
     my $self = shift;
-    my $rs   = $DB->resultset('Order')->search(
-        { status_id => { -in  => [@ACTIVE_STATUS] } },
-        { order_by  => { -asc => 'update_date' } }
-    );
+    my $rs
+        = $DB->resultset('Order')
+        ->search(
+        { status_id => { -in  => [@OpenCloset::Status::ACTIVE_STATUS] } },
+        { order_by  => { -asc => 'update_date' } } );
 
     my ( @visit, @measure, @select, @undress, @repair, @boxing, @payment );
     while ( my $order = $rs->next ) {
         my $status_id = $order->status_id;
         use experimental qw/ smartmatch /;
         given ($status_id) {
-            when ($STATUS_VISIT)   { push @visit,   $order }
-            when ($STATUS_MEASURE) { push @measure, $order }
-            when ($STATUS_SELECT)  { push @select,  $order }
-            when ( [$STATUS_FITTING_ROOM1 .. $STATUS_FITTING_ROOM11] ) {
+            when ($OpenCloset::Status::STATUS_VISIT) { push @visit, $order }
+            when ($OpenCloset::Status::STATUS_MEASURE) {
+                push @measure, $order
+            }
+            when ($OpenCloset::Status::STATUS_SELECT) { push @select, $order }
+            when (
+                [
+                    $OpenCloset::Status::STATUS_FITTING_ROOM1 ..
+                        $OpenCloset::Status::STATUS_FITTING_ROOM11
+                ]
+                )
+            {
                 push @undress, $order
             }
-            when ($STATUS_REPAIR)  { push @repair,  $order }
-            when ($STATUS_BOXING)  { push @boxing,  $order }
-            when ($STATUS_PAYMENT) { push @payment, $order }
+            when ($OpenCloset::Status::STATUS_REPAIR) { push @repair, $order }
+            when ($OpenCloset::Status::STATUS_BOXING) { push @boxing, $order }
+            when ($OpenCloset::Status::STATUS_PAYMENT) {
+                push @payment, $order
+            }
             default {
                 $self->app->log->warn("Unknown status: $status_id, $order");
             }
@@ -118,6 +105,29 @@ get '/' => sub {
             );
         }
     );
+};
+
+get '/dashboard';
+get '/statistics/elapsed' => sub {
+    my $self    = shift;
+    my $brain   = OpenCloset::Brain->new;
+    my $elapsed = $brain->{data}{statistics}{elapsed_time};
+    my %gdata;
+
+    for my $key ( keys %$elapsed ) {
+        my @xy;
+
+        for my $status_id ( keys %{ $elapsed->{$key} } ) {
+            push @xy,
+                {
+                label => $OpenCloset::Status::MAP{$status_id},
+                value => $elapsed->{$key}{$status_id}
+                };
+        }
+        $gdata{$key} = [@xy];
+    }
+
+    $self->respond_to( json => { json => { gdata => {%gdata} } } );
 };
 
 post '/events' => sub {
@@ -190,8 +200,11 @@ get '/room' => sub {
     my ( @active, @room );
     for my $n ( 1 .. 11 ) {
         my $room;
-        my $order = $DB->resultset('Order')
-            ->search( { status_id => $STATUS_FITTING_ROOM1 + $n - 1 } )->next;
+        my $order = $DB->resultset('Order')->search(
+            {
+                status_id => $OpenCloset::Status::STATUS_FITTING_ROOM1 + $n - 1
+            }
+        )->next;
         $active[$n] = $brain->{data}{orders}{room}{ $order->id } if $order;
         $room[$n] = $order;
     }
@@ -224,8 +237,10 @@ del '/room/:order_id' => sub {
 
 get '/select' => sub {
     my $self = shift;
-    my $rs = $DB->resultset('Order')->search( { status_id => $STATUS_SELECT },
-        { order_by => { -asc => 'update_date' } } );
+    my $rs   = $DB->resultset('Order')->search(
+        { status_id => $OpenCloset::Status::STATUS_SELECT },
+        { order_by  => { -asc => 'update_date' } }
+    );
 
     my $brain = OpenCloset::Brain->new;
     $brain->{data}{orders} = {} unless $rs->count;

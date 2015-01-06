@@ -9,6 +9,9 @@
     <!-- Bootstrap -->
     <link href="/assets/components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/assets/components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    % for my $css (@$csses) {
+      <link href="<%= $css %>" rel="stylesheet">
+    % }
     <link href="/assets/css/cover.css" rel="stylesheet">
     <link href="/assets/css/screen.css" rel="stylesheet">
 
