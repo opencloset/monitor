@@ -93,24 +93,22 @@
         %ul
           - for my $detail ($pre_order->order_details) {
             - my $code = $detail->clothes_code;
+            - next unless $code;
+            - next if $code !~ /^0?[JPKS]/;
             - my $name = $detail->name;
             - my ($donation, $size);
-            - if ($code && $code =~ /^0?[JPK]/) {
-              - my $clothes = $detail->clothes;
-              - $donation = $clothes->donation;
-              - $size = '중동 ' . $clothes->belly if $code =~ /^0?J/;
-              - $size = '허리 ' . $clothes->waist if $code =~ /^0?P/;
-              - $size = '엉덩이 ' . $clothes->hip if $code =~ /^0?K/;
-            - }
-            - if ($code) {
-              %li
-                %a{:href => "https://staff.theopencloset.net/clothes/#{$code}", :target => '_blank'}
-                  - my $class = $label_map{$detail->clothes->status->name} || 'label-default';
-                  %span.order-status.label{ class => "#{$class}" }
-                    = $donation ? $donation->user->name : ''
-                    = $size || ''
-                    = $name
-                    %small= $detail->clothes->status->name
-            - }
+            - my $clothes = $detail->clothes;
+            - $donation = $clothes->donation;
+            - $size = '중동 ' . $clothes->belly if $code =~ /^0?J/;
+            - $size = '허리 ' . $clothes->waist if $code =~ /^0?P/;
+            - $size = '엉덩이 ' . $clothes->hip if $code =~ /^0?K/;
+            %li
+              %a{:href => "https://staff.theopencloset.net/clothes/#{$code}", :target => '_blank'}
+                - my $class = $label_map{$detail->clothes->status->name} || 'label-default';
+                %span.order-status.label{ class => "#{$class}" }
+                  = $donation ? $donation->user->name : ''
+                  = $size || ''
+                  = $name
+                  %small= $detail->clothes->status->name
           - }
   - }
