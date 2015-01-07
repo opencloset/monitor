@@ -94,21 +94,25 @@
           - for my $detail ($pre_order->order_details) {
             - my $code = $detail->clothes_code;
             - next unless $code;
-            - next if $code !~ /^0?[JPKS]/;
             - my $name = $detail->name;
-            - my ($donation, $size);
-            - my $clothes = $detail->clothes;
-            - $donation = $clothes->donation;
-            - $size = '중동 ' . $clothes->belly if $code =~ /^0?J/;
-            - $size = '허리 ' . $clothes->waist if $code =~ /^0?P/;
-            - $size = '엉덩이 ' . $clothes->hip if $code =~ /^0?K/;
+            - my ($donation, $size, $color);
+            - if ($code =~ /^0?[JPKS]/) {
+              - my $clothes = $detail->clothes;
+              - $donation = $clothes->donation;
+              - $color = $clothes->color;
+              - $size = '중동 ' . $clothes->belly if $code =~ /^0?J/;
+              - $size = '허리 ' . $clothes->waist if $code =~ /^0?P/;
+              - $size = '엉덩이 ' . $clothes->hip if $code =~ /^0?K/;
+              - $size = '가슴 ' . $clothes->bust if $code =~ /^0?S/;
+            - }
             %li
               %a{:href => "https://staff.theopencloset.net/clothes/#{$code}", :target => '_blank'}
                 - my $class = $label_map{$detail->clothes->status->name} || 'label-default';
                 %span.order-status.label{ class => "#{$class}" }
+                  = $name
                   = $donation ? $donation->user->name : ''
                   = $size || ''
-                  = $name
+                  %span{:style => "color: #{$color || ''}"}= $color || ''
                   %small= $detail->clothes->status->name
           - }
   - }
