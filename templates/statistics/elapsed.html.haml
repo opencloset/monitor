@@ -1,0 +1,31 @@
+- use utf8;
+- layout 'statistics',
+- jses => [
+-   '/assets/components/d3/d3.min.js',
+-   '/assets/components/nvd3/nv.d3.min.js',
+-   '/assets/components/bootstrap-datepicker/js/bootstrap-datepicker.js',
+-   '/assets/components/bootstrap-datepicker/js/locales/bootstrap-datepicker.kr.js',
+-   '/assets/components/json2/json2.js',
+-   '/assets/js/statistics-elapsed.js'
+- ],
+- csses => [
+-   '/assets/components/nvd3/nv.d3.min.css',
+-   '/assets/components/bootstrap-datepicker/css/datepicker3.css',
+- ];
+- title 'elapsed time · Statistics';
+
+%h1 elapsed time
+.row
+  .col-md-2
+    .datepicker
+  .col-md-3.col-md-offset-1
+    %h4 male
+    .well
+      %svg.male.daily
+  .col-md-3.col-md-offset-1
+    %h4 female
+    .well
+      %svg.female.daily
+.row
+  .col-md-10.col-md-offset-1.well
+    %svg.total

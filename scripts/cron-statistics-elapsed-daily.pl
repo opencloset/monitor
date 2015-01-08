@@ -4,7 +4,9 @@ use warnings;
 
 use lib 'lib';
 
-use OpenCloset::Brain;
+use Path::Tiny;
+use DateTime::Tiny;
+
 use OpenCloset::Schema;
 use OpenCloset::Status;
 
@@ -24,7 +26,7 @@ my $schema = OpenCloset::Schema->connect(
 my %stat;
 my $status_log = $schema->resultset('OrderStatusLog');
 
-my $where = 'TIMESTAMPDIFF(MONTH, `timestamp`, NOW()) < ?';
+my $where = 'TIMESTAMPDIFF(DAY, `timestamp`, NOW()) < ?';
 $where
     .= ' AND status_id IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
@@ -82,5 +84,18 @@ while ( my $log = $logs->next ) {
     }
 }
 
-my $brain = OpenCloset::Brain->new;
-$brain->{data}{statistics}{elapsed_time} = {%stat};
+
+my $now = DateTime::Tiny->now;
+my $ymd = substr $now->ymdhms, 0, 10;
+my ( $year, $month ) = ( $now->year, sprintf( "%02s", $now->month ) );
+my $tsv = path("statistics/elapsed/$year/$month/$ymd.tsv")->touchpath;
+my @lines;
+
+for my $key ( keys %stat ) {
+    while ( my ( $status_id, $value ) = each %{ $stat{$key} } ) {
+        $value = sprintf( "%.2f", $value / 60 );
+        push @lines, "$key\t$status_id\t$value\n";
+    }
+}
+
+$tsv->spew(@lines);
