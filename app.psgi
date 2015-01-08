@@ -107,7 +107,7 @@ get '/' => sub {
     );
 };
 
-get '/dashboard';
+get '/statistics';
 get '/statistics/elapsed' => sub {
     my $self    = shift;
     my $brain   = OpenCloset::Brain->new;
@@ -127,7 +127,10 @@ get '/statistics/elapsed' => sub {
         $gdata{$key} = [@xy];
     }
 
-    $self->respond_to( json => { json => { gdata => {%gdata} } } );
+    $self->respond_to(
+        html => { template => 'statistics/elapsed' },
+        json => { json     => { gdata => {%gdata} } }
+    );
 };
 
 post '/events' => sub {
