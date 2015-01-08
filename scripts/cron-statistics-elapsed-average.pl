@@ -75,10 +75,10 @@ while ( my $log = $logs->next ) {
         $stat{ $user_info->gender }{$s0} += $elapsed;
         $stat{ $user_info->gender }{$s0} /= 2;
         $stat{ $user_info->gender }{$s0}
-            = int( $stat{ $user_info->gender }{$s0} );
+            = sprintf( "%.2f", $stat{ $user_info->gender }{$s0} / 60 );
     }
     else {
-        $stat{ $user_info->gender }{$s0} = $elapsed;
+        $stat{ $user_info->gender }{$s0} = sprintf( "%.2f", $elapsed / 60 );
     }
 }
 
