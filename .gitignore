@@ -17,3 +17,6 @@ hypnotoad.pid
 
 # log directory
 log/
+
+# statistics directory
+statistics/

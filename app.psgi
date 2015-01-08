@@ -5,6 +5,7 @@ use Encode 'decode_utf8';
 use JSON;
 use Mojo::JSON 'j';
 use Net::IP::AddrRanges;
+use Path::Tiny;
 use Time::HiRes 'time';
 use feature qw/switch/;
 
@@ -108,30 +109,67 @@ get '/' => sub {
 };
 
 get '/statistics';
-get '/statistics/elapsed' => sub {
-    my $self    = shift;
-    my $brain   = OpenCloset::Brain->new;
-    my $elapsed = $brain->{data}{statistics}{elapsed_time};
+get '/statistics/elapsed'      => 'statistics/elapsed';
+get '/statistics/elapsed/:ymd' => sub {
+    my $self = shift;
+    my $ymd  = $self->param('ymd');
+    my ( $year, $month ) = split /-/, $ymd;
+    my $tsv = path("statistics/elapsed/$year/$month/$ymd.tsv");
+    return $self->error( 404, { str => "Not found data: $tsv" } )
+        unless $tsv->exists;
+
     my %gdata;
-
-    for my $key ( keys %$elapsed ) {
-        my @xy;
-
-        for my $status_id ( keys %{ $elapsed->{$key} } ) {
-            push @xy,
-                {
-                label => $OpenCloset::Status::MAP{$status_id},
-                value => $elapsed->{$key}{$status_id}
-                };
-        }
-        $gdata{$key} = [@xy];
+    for my $line ( $tsv->lines( { chomp => 1 } ) ) {
+        my ( $gender, $status_id, $value ) = split /\t/, $line;
+        push @{ $gdata{daily}{$gender} ||= [] },
+            { label => $OpenCloset::Status::MAP{$status_id}, value => $value };
     }
 
-    $self->respond_to(
-        html => { template => 'statistics/elapsed' },
-        json => { json     => { gdata => {%gdata} } }
-    );
+    for my $gender ( keys %{ $gdata{daily} } ) {
+        my @values;
+        for my $data ( sort status_reverse_order @{ $gdata{daily}{$gender} } )
+        {
+            push @values,
+                {
+                x => $OpenCloset::Status::REVERSE_ORDER_MAP{ $data->{label} },
+                y => $data->{value}
+                };
+        }
+        push @{ $gdata{lines} ||= [] },
+            { key => "$ymd-$gender", values => [@values] };
+    }
+
+    my $brain   = OpenCloset::Brain->new;
+    my $average = $brain->{data}{statistics}{elapsed_time};
+    my %color   = ( male => '#0000ff', female => '#ff0000' );
+    for my $gender (qw/male female/) {
+        my @values;
+        for my $status_id ( sort status_order keys %{ $average->{$gender} } ) {
+            push @values,
+                {
+                x => $OpenCloset::Status::ORDER_MAP{$status_id},
+                y => $average->{$gender}{$status_id},
+                };
+        }
+        push @{ $gdata{lines} ||= [] },
+            {
+            key    => "average-$gender",
+            values => [@values],
+            color  => $color{$gender}
+            };
+    }
+
+    $self->respond_to( json => { json => { gdata => {%gdata} } } );
 };
+
+sub status_reverse_order {
+    $OpenCloset::Status::REVERSE_ORDER_MAP{ $a->{label} }
+        <=> $OpenCloset::Status::REVERSE_ORDER_MAP{ $b->{label} };
+}
+
+sub status_order {
+    $OpenCloset::Status::ORDER_MAP{$a} <=> $OpenCloset::Status::ORDER_MAP{$b};
+}
 
 post '/events' => sub {
     my $self = shift;

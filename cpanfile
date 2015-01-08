@@ -5,5 +5,6 @@ requires 'Mojo::Redis2';
 requires 'Mojolicious::Plugin::HamlRenderer';
 requires 'Mojolicious::Plugin::Validator';
 requires 'Net::IP::AddrRanges';
+requires 'Path::Tiny';
 requires 'Time::HiRes';
 requires 'experimental';

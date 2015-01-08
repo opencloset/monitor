@@ -46,4 +46,44 @@ our %MAP = (
     $STATUS_FITTING_ROOM11 => '탈의11'
 );
 
+our %ORDER_MAP = (
+    $STATUS_VISIT          => 1,
+    $STATUS_MEASURE        => 2,
+    $STATUS_SELECT         => 3,
+    $STATUS_FITTING_ROOM1  => 4,
+    $STATUS_FITTING_ROOM2  => 4,
+    $STATUS_FITTING_ROOM3  => 4,
+    $STATUS_FITTING_ROOM4  => 4,
+    $STATUS_FITTING_ROOM5  => 4,
+    $STATUS_FITTING_ROOM6  => 4,
+    $STATUS_FITTING_ROOM7  => 4,
+    $STATUS_FITTING_ROOM8  => 4,
+    $STATUS_FITTING_ROOM9  => 4,
+    $STATUS_FITTING_ROOM10 => 4,
+    $STATUS_FITTING_ROOM11 => 4,
+    $STATUS_REPAIR         => 5,
+    $STATUS_BOXING         => 6,
+    $STATUS_PAYMENT        => 7,
+);
+
+our %REVERSE_ORDER_MAP = (
+    '방문'       => 1,
+    '치수측정' => 2,
+    '의류선택' => 3,
+    '탈의01'     => 4,
+    '탈의02'     => 4,
+    '탈의03'     => 4,
+    '탈의04'     => 4,
+    '탈의05'     => 4,
+    '탈의06'     => 4,
+    '탈의07'     => 4,
+    '탈의08'     => 4,
+    '탈의09'     => 4,
+    '탈의10'     => 4,
+    '탈의11'     => 4,
+    '수선'       => 5,
+    '포장'       => 6,
+    '결제대기' => 7,
+);
+
 1;
