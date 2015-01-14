@@ -56,7 +56,7 @@ class NotificationModel extends Backbone.Model
         username: data.order.user.name
         desc: switch statusMap[data.to]
           when 'visit'   then '대기중입니다'
-          when 'select'  then '의류를 준비하고 있습니다'
+          when 'select'  then '의류 준비를 기다려주세요'
           when 'repair'  then '의류를 수선 중 입니다'
           when 'boxing'  then '의류를 포장 중 입니다'
           when 'measure' then '신체 치수 측정 장소로 와주세요'
