@@ -96,7 +96,7 @@
             - next unless $code;
             - my $name = $detail->name;
             - my ($donation, $size, $color);
-            - if ($code =~ /^0?[JPKS]/) {
+            - if ($code =~ /^0?[JPKSB]/) {
               - my $clothes = $detail->clothes;
               - $donation = $clothes->donation;
               - $color = $clothes->color;
@@ -104,6 +104,7 @@
               - $size = '허리 ' . $clothes->waist if $code =~ /^0?P/;
               - $size = '엉덩이 ' . $clothes->hip if $code =~ /^0?K/;
               - $size = '가슴 ' . $clothes->bust if $code =~ /^0?S/;
+              - $size = '가슴 ' . $clothes->bust if $code =~ /^0?B/;
             - }
             %li
               %a{:href => "https://staff.theopencloset.net/clothes/#{$code}", :target => '_blank'}
@@ -114,5 +115,8 @@
                   = $size || ''
                   %span{:style => "color: #{$color || ''}"}= $color || ''
                   %small= $detail->clothes->status->name
+                  - if ($detail->clothes->comment) {
+                    %code= $detail->clothes->comment 
+                  - }
           - }
   - }
