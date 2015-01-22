@@ -115,5 +115,8 @@
                   = $size || ''
                   %span{:style => "color: #{$color || ''}"}= $color || ''
                   %small= $detail->clothes->status->name
+                  - if ($detail->clothes->comment) {
+                    %code= $detail->clothes->comment 
+                  - }
           - }
   - }
