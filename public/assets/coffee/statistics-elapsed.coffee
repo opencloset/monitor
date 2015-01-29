@@ -27,7 +27,7 @@ names =
   6: '포장'
   7: '결제대기'
 
-lineChart = (data) ->
+barChart = (data) ->
   nv.addGraph ->
     chart = nv.models.multiBarChart()
       .transitionDuration(350)
@@ -84,7 +84,9 @@ $ ->
           .datum(gdata.daily.female)
           .transition().duration(350)
           .call(chart)
-        lineChart(gdata.lines)
+        barChart(gdata.bars)
+        $('h4.male small').text(gdata.daily.sum.male)
+        $('h4.female small').text(gdata.daily.sum.female)
       error: (jqXHR, textStatus, errorThrown) ->
         alert('danger', JSON.parse(jqXHR.responseText).error.str)
         $('svg').empty()

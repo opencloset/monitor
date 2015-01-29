@@ -123,25 +123,33 @@ get '/statistics/elapsed/:ymd' => sub {
         my ( $gender, $status_id, $value ) = split /\t/, $line;
         push @{ $gdata{daily}{$gender} ||= [] },
             { label => $OpenCloset::Status::MAP{$status_id}, value => $value };
+        $gdata{daily}{sum}{$gender} += $value;
     }
 
-    for my $gender ( keys %{ $gdata{daily} } ) {
+    my %color = ( male => '#4d4dff', female => '#ff4d4d' );
+    for my $gender (qw/male female/) {
         my @values;
         for my $data ( sort status_reverse_order @{ $gdata{daily}{$gender} } )
         {
             push @values,
                 {
                 x => $OpenCloset::Status::REVERSE_ORDER_MAP{ $data->{label} },
-                y => $data->{value}
+                y => $data->{value},
                 };
         }
-        push @{ $gdata{lines} ||= [] },
-            { key => "$ymd-$gender", values => [@values] };
+        push @{ $gdata{bars} ||= [] },
+            {
+            key    => "$ymd-$gender",
+            values => [@values],
+            color  => $color{$gender}
+            };
     }
 
     my $brain   = OpenCloset::Brain->new;
     my $average = $brain->{data}{statistics}{elapsed_time};
-    my %color   = ( male => '#0000ff', female => '#ff0000' );
+
+    $color{male}   = '#0000ff';
+    $color{female} = '#ff0000';
     for my $gender (qw/male female/) {
         my @values;
         for my $status_id ( sort status_order keys %{ $average->{$gender} } ) {
@@ -151,7 +159,7 @@ get '/statistics/elapsed/:ymd' => sub {
                 y => $average->{$gender}{$status_id},
                 };
         }
-        push @{ $gdata{lines} ||= [] },
+        push @{ $gdata{bars} ||= [] },
             {
             key    => "average-$gender",
             values => [@values],
