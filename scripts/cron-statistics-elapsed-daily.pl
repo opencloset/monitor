@@ -26,7 +26,20 @@ my $schema = OpenCloset::Schema->connect(
 my %stat;
 my $status_log = $schema->resultset('OrderStatusLog');
 
+my $date = shift;
+my ( $y, $m, $d );
 my $where = 'TIMESTAMPDIFF(DAY, `timestamp`, NOW()) < ?';
+if ($date) {
+    ( $y, $m, $d ) = split /-/, $date;
+    if ( $y && $m && $d ) {
+        $where
+            = "`timestamp` >= STR_TO_DATE('$y-$m-$d,','%Y-%m-%d') AND `timestamp` < DATE_ADD(STR_TO_DATE('$y-$m-$d,','%Y-%m-%d'), INTERVAL ? DAY)";
+    }
+    else {
+        warn "Invalid date format: $date";
+    }
+}
+
 $where
     .= ' AND status_id IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
@@ -88,6 +101,11 @@ while ( my $log = $logs->next ) {
 my $now = DateTime::Tiny->now;
 my $ymd = substr $now->ymdhms, 0, 10;
 my ( $year, $month ) = ( $now->year, sprintf( "%02s", $now->month ) );
+if ( $y && $m && $d ) {
+    $ymd   = "$y-$m-$d";
+    $year  = $y;
+    $month = $m;
+}
 my $tsv = path("statistics/elapsed/$year/$month/$ymd.tsv")->touchpath;
 my @lines;
 
@@ -99,3 +117,16 @@ for my $key ( keys %stat ) {
 }
 
 $tsv->spew(@lines);
+
+=pod
+
+=head1 NAME
+
+cron-statistics-elapsed-daily.pl
+
+=head1 SYNOPSIS
+
+    $ perl script/cron-statistics-elapsed-daily.pl               # default
+    $ perl script/cron-statistics-elapsed-daily.pl 2015-01-01    # specific date
+
+=cut
