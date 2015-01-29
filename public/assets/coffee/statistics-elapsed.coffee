@@ -29,23 +29,23 @@ names =
 
 lineChart = (data) ->
   nv.addGraph ->
-    chart = nv.models.lineChart()
-      .margin({ left:100 })
-      .useInteractiveGuideline(true)
+    chart = nv.models.multiBarChart()
       .transitionDuration(350)
-      .showLegend(true)
-      .showYAxis(true)
-      .showXAxis(true)
-      .xDomain([0, 8])
+      .reduceXTicks(true)
+      .rotateLabels(0)
+      .showControls(false)
+      .groupSpacing(0.1)
       .yDomain([0, 60])
+
     chart.xAxis
       .axisLabel('상태')
-      .tickFormat( (d) ->
+      .tickFormat (d) -> 
         names[d] or ''
-      )
+
     chart.yAxis
       .axisLabel('분')
       .tickFormat(d3.format('.02f'))
+
     d3.select('svg.total')
       .datum(data)
       .call(chart)
