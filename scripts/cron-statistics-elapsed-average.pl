@@ -71,7 +71,8 @@ while ( my $log = $logs->next ) {
     ## 20 ~ 39: 탈의01 ~ 탈의20 상태는 모두 탈의
     $s0 = 20 if $s0 > 19 && $s0 < 40;
 
-    if ( $s0 == 20 && $elapsed < 60 * 5 ) {
+    ## https://github.com/opencloset/monitor/issues/32#issuecomment-72426499
+    if ( $s0 == 20 && $elapsed < 60 * 4 ) {
         print STDERR
             "Too short elapsed time for change clothes: order($o1) elapsed($elapsed)\n";
         next;
