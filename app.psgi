@@ -167,7 +167,30 @@ get '/statistics/elapsed/:ymd' => sub {
             };
     }
 
-    $self->respond_to( json => { json => { gdata => {%gdata} } } );
+    my $rs = $DB->resultset('Order')->search(
+        { 'rental_date' => $ymd, },
+        {
+            select => ['user_info.gender', { count => 'user_info.gender' }],
+            as     => [qw/gender cnt/],
+            join     => [{ user => 'user_info' }],
+            group_by => 'user_info.gender',
+        }
+    );
+
+    my %visitor;
+    while ( my $row = $rs->next ) {
+        my ( $gender, $cnt )
+            = ( $row->get_column('gender'), $row->get_column('cnt') );
+        if ( $gender eq 'male' ) {
+            $visitor{male} = $cnt;
+        }
+        elsif ( $gender eq 'female' ) {
+            $visitor{female} = $cnt;
+        }
+    }
+
+    $self->respond_to(
+        json => { json => { gdata => {%gdata}, visitor => {%visitor} } } );
 };
 
 sub status_reverse_order {

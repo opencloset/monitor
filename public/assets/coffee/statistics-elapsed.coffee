@@ -85,8 +85,8 @@ $ ->
           .transition().duration(350)
           .call(chart)
         barChart(gdata.bars)
-        $('h4.male small').text(gdata.daily.sum.male)
-        $('h4.female small').text(gdata.daily.sum.female)
+        $('h4.male small').text("#{gdata.daily.sum.male}분 | #{data.visitor.male}명")
+        $('h4.female small').text("#{gdata.daily.sum.female}분 | #{data.visitor.female}명")
       error: (jqXHR, textStatus, errorThrown) ->
         alert('danger', JSON.parse(jqXHR.responseText).error.str)
         $('svg').empty()

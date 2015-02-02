@@ -71,16 +71,27 @@ while ( my $log = $logs->next ) {
     ## 20 ~ 39: 탈의01 ~ 탈의20 상태는 모두 탈의
     $s0 = 20 if $s0 > 19 && $s0 < 40;
 
+    if ( $s0 == 20 && $elapsed < 60 * 5 ) {
+        print STDERR
+            "Too short elapsed time for change clothes: order($o1) elapsed($elapsed)\n";
+        next;
+    }
+
     if ( $stat{ $user_info->gender }{$s0} ) {
         $stat{ $user_info->gender }{$s0} += $elapsed;
         $stat{ $user_info->gender }{$s0} /= 2;
-        $stat{ $user_info->gender }{$s0}
-            = sprintf( "%.2f", $stat{ $user_info->gender }{$s0} / 60 );
     }
     else {
-        $stat{ $user_info->gender }{$s0} = sprintf( "%.2f", $elapsed / 60 );
+        $stat{ $user_info->gender }{$s0} = $elapsed;
     }
 }
+
+for my $g (qw/male female/) {
+    for my $key ( keys %{ $stat{$g} } ) {
+        $stat{$g}{$key} = sprintf( "%.2f", $stat{$g}{$key} / 60 );
+    }
+}
+
 
 my $brain = OpenCloset::Brain->new;
 $brain->{data}{statistics}{elapsed_time} = {%stat};
