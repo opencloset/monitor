@@ -80,13 +80,18 @@ while ( my $log = $logs->next ) {
     if ( $stat{ $user_info->gender }{$s0} ) {
         $stat{ $user_info->gender }{$s0} += $elapsed;
         $stat{ $user_info->gender }{$s0} /= 2;
-        $stat{ $user_info->gender }{$s0}
-            = sprintf( "%.2f", $stat{ $user_info->gender }{$s0} / 60 );
     }
     else {
-        $stat{ $user_info->gender }{$s0} = sprintf( "%.2f", $elapsed / 60 );
+        $stat{ $user_info->gender }{$s0} = $elapsed;
     }
 }
+
+for my $g (qw/male female/) {
+    for my $key ( keys %{ $stat{$g} } ) {
+        $stat{$g}{$key} = sprintf( "%.2f", $stat{$g}{$key} / 60 );
+    }
+}
+
 
 my $brain = OpenCloset::Brain->new;
 $brain->{data}{statistics}{elapsed_time} = {%stat};
