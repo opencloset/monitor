@@ -129,7 +129,8 @@ get '/statistics/elapsed/:ymd' => sub {
     my %color = ( male => '#4d4dff', female => '#ff4d4d' );
     for my $gender (qw/male female/) {
         my @values;
-        for my $data ( sort status_reverse_order @{ $gdata{daily}{$gender} } )
+        for my $data (
+            sort status_reverse_order @{ $gdata{daily}{$gender} ||= [] } )
         {
             push @values,
                 {
