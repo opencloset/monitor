@@ -92,7 +92,7 @@ class NotificationRow extends Backbone.View
       @remove()
       if @model.get('count') > 30 and $('#event ul li').size() is 0
         location.reload()
-    , 1000 * 30
+    , 1000 * 60    # 60 secs
     unless userlabel
       compiled = _.template '''
         <p class="user" id="order-<%= order_id %>">
