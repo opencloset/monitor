@@ -20,8 +20,8 @@
   %ul
     %li
       %span.label.label-success{:title => '중동'}
-        중동
-        = $user_info->belly || 0
+        윗배
+        = $user_info->topbelly || 0
     %li
       %span.label.label-default{:title => '가슴'}
         가슴
@@ -100,7 +100,7 @@
               - my $clothes = $detail->clothes;
               - $donation = $clothes->donation;
               - $color = $clothes->color;
-              - $size = '중동 ' . $clothes->belly if $code =~ /^0?J/;
+              - $size = '윗배 ' . $clothes->topbelly if $code =~ /^0?J/;
               - $size = '허리 ' . $clothes->waist if $code =~ /^0?P/;
               - $size = '엉덩이 ' . $clothes->hip if $code =~ /^0?K/;
               - $size = '가슴 ' . $clothes->bust if $code =~ /^0?S/;
