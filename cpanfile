@@ -8,3 +8,6 @@ requires 'Net::IP::AddrRanges';
 requires 'Path::Tiny';
 requires 'Time::HiRes';
 requires 'experimental';
+
+# cpan.theopencloset.net
+requires 'OpenCloset::Schema';

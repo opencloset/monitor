@@ -18,7 +18,7 @@
       %abbr.timeago{:title => '#{$order->update_date->ymd}T#{$order->update_date->hms}Z'}= $order->update_date
   %ul
     %li
-      %span.label.label-success{:title => '배'}= $user_info->belly || 0
+      %span.label.label-success{:title => '윗배'}= $user_info->topbelly || 0
     %li
       %span.label.label-default{:title => '가슴'}= $user_info->bust || 0
     %li
