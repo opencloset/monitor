@@ -28,8 +28,12 @@
           - for my $s (@$orders) {
             %td.text-left{:id => "status-#{$sid[$i++]}"}
               - for my $order (@$s) {
+                - my $hms = $order->booking->date->hms;
+                - $hms = substr($hms, 0, 5);
                 %p.user{:id => "order-#{$order->id}"}
-                  %span.label.label-info= $order->user->name
+                  %span.label.label-info
+                    = $order->user->name
+                    %span.date= $hms
                   %abbr{:title => '#{$order->create_date}Z'}= $order->create_date . 'Z'
               - }
           - }

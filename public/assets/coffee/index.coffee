@@ -51,6 +51,7 @@ class NotificationModel extends Backbone.Model
         count: opts.count
         order_id: data.order.id
         create_date: data.order.create_date.replace(' ', 'T') + 'Z'
+        booking_date: data.order.booking.date.substr(11, 5)
         from: data.from
         to: data.to
         username: data.order.user.name
@@ -96,7 +97,10 @@ class NotificationRow extends Backbone.View
     unless userlabel
       compiled = _.template '''
         <p class="user" id="order-<%= order_id %>">
-          <span class="label label-info"><%= username %></span>
+          <span class="label label-info">
+            <%= username %>
+            <span class="date"><%= booking_date %></span>
+          </span>
           <abbr title="<%= create_date %>"><%= create_date %></abbr>
         </p>
       '''
@@ -104,6 +108,7 @@ class NotificationRow extends Backbone.View
         order_id: @model.get('order_id')
         username: @model.get('username')
         create_date: @model.get('create_date')
+        booking_date: @model.get('booking_date')
     guessBooking($(userlabel)).appendTo($("#status-#{status_id}"))
     return @
 
