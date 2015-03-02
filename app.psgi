@@ -358,7 +358,8 @@ websocket '/socket' => sub {
 
             if ( my ($channel) = $msg =~ /^\/subscribe:? +([a-z]+)/i ) {
                 $self->redis->subscribe(
-                    "$REDIS_CHANNEL:$channel" => sub {
+                    ["$REDIS_CHANNEL:$channel"],
+                    sub {
                         my ( $redis, $err ) = @_;
                         $log->error("[REDIS ERROR] subscribe error: $err")
                             if $err;
