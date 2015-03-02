@@ -17,10 +17,12 @@ sub register {
 sub order_flatten {
     my ( $self, $order ) = @_;
     my $user      = $order->user;
+    my $booking   = $order->booking;
     my $user_info = $user->user_info;
     my %columns   = $order->get_columns;
     $columns{user}      = { $user->get_columns };
     $columns{user_info} = { $user_info->get_columns };
+    $columns{booking}   = { $booking->get_columns };
     delete $columns{user}{password};
     delete $columns{user_info}{password};
     return {%columns};

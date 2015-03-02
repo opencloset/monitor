@@ -26,6 +26,13 @@ html, body {
         display: inline-block;
         width: 100%;
     }
+    span.date {
+        display: block;
+        font-size: 0.6em;
+        color: lighten(#333, 20%);
+        margin-top: 5px;
+        margin-bottom: -5px;
+    }
 }
 .list-group-item {
     background-color: #333;
