@@ -10,9 +10,9 @@ Dashboard in waiting room
     # install front-end pkg deps & build
     $ bower install
     $ grunt
-    
-    # use OpenCloset::Schema
-    $ export PERL5LIB=/path/to/opencloset/lib:$PERL5LIB
+
+    $ cpanm --installdeps .
+    $ cpanm --mirror https://cpan.theopencloset.net OpenCloset::Schema
 
 ## 실행 ##
 
