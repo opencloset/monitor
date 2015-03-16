@@ -16,6 +16,7 @@ Dashboard in waiting room
 
 ## 실행 ##
 
+    $ ln -s app.conf.sample monitor.conf
     $ morbo -l 'http://*:5000' ./app.psgi    # http://localhost:5000
 
 ## 환경변수 ##

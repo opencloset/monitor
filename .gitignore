@@ -9,6 +9,7 @@ node_modules/
 .opencloset.json
 run
 *.db
+packed/
 
 # editor swap files
 *.swp
