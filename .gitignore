@@ -8,6 +8,7 @@ node_modules/
 .sass-cache/
 .opencloset.json
 run
+*.db
 
 # editor swap files
 *.swp
