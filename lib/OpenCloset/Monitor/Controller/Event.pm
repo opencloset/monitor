@@ -4,6 +4,8 @@ use Mojo::Base 'Mojolicious::Controller';
 use Encode 'decode_utf8';
 use Mojo::JSON 'j';
 
+use OpenCloset::Status;
+
 has DB => sub { shift->app->DB };
 
 sub create {
@@ -41,14 +43,24 @@ sub create {
         my $order = $self->DB->resultset('Order')
             ->find( { id => $self->param('order_id') } );
 
+        my $from = $self->param('from');
+        my $to   = $self->param('to');
+
+        if (   $to >= $OpenCloset::Status::STATUS_FITTING_ROOM1
+            && $to <= $OpenCloset::Status::STATUS_FITTING_ROOM11 )
+        {
+            $self->app->SQLite->resultset('History')
+                ->create( { room_no => $to - 19, order_id => $order->id } );
+        }
+
         $self->redis->publish(
             "$channel:order" => decode_utf8(
                 j(
                     {
                         sender => $sender,
                         order  => $self->order_flatten($order),
-                        from   => $self->param('from'),
-                        to     => $self->param('to')
+                        from   => $from,
+                        to     => $to
                     }
                 )
             )

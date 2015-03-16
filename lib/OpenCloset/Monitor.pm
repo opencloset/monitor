@@ -4,6 +4,7 @@ use Mojo::Base 'Mojolicious';
 use Net::IP::AddrRanges;
 
 use OpenCloset::Schema;
+use OpenCloset::Monitor::Schema;
 
 has ranges => sub { Net::IP::AddrRanges->new };
 has DB => sub {
@@ -18,6 +19,15 @@ has DB => sub {
     );
 };
 has redis_channel => 'opencloset:monitor';
+has SQLite        => sub {
+    OpenCloset::Monitor::Schema->connect(
+        {
+            dsn            => 'dbi:SQLite:dbname=db/monitor.db',
+            quote_char     => q{`},
+            sqlite_unicode => 1,
+        }
+    );
+};
 
 sub startup {
     my $self = shift;
