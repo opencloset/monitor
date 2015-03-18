@@ -1,0 +1,124 @@
+- use utf8;
+- my %clothes_map = (jacket => '자켓', pants => '팬츠', shirt => '셔츠', tie => '타이', shoes => '구두', belt => '벨트', skirt => '스커트', blouse => '블라우스');
+- my %color_map = (black => '검정', navy => '남색', gray => '회색', brown => '갈색', etc => '기타', staff => '직추', charcoalgray => '차콜', dark => '다크');
+- my %label_map = ('대여가능' => 'label-success', '대여중' => 'label-danger');
+- my $user = $order->user;
+- my $user_info = $user->user_info;
+- my $gender = $user_info->gender;
+- my $details = $order->order_details;
+- my @clothes = split /,/, $user_info->pre_category;
+- my @colors  = split /,/, $user_info->pre_color;
+
+.col-md-2.profile
+  %h1.name
+    %i.fa{:class => "fa-#{$gender}"}
+    = $user->name
+  %h2.age= age($user_info->birth)
+  %p.timeago
+    %abbr.timeago{:title => '#{$order->update_date->ymd}T#{$order->update_date->hms}Z'}= $order->update_date
+  %p.booking-date.date
+    = substr $order->booking->date->hms, 0, 5
+.col-md-5.size
+  %ul
+    %li
+      %span.label.label-success{:title => '중동'}
+        윗배
+        = $user_info->topbelly || 0
+    %li
+      %span.label.label-default{:title => '가슴'}
+        가슴
+        = $user_info->bust || 0
+    %li
+      %span.label.label-default{:title => '팔'}
+        팔
+        = $user_info->arm || 0
+  %ul
+    %li
+      - if ($gender eq 'male') {
+        %span.label.label-success{:title => '허벅지'}
+          허벅지
+          = $user_info->thigh || 0
+      - } else {
+        %span.label.label-success{:title => '엉덩이'}
+          엉덩이
+          = $user_info->hip || 0
+      - }
+    %li
+      %span.label.label-default{:title => '허리'}
+        허리
+        = $user_info->waist || 0
+    %li
+      - if ($gender eq 'male') {
+        %span.label.label-default{:title => '다리'}
+          다리
+          = $user_info->leg || 0
+      - } else {
+        %span.label.label-default{:title => '무릎'}
+          무릎
+          = $user_info->knee || 0
+      - }
+  %ul
+    %li
+      %span.label.label-info{:title => '발'}
+        = $user_info->foot || 0
+    %li
+      %span.label.label-info{:title => '키/몸무게'}
+        = $user_info->height || 0
+        \/
+        = $user_info->weight || 0
+.col-md-1
+  %ul.color
+    - for my $color (@colors) {
+      %li
+        %span.label{:class => $color}= $color_map{$color}
+    - }
+.col-md-4
+  %ul.clothes
+    - for my $clothes (@clothes) {
+      %li
+        %strong= $clothes_map{$clothes}
+    - }
+  .purpose
+    %p= $user_info->purpose || ''
+    \/
+    %p= $user_info->purpose2 || ''
+  %p.comment= $user_info->comment || ''
+
+  -#
+  -# 최근대여
+  -#
+  - my $pre_order = $order->result_source->schema->resultset('Order')->search({ user_id => $user->id, -not => {id => $order->id } })->next;
+  - if ($pre_order) {
+    .row
+      %hr
+      .pre_order
+        %ul
+          - for my $detail ($pre_order->order_details) {
+            - my $code = $detail->clothes_code;
+            - next unless $code;
+            - my $name = $detail->name;
+            - my ($donation, $size, $color);
+            - if ($code =~ /^0?[JPKSB]/) {
+              - my $clothes = $detail->clothes;
+              - $donation = $clothes->donation;
+              - $color = $clothes->color;
+              - $size = '윗배 ' . $clothes->topbelly if $code =~ /^0?J/;
+              - $size = '허리 ' . $clothes->waist if $code =~ /^0?P/;
+              - $size = '엉덩이 ' . $clothes->hip if $code =~ /^0?K/;
+              - $size = '가슴 ' . $clothes->bust if $code =~ /^0?S/;
+              - $size = '가슴 ' . $clothes->bust if $code =~ /^0?B/;
+            - }
+            %li
+              %a{:href => "https://staff.theopencloset.net/clothes/#{$code}", :target => '_blank'}
+                - my $class = $label_map{$detail->clothes->status->name} || 'label-default';
+                %span.order-status.label{ class => "#{$class}" }
+                  = $name
+                  = $donation ? $donation->user->name : ''
+                  = $size || ''
+                  %span{:style => "color: #{$color || ''}"}= $color || ''
+                  %small= $detail->clothes->status->name
+                  - if ($detail->clothes->comment) {
+                    %code= $detail->clothes->comment 
+                  - }
+          - }
+  - }

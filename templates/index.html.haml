@@ -1,0 +1,44 @@
+- use utf8;
+- layout 'default',
+- jses => [
+-   '/assets/components/reconnectingWebsocket/reconnecting-websocket.js',
+-   '/assets/components/underscore/underscore-min.js',
+-   '/assets/components/backbone/backbone.js',
+-   '/assets/js/index.js'
+- ];
+- title 'Dashboard';
+
+- my @sid = qw/13 16 17 20 6 18 19/;
+- my $i = 0;
+.row
+  .col-md-7
+    #dashboard
+      %table.table.table-striped.table-bordered.table-condensed
+        %thead
+          %tr
+            %th 대기중
+            %th 치수측정
+            %th 의류준비
+            %th 탈의
+            %th 수선
+            %th 포장
+            %th 결제대기
+        %tbody
+          %tr
+          - for my $s (@$orders) {
+            %td.text-left{:id => "status-#{$sid[$i++]}"}
+              - for my $order (@$s) {
+                - my $hms = $order->booking->date->hms;
+                - $hms = substr($hms, 0, 5);
+                %p.user{:id => "order-#{$order->id}"}
+                  %span.label.label-info
+                    = $order->user->name
+                    %span.date= $hms
+                  %abbr{:title => '#{$order->create_date}Z'}= $order->create_date . 'Z'
+              - }
+          - }
+  .col-md-5
+    #event
+      %audio{:src => "/assets/audio/whisper.ogg"}
+        %p Your browser does not support the audio element.
+      %ul.list-group

@@ -1,0 +1,17 @@
+- use utf8;
+- layout 'default',
+- jses => [
+-   '/assets/components/jquery-timeago/jquery.timeago.js',
+-   '/assets/components/jquery-timeago/locales/jquery.timeago.ko.js',
+-   '/assets/components/reconnectingWebsocket/reconnecting-websocket.js',
+-   '/assets/js/select.js'
+- ];
+- title '의류준비';
+#select
+  - while (my $order = $orders->next) {
+    - if (grep { $order->id == $_ } @$active) {
+      .row.select.active{:data-order-id => '#{$order->id}'}= include 'partials/select', order => $order;
+    - } else {
+      .row.select{:data-order-id => '#{$order->id}'}= include 'partials/select', order => $order;
+    - }
+  - }

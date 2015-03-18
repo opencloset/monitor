@@ -1,0 +1,22 @@
+public/assets/coffee/js/
+public/assets/components/
+public/assets/css/
+public/assets/js/
+app.conf
+app.psgi.conf
+node_modules/
+.sass-cache/
+.opencloset.json
+run
+
+# editor swap files
+*.swp
+
+# hypnotoad pid file
+hypnotoad.pid
+
+# log directory
+log/
+
+# statistics directory
+statistics/

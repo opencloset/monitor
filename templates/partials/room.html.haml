@@ -1,0 +1,64 @@
+- use utf8;
+- my %clothes_map = (jacket => '자켓', pants => '팬츠', shirt => '셔츠', tie => '타이', shoes => '구두', belt => '벨트', skirt => '스커트', blouse => '블라우스');
+- my %color_map = (black => '검정', navy => '남색', gray => '회색', brown => '갈색', etc => '기타', staff => '직추', charcoalgray => '차콜', dark => '다크');
+- my $user = $order->user;
+- my $user_info = $user->user_info;
+- my $gender = $user_info->gender;
+- my $details = $order->order_details;
+- my @clothes = split /,/, $user_info->pre_category;
+- my @colors  = split /,/, $user_info->pre_color;
+.well.room{:class => $gender}
+  %h3= "#$n"
+  %p
+    %i.fa{:class => "fa-#{$gender}"}
+    = $user->name
+    %small= age($user_info->birth)
+  %p.booking-date.date
+    = substr $order->booking->date->hms, 0, 5
+  %p.timeago
+    %small
+      %abbr.timeago{:title => '#{$order->update_date->ymd}T#{$order->update_date->hms}Z'}= $order->update_date
+  %ul
+    %li
+      %span.label.label-success{:title => '윗배'}= $user_info->topbelly || 0
+    %li
+      %span.label.label-default{:title => '가슴'}= $user_info->bust || 0
+    %li
+      %span.label.label-default{:title => '팔'}= $user_info->arm || 0
+  %ul
+    %li
+      - if ($gender eq 'male') {
+        %span.label.label-success{:title => '허벅지'}= $user_info->thigh || 0
+      - } else {
+        %span.label.label-success{:title => '엉덩이'}= $user_info->hip || 0
+      - }
+    %li
+      %span.label.label-default{:title => '허리'}= $user_info->waist || 0
+    %li
+      - if ($gender eq 'male') {
+        %span.label.label-default{:title => '다리'}= $user_info->leg || 0
+      - } else {
+        %span.label.label-default{:title => '무릎'}= $user_info->knee || 0
+      - }
+  %ul
+    %li
+      %span.label.label-info{:title => '발'}= $user_info->foot || 0
+    %li
+      %span.label.label-info{:title => '키/몸무게'}
+        = $user_info->height || 0
+        \/
+        = $user_info->weight || 0
+  .purpose
+    %p= $user_info->purpose || ''
+    %p= $user_info->purpose2 || ''
+  %p.comment= $user_info->comment || ''
+  %ul.clothes
+    - for my $clothes (@clothes) {
+      %li
+        %strong= $clothes_map{$clothes}
+    - }
+  %ul.color
+    - for my $color (@colors) {
+      %li
+        %span.label{:class => $color}= $color_map{$color}
+    - }
