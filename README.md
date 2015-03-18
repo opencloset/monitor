@@ -2,6 +2,10 @@
 
 Dashboard in waiting room
 
+## Version ##
+
+v0.2.0
+
 ## 요구사항 ##
 
     $ sudo apt-get install redis-server
@@ -10,12 +14,13 @@ Dashboard in waiting room
     # install front-end pkg deps & build
     $ bower install
     $ grunt
-    
-    # use OpenCloset::Schema
-    $ export PERL5LIB=/path/to/opencloset/lib:$PERL5LIB
+
+    $ cpanm --installdeps .
+    $ cpanm --mirror https://cpan.theopencloset.net OpenCloset::Schema
 
 ## 실행 ##
 
+    $ ln -s app.conf.sample monitor.conf
     $ morbo -l 'http://*:5000' ./app.psgi    # http://localhost:5000
 
 ## 환경변수 ##

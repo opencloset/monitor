@@ -7,11 +7,13 @@ use Mojo::Redis2;
 
 sub register {
     my ( $self, $app, $conf ) = @_;
-    $app->helper( error         => \&error );
-    $app->helper( age           => \&age );
-    $app->helper( order_flatten => \&order_flatten );
-    $app->helper( user_flatten  => \&user_flatten );
-    $app->helper( redis         => \&redis );
+    $app->helper( error          => \&error );
+    $app->helper( age            => \&age );
+    $app->helper( order_flatten  => \&order_flatten );
+    $app->helper( user_flatten   => \&user_flatten );
+    $app->helper( redis          => \&redis );
+    $app->helper( previous_order => \&previous_order );
+    $app->helper( history        => \&history );
 }
 
 sub order_flatten {
@@ -84,6 +86,29 @@ sub redis {
 
         $redis;
     };
+}
+
+sub previous_order {
+    my ( $self, $room_no ) = @_;
+    return unless $room_no;
+
+    my $rs
+        = $self->app->SQLite->resultset('History')
+        ->search( { room_no => $room_no },
+        { rows => 2, order_by => { -desc => 'id' } } );
+
+    $rs->next;    # ignore myself
+    my $history = $rs->next;
+
+    return unless $history;
+    return $self->app->DB->resultset('Order')
+        ->find( { id => $history->order_id } );
+}
+
+sub history {
+    my ( $self, $cond ) = @_;
+
+    return $self->app->SQLite->resultset('History')->search($cond);
 }
 
 1;

@@ -81,6 +81,14 @@ html, body {
         p.timeago {
             font-size: 0.6em;
         }
+        .previous {
+            text-align: left;
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            font-size: 0.7em;
+            color: darken(#fff, 80%);
+        }
     }
     .room.male {
         .fa {
@@ -203,6 +211,12 @@ html, body {
             .label {
                 font-family: monospace;
             }
+        }
+        .previous {
+            text-align: left;
+            position: absolute;
+            top: 20px;
+            left: 20px;
         }
     }
 }

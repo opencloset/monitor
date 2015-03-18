@@ -7,8 +7,12 @@
 - my $details = $order->order_details;
 - my @clothes = split /,/, $user_info->pre_category;
 - my @colors  = split /,/, $user_info->pre_color;
+- my $pre_order = previous_order($n);
 .well.room{:class => $gender}
   %h3= "#$n"
+  - if ($pre_order) {
+    %p.previous= $pre_order->user->name
+  - }
   %p
     %i.fa{:class => "fa-#{$gender}"}
     = $user->name
