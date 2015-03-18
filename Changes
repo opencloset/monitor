@@ -1,3 +1,4 @@
+v0.2.0    Wed Mar 18 18:52:31 2015 KST
   - Migrate Mojolicious::Lite to `Mojo::Base`d app
   - use local sqlite db
   - Show previous order's user name in fitting-room

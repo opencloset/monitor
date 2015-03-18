@@ -2,6 +2,10 @@
 
 Dashboard in waiting room
 
+## Version ##
+
+v0.2.0
+
 ## 요구사항 ##
 
     $ sudo apt-get install redis-server
