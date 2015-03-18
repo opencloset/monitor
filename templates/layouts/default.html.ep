@@ -6,14 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%= title %></title>
 
-    <!-- Bootstrap -->
-    <link href="/assets/components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/assets/components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/assets/components/font-awesome/css/font-awesome.css">
+    %= asset 'screen.css'
     % for my $css (@$csses) {
-      <link href="<%= $css %>" rel="stylesheet">
+      %= asset $css
     % }
-    <link href="/assets/css/cover.css" rel="stylesheet">
-    <link href="/assets/css/screen.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -28,10 +26,9 @@
         <%= content %>
       </div>
     </div>
-    <script src="/assets/components/jquery/dist/jquery.min.js"></script>
-    <script src="/assets/components/bootstrap/dist/js/bootstrap.min.js"></script>
+    %= asset 'bundle.js'
     % for my $js (@$jses) {
-      <script type="text/javascript" src="<%= $js %>"></script>
+      %= asset $js
     % }
   </body>
 </html>
