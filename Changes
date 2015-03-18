@@ -1,0 +1,4 @@
+  - Migrate Mojolicious::Lite to `Mojo::Base`d app
+  - use local sqlite db
+  - Show previous order's user name in fitting-room
+  - Show room number and number of uses at `select`
