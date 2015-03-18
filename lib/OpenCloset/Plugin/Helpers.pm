@@ -91,10 +91,13 @@ sub previous_order {
     my ( $self, $room_no ) = @_;
     return unless $room_no;
 
-    my $history
+    my $rs
         = $self->app->SQLite->resultset('History')
         ->search( { room_no => $room_no },
-        { rows => 1, order_by => { -desc => 'id' } } )->next;
+        { rows => 2, order_by => { -desc => 'id' } } );
+
+    $rs->next;    # ignore myself
+    my $history = $rs->next;
 
     return unless $history;
     return $self->app->DB->resultset('Order')
