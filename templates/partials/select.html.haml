@@ -8,6 +8,8 @@
 - my $details = $order->order_details;
 - my @clothes = split /,/, $user_info->pre_category;
 - my @colors  = split /,/, $user_info->pre_color;
+- my $histories = history({ order_id => $order->id });
+- my $nth = $histories->count;
 
 .col-md-2.profile
   %h1.name
@@ -18,6 +20,10 @@
     %abbr.timeago{:title => '#{$order->update_date->ymd}T#{$order->update_date->hms}Z'}= $order->update_date
   %p.booking-date.date
     = substr $order->booking->date->hms, 0, 5
+  - if ($nth) {
+    %p.previous
+      %strong= '#' . $histories->next->room_no . '/' . $nth
+  - }
 .col-md-5.size
   %ul
     %li

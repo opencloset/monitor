@@ -13,6 +13,7 @@ sub register {
     $app->helper( user_flatten   => \&user_flatten );
     $app->helper( redis          => \&redis );
     $app->helper( previous_order => \&previous_order );
+    $app->helper( history        => \&history );
 }
 
 sub order_flatten {
@@ -102,6 +103,12 @@ sub previous_order {
     return unless $history;
     return $self->app->DB->resultset('Order')
         ->find( { id => $history->order_id } );
+}
+
+sub history {
+    my ( $self, $cond ) = @_;
+
+    return $self->app->SQLite->resultset('History')->search($cond);
 }
 
 1;
