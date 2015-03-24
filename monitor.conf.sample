@@ -28,7 +28,7 @@ $db_opts->{AutoCommit} //= 1;
     # for Mojolicious hypnotoad server
     #
     hypnotoad => {
-        listen   => [ 'http://*:8002' ],
+        listen   => ['http://*:8002'],
         workers  => 3,
         pid_file => 'hypnotoad.pid',
     },
@@ -43,8 +43,7 @@ $db_opts->{AutoCommit} //= 1;
         user => $ENV{OPENCLOSET_DATABASE_USER} || 'opencloset',
         pass => $ENV{OPENCLOSET_DATABASE_PASS} // 'opencloset',
         opts => $db_opts,
+        sqlite => 'dbi:SQLite:dbname=db/monitor.db',
     },
-    whitelist => [
-        @WHITELIST,
-    ],
+    whitelist => [@WHITELIST,],
 };

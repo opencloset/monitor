@@ -4,6 +4,7 @@ requires 'Mojo::JSON';
 requires 'Mojo::Redis2', '0.17';
 requires 'Mojolicious::Plugin::HamlRenderer';
 requires 'Mojolicious::Plugin::Validator';
+requires 'Mojolicious::Plugin::AssetPack';
 requires 'Net::IP::AddrRanges';
 requires 'Path::Tiny';
 requires 'Time::HiRes';

@@ -6,7 +6,7 @@ use Net::IP::AddrRanges;
 use OpenCloset::Schema;
 use OpenCloset::Monitor::Schema;
 
-use version; our $VERSION = qv("v2.0.0");
+use version; our $VERSION = qv("v2.0.1");
 
 has ranges => sub { Net::IP::AddrRanges->new };
 has DB => sub {
@@ -22,9 +22,10 @@ has DB => sub {
 };
 has redis_channel => 'opencloset:monitor';
 has SQLite        => sub {
+    my $self = shift;
     OpenCloset::Monitor::Schema->connect(
         {
-            dsn            => 'dbi:SQLite:dbname=db/monitor.db',
+            dsn            => $self->config->{database}{sqlite},
             quote_char     => q{`},
             sqlite_unicode => 1,
         }
