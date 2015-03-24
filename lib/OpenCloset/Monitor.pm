@@ -22,9 +22,10 @@ has DB => sub {
 };
 has redis_channel => 'opencloset:monitor';
 has SQLite        => sub {
+    my $self = shift;
     OpenCloset::Monitor::Schema->connect(
         {
-            dsn            => 'dbi:SQLite:dbname=db/monitor.db',
+            dsn            => $self->config->{database}{sqlite},
             quote_char     => q{`},
             sqlite_unicode => 1,
         }
