@@ -1,0 +1,25 @@
+- use utf8;
+- my %clothes_map = (jacket => '자켓', pants => '팬츠', shirt => '셔츠', tie => '타이', shoes => '구두', belt => '벨트', skirt => '스커트', blouse => '블라우스');
+- my %color_map = (black => '검정', navy => '남색', gray => '회색', brown => '갈색', etc => '기타', staff => '직추', charcoalgray => '차콜', dark => '다크');
+- my $user = $order->user;
+- my $user_info = $user->user_info;
+- my $gender = $user_info->gender;
+- my $details = $order->order_details;
+- my @clothes = split /,/, $user_info->pre_category;
+- my @colors  = split /,/, $user_info->pre_color;
+- my $pre_order = previous_order($n);
+.well.room{:class => $gender}
+  %h3
+    %i.fa{:class => "fa-#{$gender}"}
+    = "#$n"
+  - if ($pre_order) {
+    %p.previous= $pre_order->user->name
+  - }
+  %p
+    = $user->name
+    %small= age($user_info->birth)
+  %p.booking-date.date
+    = substr $order->booking->date->hms, 0, 5
+  %p.timeago
+    %small
+      %abbr.timeago{:title => '#{$order->update_date->ymd}T#{$order->update_date->hms}Z'}= $order->update_date

@@ -6,7 +6,7 @@ use Net::IP::AddrRanges;
 use OpenCloset::Schema;
 use OpenCloset::Monitor::Schema;
 
-use version; our $VERSION = qv("v2.0.1");
+use version; our $VERSION = qv("v0.2.2");
 
 has ranges => sub { Net::IP::AddrRanges->new };
 has DB => sub {
@@ -107,6 +107,14 @@ sub _assets {
             /assets/js/select.js
             }
     );
+    $self->asset(
+        'preparation.js' => qw{
+            /assets/components/jquery-timeago/jquery.timeago.js
+            /assets/components/jquery-timeago/locales/jquery.timeago.ko.js
+            /assets/components/reconnectingWebsocket/reconnecting-websocket.js
+            /assets/js/preparation.js
+            }
+    );
 }
 
 sub _whitelist {
@@ -132,6 +140,8 @@ sub _private_routes {
     $r->get('/select')->to('dashboard#select')->name('select');
     $r->post('/select')->to('dashboard#create_select');
     $r->delete('/select/:order_id')->to('dashboard#delete_select');
+
+    $r->get('/preparation')->to('dashboard#preparation')->name('preparation');
 
     $r->post('/events')->to('event#create');
 
