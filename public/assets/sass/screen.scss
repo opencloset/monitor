@@ -264,6 +264,12 @@ html, body {
             .booking-date, .timeago {
                 font-size: 0.9em;
             }
+            .previous {
+                text-align: center;
+                position: inherit;
+                font-size: 0.8em;
+                color: darken(#fff, 80%);
+            }
         }
     }
 }
