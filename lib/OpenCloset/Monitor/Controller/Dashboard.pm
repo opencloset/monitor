@@ -145,4 +145,33 @@ sub delete_select {
     );
 }
 
+=head2 preparation
+
+    # preparation
+    GET /preparation
+
+=cut
+
+sub preparation {
+    my $self = shift;
+
+    my @room;
+    my $rs = $self->DB->resultset('Order')->search(
+        { status_id => $OpenCloset::Status::STATUS_SELECT },
+        { order_by  => { -asc => 'update_date' } }
+    );
+
+    for my $n ( 1 .. 11 ) {
+        my $room;
+        my $order = $self->DB->resultset('Order')->search(
+            {
+                status_id => $OpenCloset::Status::STATUS_FITTING_ROOM1 + $n - 1
+            }
+        )->next;
+        $room[$n] = $order;
+    }
+
+    $self->stash( orders => $rs, rooms => [@room] );
+}
+
 1;

@@ -221,8 +221,37 @@ html, body {
         .previous {
             text-align: left;
             position: absolute;
-            top: 20px;
-            left: 20px;
+            top: 0;
+            left: 5px;
+        }
+    }
+}
+#preparation {
+    #select {
+        .select {
+            font-size: 1em;
+            .color {
+                font-size: 1.5em;
+            }
+            .clothes {
+                font-size: 1.5em;
+            }
+            .purpose {
+                font-size: 1.5em;
+            }
+        }
+    }
+    #fitting-room {
+        .col-md-2 {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        .room {
+            font-size: 1.5em;
+            min-height: 200px;
+            .booking-date, .timeago {
+                font-size: 0.9em;
+            }
         }
     }
 }

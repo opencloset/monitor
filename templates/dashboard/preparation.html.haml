@@ -1,0 +1,28 @@
+- use utf8;
+- layout 'default', jses => ['preparation.js'];
+- title 'Preparation';
+#preparation.row
+  #select.col-md-8
+    - while (my $order = $orders->next) {
+      .row.select{:data-order-id => '#{$order->id}'}= include 'partials/select', order => $order;
+    - }
+  #fitting-room.col-md-4
+    .row
+      - for my $n (qw/7 8 9 10 11/) {
+        .col-md-2
+          - if (my $order = $rooms->[$n]) {
+            %div{:data-order-id => '#{$order->id}'}= include 'partials/room-preparation', order => $order, n => $n;
+          - } else {
+            = include 'partials/room-empty', n => $n;
+          - }
+      - }
+    %hr
+    .row
+      - for my $n (qw/6 5 4 3 2 1/) {
+        .col-md-2
+          - if (my $order = $rooms->[$n]) {
+            %div{:data-order-id => '#{$order->id}'}= include 'partials/room-preparation', order => $order, n => $n;
+          - } else {
+            = include 'partials/room-empty', n => $n
+          - }
+      - }
