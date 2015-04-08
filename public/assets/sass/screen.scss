@@ -229,7 +229,13 @@ html, body {
 #preparation {
     #select {
         .select {
-            font-size: 1em;
+            font-size: 1.1em;
+            .profile {
+                font-size: 1.1em;
+                h1, h2 {
+                    margin-top: 5px;
+                }
+            }
             .color {
                 font-size: 1.5em;
             }
@@ -238,6 +244,12 @@ html, body {
             }
             .purpose {
                 font-size: 1.5em;
+            }
+            .size {
+                ul {
+                    font-size: 1.1em;
+                    margin-bottom: 5px;
+                }
             }
         }
     }
