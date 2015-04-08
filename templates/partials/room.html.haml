@@ -55,7 +55,7 @@
   .purpose
     %p= $user_info->purpose || ''
     %p= $user_info->purpose2 || ''
-  %p.comment= $user_info->comment || ''
+  %p.comment= substr($user_info->comment, 0, 25) || ''
   %ul.clothes
     - for my $clothes (@clothes) {
       %li

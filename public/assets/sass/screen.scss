@@ -52,14 +52,18 @@ html, body {
         border-color: purple !important;
     }
     .room {
-        font-size: 2em;
+        font-size: 1.2em;
         background-color: #000;
-        min-height: 500px;
+        min-height: 340px;
         border-width: 0.3em;
         padding: 0;
         cursor: pointer;
+        h3 {
+            margin-top: 10px;
+        }
         ul {
             margin-left: 0;
+            margin-bottom: 5px;
             padding-left: 0;
             list-style-type: none;
             li {
@@ -107,6 +111,9 @@ html, body {
     }
     .purpose {
         margin-top: 1em;
+        > p:first-child {
+            margin-bottom: 5px;
+        }
     }
     .clothes {
         font-size: 0.5em;
