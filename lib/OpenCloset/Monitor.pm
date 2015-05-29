@@ -54,11 +54,11 @@ sub _assets {
     $self->plugin('AssetPack');
     $self->defaults( { jses => [], csses => [] } );
 
-    $self->asset( 'statistics.css' => '/assets/css/screen.css' );
+    $self->asset( 'statistics.css' => '/assets/sass/screen.scss' );
     $self->asset(
         'screen.css' => qw{
             /assets/css/cover.css
-            /assets/css/screen.css
+            /assets/sass/screen.scss
             }
     );
     $self->asset(
