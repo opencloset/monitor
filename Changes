@@ -1,4 +1,6 @@
+v0.2.4    Fri May 29 12:33:11 2015 KST
   - change .active:hover css for mobile persist :hover state
+  - `grunt` is no more needed
 
 v0.2.3    Tue May 19 14:12:54 2015 KST
   - preparation route syncs active states between each connected devices
