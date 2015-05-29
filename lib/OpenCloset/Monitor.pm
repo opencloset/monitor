@@ -6,7 +6,7 @@ use Net::IP::AddrRanges;
 use OpenCloset::Schema;
 use OpenCloset::Monitor::Schema;
 
-use version; our $VERSION = qv("v0.2.3");
+use version; our $VERSION = qv("v0.2.4");
 
 has ranges => sub { Net::IP::AddrRanges->new };
 has DB => sub {
@@ -54,11 +54,11 @@ sub _assets {
     $self->plugin('AssetPack');
     $self->defaults( { jses => [], csses => [] } );
 
-    $self->asset( 'statistics.css' => '/assets/css/screen.css' );
+    $self->asset( 'statistics.css' => '/assets/sass/screen.scss' );
     $self->asset(
         'screen.css' => qw{
             /assets/css/cover.css
-            /assets/css/screen.css
+            /assets/sass/screen.scss
             }
     );
     $self->asset(
@@ -78,7 +78,7 @@ sub _assets {
         'index.js' => qw{
             /assets/components/reconnectingWebsocket/reconnecting-websocket.js
             /assets/components/backbone/backbone.js
-            /assets/js/index.js
+            /assets/coffee/index.coffee
             }
     );
     $self->asset(
@@ -88,7 +88,7 @@ sub _assets {
             /assets/components/bootstrap-datepicker/js/bootstrap-datepicker.js
             /assets/components/bootstrap-datepicker/js/locales/bootstrap-datepicker.kr.js
             /assets/components/json2/json2.js
-            /assets/js/statistics-elapsed.js
+            /assets/coffee/statistics-elapsed.coffee
             }
     );
     $self->asset(
@@ -96,7 +96,7 @@ sub _assets {
             /assets/components/jquery-timeago/jquery.timeago.js
             /assets/components/jquery-timeago/locales/jquery.timeago.ko.js
             /assets/components/reconnectingWebsocket/reconnecting-websocket.js
-            /assets/js/room.js
+            /assets/coffee/room.coffee
             }
     );
     $self->asset(
@@ -104,7 +104,7 @@ sub _assets {
             /assets/components/jquery-timeago/jquery.timeago.js
             /assets/components/jquery-timeago/locales/jquery.timeago.ko.js
             /assets/components/reconnectingWebsocket/reconnecting-websocket.js
-            /assets/js/select.js
+            /assets/coffee/select.coffee
             }
     );
     $self->asset(
@@ -112,7 +112,7 @@ sub _assets {
             /assets/components/jquery-timeago/jquery.timeago.js
             /assets/components/jquery-timeago/locales/jquery.timeago.ko.js
             /assets/components/reconnectingWebsocket/reconnecting-websocket.js
-            /assets/js/preparation.js
+            /assets/coffee/preparation.coffee
             }
     );
 }
