@@ -50,7 +50,6 @@ $ ->
       type: method
       data: data
       success: (data, textStatus, jqXHR) ->
-        $this.parent().toggleClass('active')
       error: (jqXHR, textStatus, errorThrown) ->
         console.log textStatus
       complete: (jqXHR, textStatus) ->
@@ -69,7 +68,6 @@ $ ->
       type: method
       data: data
       success: (data, textStatus, jqXHR) ->
-        $this.toggleClass('active')
       error: (jqXHR, textStatus, errorThrown) ->
         console.log textStatus
       complete: (jqXHR, textStatus) ->
