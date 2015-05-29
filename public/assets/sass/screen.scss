@@ -50,6 +50,9 @@ html, body {
 #fitting-room {
     .active .room {
         border-color: purple !important;
+        &:hover {
+            border-color: purple;
+        }
     }
     .room {
         font-size: 2em;
@@ -145,6 +148,9 @@ html, body {
             border-color: #fff;
             h1 {
                 font-weight: bold;
+            }
+            &:hover {
+                border-color: #fff;
             }
         }
         .profile {
