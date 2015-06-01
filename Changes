@@ -1,3 +1,6 @@
+v0.2.5    Mon Jun  1 18:33:50 2015 KST
+  - preparation 에서 대여자의 상태를 변경가능
+
 v0.2.4    Fri May 29 12:33:11 2015 KST
   - change .active:hover css for mobile persist :hover state
   - `grunt` is no more needed
