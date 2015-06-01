@@ -8,6 +8,14 @@ use OpenCloset::Status;
 
 has DB => sub { shift->app->DB };
 
+=head1 METHODS
+
+=head2 create
+
+    POST /events
+
+=cut
+
 sub create {
     my $self = shift;
 
