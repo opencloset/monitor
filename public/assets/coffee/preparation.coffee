@@ -71,3 +71,40 @@ $ ->
       error: (jqXHR, textStatus, errorThrown) ->
         console.log textStatus
       complete: (jqXHR, textStatus) ->
+
+  # refs Window::OpenCloset::status in opencloset/coffee/bundle.coffee
+  items = {}
+  _.each [1..11], (el, i) ->
+    items[el] =
+      name: "탈의##{el}"
+      callback: (key, opt) ->
+        postStatus(key, opt, parseInt(el) + 19)
+
+  $.contextMenu
+    selector: '.select[data-order-id]'
+    items: items
+
+  $.contextMenu
+    selector: '[data-order-id]:not(.select)'
+    items:
+      a:
+        name: '의류준비'
+        callback: (key, opt) ->
+          room_no = getEmptyRoom()
+          postStatus(key, opt, 17)
+
+  getEmptyRoom = ->
+    $room = $('.empty.room').first()
+    return $room.find('> h3').text().substr(1)
+
+  postStatus = (key, opt, to) ->
+    $el      = opt.$trigger
+    order_id = $el.data('order-id')
+    $.ajax "/api/orders/#{order_id}.json",
+      type: 'PUT'
+      data:
+        status_id: to
+      success: (data, textStatus, jqXHR) ->
+        console.log data
+      error: (jqXHR, textStatus, errorThrown) ->
+      complete: (jqXHR, textStatus) ->

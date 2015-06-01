@@ -67,6 +67,9 @@ sub _assets {
             /assets/components/bootstrap-datepicker/css/datepicker3.css
             }
     );
+    $self->asset( 'jquery.contextMenu.css' =>
+            '/assets/components/jQuery-contextMenu/src/jquery.contextMenu.css'
+    );
     $self->asset(
         'bundle.js' => qw{
             /assets/components/jquery/dist/jquery.js
@@ -112,6 +115,8 @@ sub _assets {
             /assets/components/jquery-timeago/jquery.timeago.js
             /assets/components/jquery-timeago/locales/jquery.timeago.ko.js
             /assets/components/reconnectingWebsocket/reconnecting-websocket.js
+            /assets/components/jQuery-contextMenu/src/jquery.ui.position.js
+            /assets/components/jQuery-contextMenu/src/jquery.contextMenu.js
             /assets/coffee/preparation.coffee
             }
     );
