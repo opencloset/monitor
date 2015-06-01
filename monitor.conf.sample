@@ -47,8 +47,9 @@ $db_opts->{AutoCommit} //= 1;
     },
     whitelist  => [@WHITELIST],
     opencloset => {
-        uri      => 'http://localhost:5001',
-        username => 'monitor',
-        secret   => 'opencloset#s3cr3t'
-    }
+        uri   => 'http://localhost:5001',
+        email => $ENV{OPENCLOSET_MONITOR_EMAIL} || 'monitor@theopencloset.net',
+        password => $ENV{OPENCLOSET_MONITOR_PASSWORD} || 's3cr3t',
+        cookie   => '.cookie.txt'
+    },
 };
