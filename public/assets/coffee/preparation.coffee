@@ -90,12 +90,15 @@ $ ->
       a:
         name: '의류준비'
         callback: (key, opt) ->
-          room_no = getEmptyRoom()
           postStatus(key, opt, 17)
-
-  getEmptyRoom = ->
-    $room = $('.empty.room').first()
-    return $room.find('> h3').text().substr(1)
+      b:
+        name: '수선'
+        callback: (key, opt) ->
+          postStatus(key, opt, 6)
+      c:
+        name: '포장'
+        callback: (key, opt) ->
+          postStatus(key, opt, 18)
 
   postStatus = (key, opt, to) ->
     $el      = opt.$trigger
@@ -107,4 +110,5 @@ $ ->
       success: (data, textStatus, jqXHR) ->
         console.log data
       error: (jqXHR, textStatus, errorThrown) ->
+        location.reload true
       complete: (jqXHR, textStatus) ->
