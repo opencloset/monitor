@@ -146,6 +146,8 @@ sub _private_routes {
     $r->post('/events')->to('event#create');
 
     $r->websocket('/socket')->to('socket#socket')->name('socket');
+
+    $r->put('/api/orders/:order_id')->to('API#order');
 }
 
 1;
