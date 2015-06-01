@@ -9,6 +9,7 @@ node_modules/
 run
 *.db
 packed/
+.cookie.txt
 
 # editor swap files
 *.swp

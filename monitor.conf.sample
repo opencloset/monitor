@@ -15,7 +15,7 @@ my $db_opts
     };
 
 my @WHITELIST = split /,/, $ENV{OPENCLOSET_WHITELIST} || '';
-push @WHITELIST, '127.0.0.1';
+push @WHITELIST, '127.0.0.1', '192.168.0.0/24';
 
 #
 # RaiseError와 AutoCommit을 명시적으로 껐을때를 제외하고는 항상 켜줍니다.
@@ -45,5 +45,11 @@ $db_opts->{AutoCommit} //= 1;
         opts => $db_opts,
         sqlite => 'dbi:SQLite:dbname=db/monitor.db',
     },
-    whitelist => [@WHITELIST,],
+    whitelist  => [@WHITELIST],
+    opencloset => {
+        uri   => 'http://localhost:5001',
+        email => $ENV{OPENCLOSET_MONITOR_EMAIL} || 'monitor@theopencloset.net',
+        password => $ENV{OPENCLOSET_MONITOR_PASSWORD} || 's3cr3t',
+        cookie   => '.cookie.txt'
+    },
 };
