@@ -1,3 +1,6 @@
+v0.2.6    Tue Jun  2 23:22:36 2015 KST
+  - override contextmenu background-color
+
 v0.2.5    Mon Jun  1 18:33:50 2015 KST
   - preparation 에서 대여자의 상태를 변경가능
 
