@@ -79,11 +79,42 @@
         %span.label{:class => $color}= $color_map{$color}
     - }
 .col-md-4
-  %ul.clothes
-    - for my $clothes (@clothes) {
-      %li
-        %strong= $clothes_map{$clothes}
-    - }
+  - my @man_category   = qw/jacket shirt pants shoes tie belt/;
+  - my @woman_category = qw/jacket blouse skirt shoes belt/;
+  - my @common_category = qw/jacket shoes belt/;
+  - my ($for_man, $for_woman);
+  - for my $clothe (@clothes) {
+    - next if grep {/^$clothe$/} @common_category;
+    - my $bool = grep {/^$clothe$/} @man_category;
+    - $for_man = 1 if $bool;
+    - $bool = grep {/^$clothe$/} @woman_category;
+    - $for_woman = 1 if $bool;
+    - last if $for_man && $for_woman;
+  - }
+  - if ($for_man) {
+    %table.table.table-bordered.table-condensed
+      %tbody
+        %tr.text-center
+          - for my $category (@man_category) {
+            - if (grep {/^$category$/} @clothes) {
+              %td.text-info= $clothes_map{$category}
+            - } else {
+              %td.text-muted= $clothes_map{$category}
+            - }
+          - }
+  - }
+  - if ($for_woman) {
+    %table.table.table-bordered.table-condensed
+      %tbody
+        %tr.text-center
+          - for my $category (@woman_category) {
+            - if (grep {/^$category$/} @clothes) {
+              %td.text-info= $clothes_map{$category}
+            - } else {
+              %td.text-muted= $clothes_map{$category}
+            - }
+          - }
+  - }
   .purpose
     %p= $user_info->purpose || ''
     \/
