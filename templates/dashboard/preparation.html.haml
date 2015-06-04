@@ -38,3 +38,18 @@
             = include 'partials/room-empty', n => $n
           - }
       - }
+    %hr
+  #repair.col-md-offset-8.col-md-4
+    .row
+      - for my $order (@$repair) {
+        - my $user = $order->user;
+        - my $user_info = $user->user_info;
+        - my $gender = $user_info->gender;
+        - my $details = $order->order_details;
+        .repair{:class => $gender}
+          %i.fa{:class => "fa-#{$gender}"}
+          %strong= $user->name
+          %span.timeago
+            %small
+              %abbr.timeago{:title => '#{$order->update_date->ymd}T#{$order->update_date->hms}Z'}= $order->update_date
+      - }

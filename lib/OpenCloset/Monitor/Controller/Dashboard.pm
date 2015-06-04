@@ -231,11 +231,17 @@ sub preparation {
     $brain->{data}{orders}{room} = {} unless @room_active;
     $brain->{data}{orders} = {} unless $rs->count;
 
+    my @repair = $self->DB->resultset('Order')->search(
+        { status_id => $OpenCloset::Status::STATUS_REPAIR },
+        { order_by  => { -asc => 'update_date' } }
+    );
+
     $self->stash(
         orders        => $rs,
         rooms         => [@room],
         room_active   => [@room_active],
-        select_active => [@select_active]
+        select_active => [@select_active],
+        repair        => [@repair]
     );
 }
 

@@ -282,3 +282,18 @@ html, body {
 .context-menu-item {
     background-color: #333;
 }
+.repair {
+    border-width: 0.3em;
+    &.male {
+        .fa {
+            color: #5555ee;
+        }
+        border-color: #5555ee;
+    }
+    &.female {
+        .fa {
+            color: #ee3333;
+        }
+        border-color: #ee3333;
+    }
+}
