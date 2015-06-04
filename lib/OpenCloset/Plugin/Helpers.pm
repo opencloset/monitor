@@ -106,9 +106,10 @@ sub previous_order {
 }
 
 sub history {
-    my ( $self, $cond ) = @_;
+    my ( $self, $cond, $attr ) = @_;
 
-    return $self->app->SQLite->resultset('History')->search($cond);
+    $attr = { order_by => { -desc => 'id' } } unless $attr;
+    return $self->app->SQLite->resultset('History')->search( $cond, $attr );
 }
 
 1;
