@@ -14,6 +14,7 @@ $ ->
     sender = data.sender
     range = [20..30]
     range.unshift 17
+    range.unshift 6
     if sender is 'order' and parseInt(data.from) in range or parseInt(data.to) in range
       location.reload()
     else if sender is 'user'
@@ -108,7 +109,16 @@ $ ->
       data:
         status_id: to
       success: (data, textStatus, jqXHR) ->
-        console.log data
+      error: (jqXHR, textStatus, errorThrown) ->
+        location.reload true
+      complete: (jqXHR, textStatus) ->
+
+  $('#repair .btn-success').click (e) ->
+    e.preventDefault()
+    url = $(@).attr('href')
+    $.ajax url,
+      type: 'PUT'
+      success: (data, textStatus, jqXHR) ->
       error: (jqXHR, textStatus, errorThrown) ->
         location.reload true
       complete: (jqXHR, textStatus) ->
