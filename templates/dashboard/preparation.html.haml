@@ -40,23 +40,23 @@
           - }
       - }
     %hr
-  #repair.col-md-offset-8.col-md-4
-    %ul.list-group
-      - for my $order (@$repair) {
-        - my $user = $order->user;
-        - my $user_info = $user->user_info;
-        - my $gender = $user_info->gender;
-        - my $details = $order->order_details;
-        - my $history = history({ order_id => $order->id })->next;
-        - my $room_no = $history ? $history->room_no : '0';
-        - my $url = url_for('/api/orders/' . $order->id)->query(status_id => $OpenCloset::Status::STATUS_BOXING);
-        %li.list-group-item.repair.text-left{:class => $gender}
-          %i.fa{:class => "fa-#{$gender}"}
-          %samp= "#$room_no"
-          %strong= $user->name
-          %span.timeago
-            %small
-              %abbr.timeago{:title => '#{$order->update_date->ymd}T#{$order->update_date->hms}Z'}= $order->update_date
-          %p.pull-right
-            %a.btn.btn-success.btn-sm{:href => $url} 포장
-      - }
+    #repair.row
+      %ul.list-group
+        - for my $order (@$repair) {
+          - my $user = $order->user;
+          - my $user_info = $user->user_info;
+          - my $gender = $user_info->gender;
+          - my $details = $order->order_details;
+          - my $history = history({ order_id => $order->id })->next;
+          - my $room_no = $history ? $history->room_no : '0';
+          - my $url = url_for('/api/orders/' . $order->id)->query(status_id => $OpenCloset::Status::STATUS_BOXING);
+          %li.list-group-item.repair.text-left{:class => $gender}
+            %i.fa{:class => "fa-#{$gender}"}
+            %samp= "#$room_no"
+            %strong= $user->name
+            %span.timeago
+              %small
+                %abbr.timeago{:title => '#{$order->update_date->ymd}T#{$order->update_date->hms}Z'}= $order->update_date
+            %p.pull-right
+              %a.btn.btn-success.btn-sm{:href => $url} 포장
+        - }
