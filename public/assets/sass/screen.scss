@@ -282,3 +282,20 @@ html, body {
 .context-menu-item {
     background-color: #333;
 }
+#repair {
+    .repair {
+        font-size: 1.5em;
+        &.male {
+            .fa {
+                color: #5555ee;
+            }
+            background-color: lighten(#5555ee, 10%);
+        }
+        &.female {
+            .fa {
+                color: #ee3333;
+            }
+            background-color: lighten(#ee3333, 10%);
+        }
+    }
+}
