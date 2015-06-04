@@ -4,7 +4,7 @@ Dashboard in waiting room
 
 ## Version ##
 
-v0.2.6
+v0.3.0
 
 ## 요구사항 ##
 
@@ -13,7 +13,6 @@ v0.2.6
 
     # install front-end pkg deps & build
     $ bower install
-    $ grunt
 
     $ cpanm --installdeps .
     $ cpanm --mirror https://cpan.theopencloset.net OpenCloset::Schema
