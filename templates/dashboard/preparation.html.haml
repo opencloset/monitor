@@ -13,6 +13,14 @@
     - }
   #fitting-room.col-md-4
     .row
+      #bestfit-alert.alert.alert-success.alert-dismissible.fade.in.hidden{:role => "alert"}
+        %button.close{:aria-label => "Close", :type => "button"}
+          %span{"aria-hidden" => "true"} ×
+        %h4
+          잘 어울린다고 생각하십니까?
+        %p
+          %button.btn.btn-success{:type => "button"} 어울림
+          %button.btn.btn-warning{:type => "button"} 보통
       - for my $n (qw/7 8 9 10 11/) {
         .col-md-2
           - if (my $order = $rooms->[$n]) {
