@@ -196,20 +196,6 @@ html, body {
             .label.dark  { background-color: lighten(#000, 15%) }
             .label.charcoalgray { background-color: #666 }
         }
-        .clothes {
-            font-size: 1.5em;
-            list-style-type: none;
-            padding-left: 0;
-            li {
-                display: inline;
-            }
-            li:after {
-                content: ", ";
-            }
-            li:last-child:after {
-                content: "";
-            }
-        }
         .purpose {
             font-size: 1.5em;
             p {
@@ -229,6 +215,18 @@ html, body {
             position: absolute;
             top: 0;
             left: 5px;
+        }
+        table {
+            td {
+                font-size: 1.5em;
+                background-color: #333;
+                &.text-muted {
+                    color: #444;
+                }
+                &.text-info {
+                    color: #fff;
+                }
+            }
         }
     }
 }
@@ -281,4 +279,26 @@ html, body {
 }
 .context-menu-item {
     background-color: #333;
+}
+#repair {
+    padding: 1em;
+    .repair {
+        font-size: 1.5em;
+        &.male {
+            .fa {
+                color: #5555ee;
+            }
+            background-color: lighten(#5555ee, 10%);
+        }
+        &.female {
+            .fa {
+                color: #ee3333;
+            }
+            background-color: lighten(#ee3333, 10%);
+        }
+    }
+}
+.alert {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    text-shadow: none;
 }

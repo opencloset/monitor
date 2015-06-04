@@ -14,6 +14,7 @@ $ ->
     sender = data.sender
     range = [20..30]
     range.unshift 17
+    range.unshift 6
     if sender is 'order' and parseInt(data.from) in range or parseInt(data.to) in range
       location.reload()
     else if sender is 'user'
@@ -78,7 +79,8 @@ $ ->
     items[el] =
       name: "탈의##{el}"
       callback: (key, opt) ->
-        postStatus(key, opt, parseInt(el) + 19)
+        order_id = opt.$trigger.data('order-id')
+        updateOrder(order_id, {status_id: parseInt(el) + 19})
 
   $.contextMenu
     selector: '.select[data-order-id]'
@@ -90,25 +92,66 @@ $ ->
       a:
         name: '의류준비'
         callback: (key, opt) ->
-          postStatus(key, opt, 17)
+          order_id = opt.$trigger.data('order-id')
+          updateOrder(order_id, {status_id: 17})
       b:
         name: '수선'
         callback: (key, opt) ->
-          postStatus(key, opt, 6)
+          order_id = opt.$trigger.data('order-id')
+          $bestfit = $('#bestfit-alert')
+          $bestfit.data('order-id', order_id)
+          $bestfit.data('status-id', 6)
+          $bestfit.removeClass('hidden')
+          $('#bestfit-alert').removeClass('hidden')
       c:
         name: '포장'
         callback: (key, opt) ->
-          postStatus(key, opt, 18)
+          order_id = opt.$trigger.data('order-id')
+          $bestfit = $('#bestfit-alert')
+          $bestfit.data('order-id', order_id)
+          $bestfit.data('status-id', 18)
+          $bestfit.removeClass('hidden')
+          $('#bestfit-alert').removeClass('hidden')
 
-  postStatus = (key, opt, to) ->
-    $el      = opt.$trigger
-    order_id = $el.data('order-id')
+  $('#bestfit-alert').on 'click', '.btn-success', (e) ->
+    $('#bestfit-alert').data('bestfit', 1).addClass('hidden')
+      .trigger('closed.bs.alert')
+
+  $('#bestfit-alert').on 'click', '.btn-warning', (e) ->
+    $('#bestfit-alert').data('bestfit', 0).addClass('hidden')
+      .trigger('closed.bs.alert')
+
+  $('#bestfit-alert').on 'click', 'button.close', (e) ->
+    $('#bestfit-alert')
+      .removeData('order-id')
+      .removeData('status-id')
+      .removeData('bestfit')
+      .addClass('hidden')
+      .trigger('closed.bs.alert')
+
+  $('#bestfit-alert').on 'closed.bs.alert', ->
+    order_id  = $(@).data('order-id')
+    status_id = $(@).data('status-id')
+    bestfit   = $(@).data('bestfit')
+    return unless bestfit?
+    console.log order_id, status_id, bestfit
+    updateOrder(order_id, {status_id: status_id, bestfit: bestfit})
+
+  updateOrder = (order_id, params) ->
     $.ajax "/api/orders/#{order_id}.json",
       type: 'PUT'
-      data:
-        status_id: to
+      data: params
       success: (data, textStatus, jqXHR) ->
-        console.log data
+      error: (jqXHR, textStatus, errorThrown) ->
+        location.reload true
+      complete: (jqXHR, textStatus) ->
+
+  $('#repair .btn-success').click (e) ->
+    e.preventDefault()
+    url = $(@).attr('href')
+    $.ajax url,
+      type: 'PUT'
+      success: (data, textStatus, jqXHR) ->
       error: (jqXHR, textStatus, errorThrown) ->
         location.reload true
       complete: (jqXHR, textStatus) ->

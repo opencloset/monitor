@@ -11,7 +11,19 @@ use Path::Tiny;
 
 =head2 order
 
-    # PUT /api/orders/:order_id?status_id=:status_id
+    # PUT /api/orders/:order_id?status_id=:status_id&bestfit=:bestfit
+
+=over params
+
+=item status_id
+
+C<$OpenCloset::Status::STATUS_*>
+
+=item bestfit
+
+0 or 1
+
+=back
 
 =cut
 
@@ -19,6 +31,29 @@ sub order {
     my $self      = shift;
     my $order_id  = $self->param('order_id');
     my $status_id = $self->param('status_id');
+    my $bestfit   = $self->param('bestfit');
+
+    my $queries = { id => $order_id };
+    $queries->{status_id} = $status_id if defined $status_id;
+    $queries->{bestfit}   = $bestfit   if defined $bestfit;
+
+    my $opencloset = $self->app->config->{opencloset};
+    my $cookie     = $self->_auth_opencloset;
+    my $http       = HTTP::Tiny->new( timeout => 3, cookie_jar => $cookie );
+    my $params     = $http->www_form_urlencode($queries);
+    my $url        = $opencloset->{uri} . "/api/order/$order_id.json?$params";
+    my $res        = $http->request( 'PUT', $url );
+    return $self->error( 500, { str => 'Failed to update order' } )
+        unless $res->{success};
+    $self->render( text => decode_utf8( $res->{content} ) );
+}
+
+=head2 _auth_opencloset
+
+=cut
+
+sub _auth_opencloset {
+    my $self = shift;
 
     my $opencloset = $self->app->config->{opencloset};
     my $cookie     = path( $opencloset->{cookie} )->touch;
@@ -45,13 +80,7 @@ sub order {
         }
     }
 
-    my $params = $http->www_form_urlencode(
-        { id => $order_id, status_id => $status_id } );
-    my $url = $opencloset->{uri} . "/api/order/$order_id.json?$params";
-    my $res = $http->request( 'PUT', $url );
-    return $self->error( 500, { str => 'Failed to update order' } )
-        unless $res->{success};
-    $self->render( text => decode_utf8( $res->{content} ) );
+    return $cookiejar;
 }
 
 1;
