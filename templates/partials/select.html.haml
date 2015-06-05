@@ -91,6 +91,10 @@
     - $for_woman = 1 if $bool;
     - last if $for_man && $for_woman;
   - }
+  - if (!$for_man && !$for_woman) {
+    - $for_man = 1 if $gender eq 'male';
+    - $for_woman = 1 if $gender eq 'female';
+  - }
   - if ($for_man) {
     %table.table.table-bordered.table-condensed
       %tbody
