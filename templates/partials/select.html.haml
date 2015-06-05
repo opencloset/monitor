@@ -79,9 +79,9 @@
         %span.label{:class => $color}= $color_map{$color}
     - }
 .col-md-4
-  - my @man_category   = qw/jacket shirt pants shoes tie belt/;
-  - my @woman_category = qw/jacket blouse skirt shoes belt/;
-  - my @common_category = qw/jacket shoes belt/;
+  - my @man_category   = qw/jacket pants shirt tie shoes belt/;
+  - my @woman_category = qw/jacket skirt blouse shoes/;
+  - my @common_category = qw/jacket shoes/;
   - my ($for_man, $for_woman);
   - for my $clothe (@clothes) {
     - next if grep {/^$clothe$/} @common_category;
