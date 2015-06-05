@@ -7,6 +7,8 @@ use HTTP::CookieJar;
 use HTTP::Tiny;
 use Path::Tiny;
 
+use OpenCloset::Brain;
+
 =head1 METHODS
 
 =head2 order
@@ -36,6 +38,10 @@ sub order {
     my $queries = { id => $order_id };
     $queries->{status_id} = $status_id if defined $status_id;
     $queries->{bestfit}   = $bestfit   if defined $bestfit;
+
+    my $brain = OpenCloset::Brain->new;
+    delete $brain->{data}{room}{$order_id};
+    delete $brain->{data}{select}{$order_id};
 
     my $opencloset = $self->app->config->{opencloset};
     my $cookie     = $self->_auth_opencloset;

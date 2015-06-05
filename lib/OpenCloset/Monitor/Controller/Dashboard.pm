@@ -78,11 +78,11 @@ sub room {
                 status_id => $OpenCloset::Status::STATUS_FITTING_ROOM1 + $n - 1
             }
         )->next;
-        $active[$n] = $brain->{data}{orders}{room}{ $order->id } if $order;
+        $active[$n] = $brain->{data}{room}{ $order->id } if $order;
         $room[$n] = $order;
     }
 
-    $brain->{data}{orders}{room} = {} unless @active;
+    $brain->{data}{room} = {} unless @active;
     $self->stash( rooms => [@room], active => [@active] );
 }
 
@@ -91,17 +91,12 @@ sub create_room {
     my $order_id = $self->param('order_id');
 
     my $brain = OpenCloset::Brain->new;
-    $brain->{data}{orders}{room}{$order_id} = 1;
+    $brain->{data}{room}{$order_id} = 1;
 
     my $channel = $self->app->redis_channel;
     $self->redis->publish(
         "$channel:active" => decode_utf8(
-            j(
-                {
-                    sender => 'active.room',
-                    data   => $brain->{data}{orders}{room}
-                }
-            )
+            j( { sender => 'active.room', order_id => $order_id } )
         )
     );
     $self->render(
@@ -115,17 +110,12 @@ sub delete_room {
     my $order_id = $self->param('order_id');
 
     my $brain = OpenCloset::Brain->new;
-    delete $brain->{data}{orders}{room}{$order_id};
+    delete $brain->{data}{room}{$order_id};
 
     my $channel = $self->app->redis_channel;
     $self->redis->publish(
         "$channel:active" => decode_utf8(
-            j(
-                {
-                    sender => 'active.room',
-                    data   => $brain->{data}{orders}{room}
-                }
-            )
+            j( { sender => 'active.room', order_id => $order_id } )
         )
     );
     $self->render(
@@ -143,8 +133,8 @@ sub select {
     );
 
     my $brain = OpenCloset::Brain->new;
-    $brain->{data}{orders} = {} unless $rs->count;
-    my @active = keys %{ $brain->{data}{orders}{select} ||= {} };
+    $brain->{data}{select} = {} unless $rs->count;
+    my @active = keys %{ $brain->{data}{select} ||= {} };
     $self->stash( orders => $rs, active => [@active] );
 }
 
@@ -153,17 +143,12 @@ sub create_select {
     my $order_id = $self->param('order_id');
 
     my $brain = OpenCloset::Brain->new;
-    $brain->{data}{orders}{select}{$order_id} = 1;
+    $brain->{data}{select}{$order_id} = 1;
 
     my $channel = $self->app->redis_channel;
     $self->redis->publish(
         "$channel:active" => decode_utf8(
-            j(
-                {
-                    sender => 'active.select',
-                    data   => $brain->{data}{orders}{select}
-                }
-            )
+            j( { sender => 'active.select', order_id => $order_id } )
         )
     );
 
@@ -178,17 +163,12 @@ sub delete_select {
     my $order_id = $self->param('order_id');
 
     my $brain = OpenCloset::Brain->new;
-    delete $brain->{data}{orders}{select}{$order_id};
+    delete $brain->{data}{select}{$order_id};
 
     my $channel = $self->app->redis_channel;
     $self->redis->publish(
         "$channel:active" => decode_utf8(
-            j(
-                {
-                    sender => 'active.select',
-                    data   => $brain->{data}{orders}{select}
-                }
-            )
+            j( { sender => 'active.select', order_id => $order_id } )
         )
     );
     $self->render(
@@ -221,15 +201,14 @@ sub preparation {
                 status_id => $OpenCloset::Status::STATUS_FITTING_ROOM1 + $n - 1
             }
         )->next;
-        $room_active[$n] = $brain->{data}{orders}{room}{ $order->id }
-            if $order;
+        $room_active[$n] = $brain->{data}{room}{ $order->id } if $order;
         $room[$n] = $order;
     }
 
-    my @select_active = keys %{ $brain->{data}{orders}{select} ||= {} };
+    my @select_active = keys %{ $brain->{data}{select} ||= {} };
 
-    $brain->{data}{orders}{room} = {} unless @room_active;
-    $brain->{data}{orders} = {} unless $rs->count;
+    $brain->{data}{room}   = {} unless @room_active;
+    $brain->{data}{select} = {} unless $rs->count;
 
     my @repair = $self->DB->resultset('Order')->search(
         { status_id => $OpenCloset::Status::STATUS_REPAIR },
