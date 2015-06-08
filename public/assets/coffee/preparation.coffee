@@ -20,17 +20,9 @@ $ ->
     else if sender is 'user'
       location.reload()
     else if sender is 'active.room'
-      $('#fitting-room .active').removeClass('active')
-      keys = _.keys data.data
-      _.each keys, (el) ->
-        if el
-          $("[data-order-id=#{el}]").addClass('active')
+      $($("[data-order-id=#{data.order_id}]")).toggleClass('active')
     else if sender is 'active.select'
-      $('#select .active').removeClass('active')
-      keys = _.keys data.data
-      _.each keys, (el) ->
-        if el
-          $("[data-order-id=#{el}]").addClass('active')
+      $($("[data-order-id=#{data.order_id}]")).toggleClass('active')
   sock.onerror = (e) ->
     location.reload()
 
