@@ -76,11 +76,11 @@ sub _auth_opencloset {
         my $res      = $http->post_form( $url,
             { email => $email, password => $password, remember => 1 } );
 
-        print "$res->{status} $res->{reason}\n";
-        $cookie->spew( join "\n", $cookiejar->dump_cookies );
-
         ## 성공일때 응답코드가 302 인데, 이는 실패했을때와 마찬가지이다.
-        unless ( $res->{success} ) {
+        if ( $res->{status} == 302 && $res->{headers}{location} eq '/' ) {
+            $cookie->spew( join "\n", $cookiejar->dump_cookies );
+        }
+        else {
             $self->app->log->error("Failed Authentication to Opencloset");
             $self->app->log->error("$res->{status} $res->{reason}");
         }
