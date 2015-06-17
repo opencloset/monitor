@@ -66,7 +66,17 @@ $ ->
       complete: (jqXHR, textStatus) ->
 
   # refs Window::OpenCloset::status in opencloset/coffee/bundle.coffee
-  items = {}
+  items =
+    16:
+      name: '수선'
+      callback: (key, opt) ->
+        order_id = opt.$trigger.data('order-id')
+        updateOrder(order_id, {status_id: 16})
+    18:
+      name: '포장'
+      callback: (key, opt) ->
+        order_id = opt.$trigger.data('order-id')
+        updateOrder(order_id, {status_id: 18})
   _.each [1..11], (el, i) ->
     items[el] =
       name: "탈의##{el}"
