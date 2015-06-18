@@ -8,7 +8,22 @@ use OpenCloset::Status;
 
 has DB => sub { shift->app->DB };
 
+=head1 METHODS
+
+=head2 elapsed
+
+    # elapsed
+    GET /statistics/elapsed
+
+=cut
+
 sub elapsed { my $self = shift }
+
+=head2 elapsed_ymd
+
+    GET /statistics/elapsed/:ymd
+
+=cut
 
 sub elapsed_ymd {
     my $self = shift;

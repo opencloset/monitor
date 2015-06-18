@@ -1,3 +1,8 @@
+v0.3.3    Thu Jun 18 09:07:57 2015 KST
+  - Documentation routing info to each controller
+  - Add 포장, 수선 context menu in preparation
+  - 어울림 => Best-Fit 문자 수정
+
 v0.3.2    Mon Jun  8 16:31:12 2015 KST
   - active 상태가 오락가락하는 버그 수정(https://github.com/opencloset/monitor/issues/15)
   - save cookie file after success authentication

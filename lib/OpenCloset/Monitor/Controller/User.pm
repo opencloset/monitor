@@ -1,6 +1,14 @@
 package OpenCloset::Monitor::Controller::User;
 use Mojo::Base 'Mojolicious::Controller';
 
+=head1 METHODS
+
+=head2 auth
+
+    under /
+
+=cut
+
 sub auth {
     my $self    = shift;
     my $address = $self->tx->remote_address;

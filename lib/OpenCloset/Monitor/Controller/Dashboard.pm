@@ -9,6 +9,16 @@ use Mojo::JSON 'j';
 
 has DB => sub { shift->app->DB };
 
+=head1 METHODS
+
+=head2 index
+
+    # index
+    GET /
+
+=cut
+
+
 sub index {
     my $self = shift;
     my $rs
@@ -66,6 +76,13 @@ sub index {
     );
 }
 
+=head2 room
+
+    # rooms
+    GET /room
+
+=cut
+
 sub room {
     my $self = shift;
 
@@ -86,6 +103,12 @@ sub room {
     $self->stash( rooms => [@room], active => [@active] );
 }
 
+=head2 create_room
+
+    POST /room
+
+=cut
+
 sub create_room {
     my $self     = shift;
     my $order_id = $self->param('order_id');
@@ -104,6 +127,12 @@ sub create_room {
         status => 201
     );
 }
+
+=head2 delete_room
+
+    DELETE /room/:order_id
+
+=cut
 
 sub delete_room {
     my $self     = shift;
@@ -124,6 +153,13 @@ sub delete_room {
     );
 }
 
+=head2 select
+
+    # select
+    GET /select
+
+=cut
+
 sub select {
     my $self = shift;
 
@@ -137,6 +173,12 @@ sub select {
     my @active = keys %{ $brain->{data}{select} ||= {} };
     $self->stash( orders => $rs, active => [@active] );
 }
+
+=head2 create_select
+
+    POST /select
+
+=cut
 
 sub create_select {
     my $self     = shift;
@@ -157,6 +199,12 @@ sub create_select {
         status => 201
     );
 }
+
+=head2 delete_select
+
+    DELETE /select/:order_id
+
+=cut
 
 sub delete_select {
     my $self     = shift;

@@ -3,6 +3,15 @@ use Mojo::Base 'Mojolicious::Controller';
 
 use Scalar::Util;
 
+=head1 METHODS
+
+=head2 socket
+
+    # socket
+    WS /socket
+
+=cut
+
 sub socket {
     my $self = shift;
 
