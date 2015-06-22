@@ -10,9 +10,10 @@
 - my @colors  = split /,/, $user_info->pre_color;
 - my $histories = history({ order_id => $order->id });
 - my $nth = $histories->count;
+- my $bestfit = $order->bestfit;
 
 .col-md-2.profile
-  %h1.name
+  %h1.name{:class => "#{$bestfit ? 'bestfit' : ''}"}
     %i.fa{:class => "fa-#{$gender}"}
     = $user->name
   %h2.age= age($user_info->birth)

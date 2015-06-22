@@ -157,3 +157,11 @@ $ ->
       error: (jqXHR, textStatus, errorThrown) ->
         location.reload true
       complete: (jqXHR, textStatus) ->
+
+  $('.name').click (e) ->
+    e.stopPropagation()
+    $this = $(@)
+    order_id = $this.closest('[data-order-id]').data('order-id')
+    bestfit = if $this.hasClass('bestfit') then 0 else 1
+    updateOrder(order_id, { bestfit: bestfit })
+    $this.toggleClass('bestfit')
