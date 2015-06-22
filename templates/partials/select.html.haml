@@ -11,6 +11,7 @@
 - my $histories = history({ order_id => $order->id });
 - my $nth = $histories->count;
 - my $bestfit = $order->bestfit;
+- my $wearon_date = $order->wearon_date ? $order->wearon_date : $user_info->wearon_date;
 
 .col-md-2.profile
   %h1.name{:class => "#{$bestfit ? 'bestfit' : ''}"}
@@ -79,6 +80,7 @@
       %li
         %span.label{:class => $color}= $color_map{$color}
     - }
+    %li.wearon-date= $wearon_date ? $wearon_date->ymd : ''
 .col-md-4
   - my @man_category   = qw/jacket pants shirt tie shoes belt/;
   - my @woman_category = qw/jacket skirt blouse shoes/;
