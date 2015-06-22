@@ -58,10 +58,11 @@
           - my $history = history({ order_id => $order->id })->next;
           - my $room_no = $history ? $history->room_no : '0';
           - my $url = url_for('/api/orders/' . $order->id)->query(status_id => $OpenCloset::Status::STATUS_BOXING);
-          %li.list-group-item.repair.text-left{:class => $gender}
+          - my $bestfit = $order->bestfit;
+          %li.list-group-item.repair.text-left{:class => $gender, :data-order-id => '#{$order->id}'}
             %i.fa{:class => "fa-#{$gender}"}
             %samp= "#$room_no"
-            %strong= $user->name
+            %strong.name{:class => "#{$bestfit ? 'bestfit' : ''}"}= $user->name
             %span.timeago
               %small
                 %abbr.timeago{:title => '#{$order->update_date->ymd}T#{$order->update_date->hms}Z'}= $order->update_date

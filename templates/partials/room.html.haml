@@ -13,7 +13,7 @@
   - if ($pre_order) {
     %p.previous= $pre_order->user->name
   - }
-  %p
+  %p.name
     %i.fa{:class => "fa-#{$gender}"}
     = $user->name
     %small= age($user_info->birth)
