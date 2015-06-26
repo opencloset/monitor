@@ -67,12 +67,12 @@ $ ->
 
   # refs Window::OpenCloset::status in opencloset/coffee/bundle.coffee
   items =
-    16:
+    repair:
       name: '수선'
       callback: (key, opt) ->
         order_id = opt.$trigger.data('order-id')
-        updateOrder(order_id, {status_id: 16})
-    18:
+        updateOrder(order_id, {status_id: 6})
+    boxing:
       name: '포장'
       callback: (key, opt) ->
         order_id = opt.$trigger.data('order-id')
