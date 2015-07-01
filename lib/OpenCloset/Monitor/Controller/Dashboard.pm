@@ -264,10 +264,17 @@ sub preparation {
 
     my %bestfit;
     my $parser = $self->DB->storage->datetime_parser;
-    my $start  = DateTime->now;
-    my $end    = $start->clone;
+    my $attr   = {
+        select   => ['user_info.gender', { count => 'bestfit' }],
+        as       => [qw/gender cnt/],
+        join     => ['booking',          { user  => 'user_info' }],
+        group_by => 'user_info.gender'
+    };
+    my $start = DateTime->now;
+    my $end   = $start->clone;
     $start->set( hour => 0, minute => 0, second => 0 );
     $end->set( hour => 23, minute => 59, second => 59 );
+
     my $today = $self->DB->resultset('Order')->search(
         {
             bestfit        => 1,
@@ -278,9 +285,14 @@ sub preparation {
                 ]
             }
         },
-        { join => 'booking' }
-    )->count;
-    $bestfit{today} = $today;
+        $attr
+    );
+
+    while ( my $row = $today->next ) {
+        my $gender = $row->get_column('gender');
+        my $cnt    = $row->get_column('cnt');
+        $bestfit{today}{$gender} = $cnt;
+    }
 
     $start->add( days => -( $start->wday ) );
     my $week = $self->DB->resultset('Order')->search(
@@ -293,9 +305,13 @@ sub preparation {
                 ]
             }
         },
-        { join => 'booking' }
-    )->count;
-    $bestfit{week} = $week;
+        $attr
+    );
+    while ( my $row = $week->next ) {
+        my $gender = $row->get_column('gender');
+        my $cnt    = $row->get_column('cnt');
+        $bestfit{week}{$gender} = $cnt;
+    }
 
     $self->stash(
         orders        => $rs,

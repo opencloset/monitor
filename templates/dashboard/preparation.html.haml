@@ -7,10 +7,16 @@
     .navbar-header
       %p.navbar-text
         today
-        %samp= $bestfit->{today}
+        %i.fa{:class => "fa-male male"}
+        %samp= $bestfit->{today}{male} || 0
+        %i.fa{:class => "fa-female female"}
+        %samp= $bestfit->{today}{female} || 0
       %p.navbar-text
         week
-        %samp= $bestfit->{week}
+        %i.fa{:class => "fa-male male"}
+        %samp= $bestfit->{week}{male} || 0
+        %i.fa{:class => "fa-female female"}
+        %samp= $bestfit->{week}{female} || 0
 #preparation.row
   #select.col-md-8
     - while (my $order = $orders->next) {
