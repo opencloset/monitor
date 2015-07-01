@@ -18,7 +18,6 @@ has DB => sub { shift->app->DB };
 
 =cut
 
-
 sub index {
     my $self = shift;
     my $rs
@@ -263,12 +262,48 @@ sub preparation {
         { order_by  => { -asc => 'update_date' } }
     );
 
+    my %bestfit;
+    my $parser = $self->DB->storage->datetime_parser;
+    my $start  = DateTime->now;
+    my $end    = $start->clone;
+    $start->set( hour => 0, minute => 0, second => 0 );
+    $end->set( hour => 23, minute => 59, second => 59 );
+    my $today = $self->DB->resultset('Order')->search(
+        {
+            bestfit        => 1,
+            'booking.date' => {
+                -between => [
+                    $parser->format_datetime($start),
+                    $parser->format_datetime($end),
+                ]
+            }
+        },
+        { join => 'booking' }
+    )->count;
+    $bestfit{today} = $today;
+
+    $start->add( days => -( $start->wday ) );
+    my $week = $self->DB->resultset('Order')->search(
+        {
+            bestfit        => 1,
+            'booking.date' => {
+                -between => [
+                    $parser->format_datetime($start),
+                    $parser->format_datetime($end),
+                ]
+            }
+        },
+        { join => 'booking' }
+    )->count;
+    $bestfit{week} = $week;
+
     $self->stash(
         orders        => $rs,
         rooms         => [@room],
         room_active   => [@room_active],
         select_active => [@select_active],
-        repair        => [@repair]
+        repair        => [@repair],
+        bestfit       => {%bestfit}
     );
 }
 

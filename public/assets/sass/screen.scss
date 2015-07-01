@@ -313,3 +313,10 @@ html, body {
 .wearon-date {
     font-size: 0.5em;
 }
+.navbar {
+    min-height: 24px;
+    background-color: #333;
+    .navbar-text {
+        margin: 2px;
+    }
+}

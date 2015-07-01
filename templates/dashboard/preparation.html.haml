@@ -2,6 +2,15 @@
 - layout 'default', jses => ['preparation.js'], csses => ['jquery.contextMenu.css'];
 - title 'Preparation';
 - use OpenCloset::Status;
+%nav.navbar.navbar-default.navbar-fixed-bottom
+  .container
+    .navbar-header
+      %p.navbar-text
+        today
+        %samp= $bestfit->{today}
+      %p.navbar-text
+        week
+        %samp= $bestfit->{week}
 #preparation.row
   #select.col-md-8
     - while (my $order = $orders->next) {
