@@ -4,7 +4,7 @@ Dashboard in waiting room
 
 ## Version ##
 
-v0.3.5
+v0.3.6
 
 ## 요구사항 ##
 
@@ -17,10 +17,12 @@ v0.3.5
     $ cpanm --installdeps .
     $ cpanm --mirror https://cpan.theopencloset.net OpenCloset::Schema
 
+    $ sqlite3 db/monitor.db < db/init.sql
+
 ## 실행 ##
 
     $ ln -s app.conf.sample monitor.conf
-    $ morbo -l 'http://*:5000' ./app.psgi    # http://localhost:5000
+    $ MOJO_CONFIG=monitor.conf morbo -l 'http://*:5000' scripts/monitor    # http://localhost:5000
 
 ## 환경변수 ##
 

@@ -18,7 +18,6 @@ has DB => sub { shift->app->DB };
 
 =cut
 
-
 sub index {
     my $self = shift;
     my $rs
@@ -263,12 +262,64 @@ sub preparation {
         { order_by  => { -asc => 'update_date' } }
     );
 
+    my %bestfit;
+    my $parser = $self->DB->storage->datetime_parser;
+    my $attr   = {
+        select   => ['user_info.gender', { count => 'bestfit' }],
+        as       => [qw/gender cnt/],
+        join     => ['booking',          { user  => 'user_info' }],
+        group_by => 'user_info.gender'
+    };
+    my $start = DateTime->now;
+    my $end   = $start->clone;
+    $start->set( hour => 0, minute => 0, second => 0 );
+    $end->set( hour => 23, minute => 59, second => 59 );
+
+    my $today = $self->DB->resultset('Order')->search(
+        {
+            bestfit        => 1,
+            'booking.date' => {
+                -between => [
+                    $parser->format_datetime($start),
+                    $parser->format_datetime($end),
+                ]
+            }
+        },
+        $attr
+    );
+
+    while ( my $row = $today->next ) {
+        my $gender = $row->get_column('gender');
+        my $cnt    = $row->get_column('cnt');
+        $bestfit{today}{$gender} = $cnt;
+    }
+
+    $start->add( days => -( $start->wday ) );
+    my $week = $self->DB->resultset('Order')->search(
+        {
+            bestfit        => 1,
+            'booking.date' => {
+                -between => [
+                    $parser->format_datetime($start),
+                    $parser->format_datetime($end),
+                ]
+            }
+        },
+        $attr
+    );
+    while ( my $row = $week->next ) {
+        my $gender = $row->get_column('gender');
+        my $cnt    = $row->get_column('cnt');
+        $bestfit{week}{$gender} = $cnt;
+    }
+
     $self->stash(
         orders        => $rs,
         rooms         => [@room],
         room_active   => [@room_active],
         select_active => [@select_active],
-        repair        => [@repair]
+        repair        => [@repair],
+        bestfit       => {%bestfit}
     );
 }
 
