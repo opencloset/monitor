@@ -104,16 +104,33 @@ $ ->
           $bestfit.data('order-id', order_id)
           $bestfit.data('status-id', 6)
           $bestfit.removeClass('hidden')
-          $('#bestfit-alert').removeClass('hidden')
+
+          $bestfit.find('.btn').removeClass('bestfit')
+          name = opt.$trigger.find('.name').text()
+          $bestfit.find('h4 small').text(name)
+          isBestfit = opt.$trigger.has('.bestfit').length
+          if isBestfit
+            $bestfit.find('.btn-success').addClass('bestfit')
+          else
+            $bestfit.find('.btn-warning').addClass('bestfit')
       c:
         name: '포장'
         callback: (key, opt) ->
           order_id = opt.$trigger.data('order-id')
+          isBestfit = opt.$trigger.has('.bestfit').length
           $bestfit = $('#bestfit-alert')
           $bestfit.data('order-id', order_id)
           $bestfit.data('status-id', 18)
           $bestfit.removeClass('hidden')
-          $('#bestfit-alert').removeClass('hidden')
+
+          $bestfit.find('.btn').removeClass('bestfit')
+          name = opt.$trigger.find('.name').text()
+          $bestfit.find('h4 small').text(name)
+          isBestfit = opt.$trigger.has('.bestfit').length
+          if isBestfit
+            $bestfit.find('.btn-success').addClass('bestfit')
+          else
+            $bestfit.find('.btn-warning').addClass('bestfit')
 
   $('#bestfit-alert').on 'click', '.btn-success', (e) ->
     $('#bestfit-alert').data('bestfit', 1).addClass('hidden')
