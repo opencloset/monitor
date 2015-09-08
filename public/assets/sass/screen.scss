@@ -144,13 +144,13 @@ html, body {
         margin: 0.5em;
         cursor: pointer;
         &.active {
-            border-width: 2px;
-            border-color: #fff;
+            border-width: 4px;
+            border-color: yellow;
             h1 {
                 font-weight: bold;
             }
             &:hover {
-                border-color: #fff;
+                border-color: yellow;
             }
         }
         .profile {
