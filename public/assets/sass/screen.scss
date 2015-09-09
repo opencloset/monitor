@@ -323,3 +323,10 @@ html, body {
     .male { color: #5555ee }
     .female { color: #ee3333 }
 }
+#bestfit-alert {
+    .btn.bestfit {
+        font-weight: bold;
+        font-size: 1.3em;
+        border-width: 5px;
+    }
+}
