@@ -61,6 +61,10 @@ sub create {
                 ->create( { room_no => $to - 19, order_id => $order->id } );
         }
 
+        # history
+        my $histories = $self->history( { order_id => $order->id } );
+        my $extra = { nth => $histories ? $histories->count : 0 };
+
         $self->redis->publish(
             "$channel:order" => decode_utf8(
                 j(
@@ -68,7 +72,8 @@ sub create {
                         sender => $sender,
                         order  => $self->order_flatten($order),
                         from   => $from,
-                        to     => $to
+                        to     => $to,
+                        extra  => $extra
                     }
                 )
             )

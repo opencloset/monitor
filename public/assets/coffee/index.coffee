@@ -54,6 +54,7 @@ class NotificationModel extends Backbone.Model
         booking_date: data.order.booking.date.substr(11, 5)
         from: data.from
         to: data.to
+        extra: data.extra
         username: data.order.user.name
         desc: switch statusMap[data.to]
           when 'visit'   then '대기중입니다'
