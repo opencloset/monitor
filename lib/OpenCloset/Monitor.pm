@@ -120,6 +120,14 @@ sub _assets {
             /assets/coffee/preparation.coffee
             }
     );
+    $self->asset(
+        'repair.js' => qw{
+            /assets/components/jquery-timeago/jquery.timeago.js
+            /assets/components/jquery-timeago/locales/jquery.timeago.ko.js
+            /assets/components/reconnectingWebsocket/reconnecting-websocket.js
+            /assets/coffee/repair.coffee
+            }
+    );
 }
 
 sub _whitelist {
@@ -153,6 +161,8 @@ sub _private_routes {
     $r->websocket('/socket')->to('socket#socket')->name('socket');
 
     $r->put('/api/orders/:order_id')->to('API#order');
+
+    $r->get('/repair')->to('dashboard#repair')->name('repair');
 }
 
 1;
