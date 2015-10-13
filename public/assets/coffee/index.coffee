@@ -79,8 +79,8 @@ class NotificationRow extends Backbone.View
   </h1>
   '''
   render: =>
-    $('#event audio').trigger('play')
-    to = @model.get('to')
+    from = @model.get('from')
+    to   = @model.get('to')
     status_id = if to > 19 and to < 40 then 20 else to
     userlabel = $("#order-#{@model.get('order_id')}").get(0)
     unless _.contains(_.keys(statusMap), '' + status_id)
@@ -88,6 +88,14 @@ class NotificationRow extends Backbone.View
       return @
 
     return @ unless @model.get 'desc'
+
+    ## 의류준비 - 탈의의 상태가 반복되는 사용자는 알람을 끈다
+    _from = if from > 19 and from < 40 then 20 else parseInt(from)
+    _to   = if to > 19 and to < 40 then 20 else parseInt(to)
+    found = _.findWhere [{ from: 17, to: 20 }, { from: 20, to: 17 }], { from: _from, to: _to }
+
+    unless found or @model.get('extra').nth > 2
+      $('#event audio').trigger('play')
 
     @$el.append(@template(@model.attributes)).prependTo('#event ul')
     setTimeout =>
