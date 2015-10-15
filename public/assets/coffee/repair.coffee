@@ -16,3 +16,17 @@ $ ->
       location.reload()
   sock.onerror = (e) ->
     location.reload()
+
+  ## 10분마다 경고음을 출력
+  setInterval ->
+    now = Date.now()
+    $("abbr.timeago").timeago().each ->
+      $this = $(@)
+      $this.data('')
+      time = $this.attr('title')
+      d = new Date("#{time}Z")
+      elapsed = parseInt((now - d.getTime()) / (60 * 1000))
+      if elapsed >= 10 and elapsed % 10 is 0
+        $('#event audio').trigger('play')
+        return false
+  , 60 * 1000
