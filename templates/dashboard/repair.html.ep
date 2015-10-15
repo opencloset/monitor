@@ -24,7 +24,7 @@
             </abbr>
           </small>
         </h2>
-        <span><%= $comment || 'no comment' %></span>
+        <span><%= $comment || '-' %></span>
       </li>
     % }
   </ul>
