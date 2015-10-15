@@ -1,19 +1,31 @@
 % title '수선';
 % layout 'default', jses => ['repair.js'];
 
-<div id="repair">
-  % while (my $order = $orders->next) {
-    % my $user      = $order->user;
-    % my $user_info = $user->user_info;
-    % my $gender    = $user_info->gender;
-    <div>
-      <h2><i class="fa fa-<%= $gender%>"></i> <%= $user->name %></h2>
-      <p>
-        <abbr class="timeago" 
-              title="<%= $order->update_date->ymd %>T<%= $order->update_date->hms%>Z">
-          <%= $order->update_date %>
-        </abbr>
-      </p>
-    </div>
-  % }
+<div id="event">
+  <audio src="/assets/audio/alarm.ogg">
+    <p>Your browser does not support the audio element.</p>
+  </audio>
+</div>
+
+<div id="dashboard-repair">
+  <ul>
+    % while (my $order = $orders->next) {
+      % my $user      = $order->user;
+      % my $user_info = $user->user_info;
+      % my $gender    = $user_info->gender;
+      % my $comment   = $user_info->comment;
+      <li class="repair">
+        <h2>
+          <i class="fa fa-<%= $gender%> <%= $gender %>"></i> <%= $user->name %>
+          <small>
+            <abbr class="timeago" 
+                  title="<%= $order->update_date->ymd %>T<%= $order->update_date->hms%>Z">
+              <%= $order->update_date %>
+            </abbr>
+          </small>
+        </h2>
+        <span><%= $comment || 'no comment' %></span>
+      </li>
+    % }
+  </ul>
 </div>
