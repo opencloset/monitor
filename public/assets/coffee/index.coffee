@@ -94,7 +94,13 @@ class NotificationRow extends Backbone.View
     _to   = if to > 19 and to < 40 then 20 else parseInt(to)
     found = _.findWhere [{ from: 17, to: 20 }, { from: 20, to: 17 }], { from: _from, to: _to }
 
-    unless found or @model.get('extra').nth > 2
+    if found and @model.get('extra').nth > 1
+      console.log '2번이상 탈의'
+      return @
+    else if found and @model.get('extra').nth is 1 and _from is 20
+      console.log '탈의 -> 의류준비'
+      return @
+    else
       $('#event audio').trigger('play')
 
     @$el.append(@template(@model.attributes)).prependTo('#event ul')
