@@ -330,3 +330,17 @@ html, body {
         border-width: 5px;
     }
 }
+#dashboard-repair {
+    padding: 1em;
+    text-align: left;
+    font-size: 1.5em;
+    .male { color: #5555ee }
+    .female { color: #ee3333 }
+    li {
+        list-style-type: decimal;
+        border-bottom: 1px solid #eeeeee;
+    }
+    h2 {
+        display: inline-block;
+    }
+}

@@ -1,3 +1,6 @@
+  - Add route 'GET /repair'
+  - /repair 에서 10분마다 알람
+
 v0.3.8    Wed, 09 Sep 2015 17:44:07 +0900
   - #bestfit-alert .bestfit style 강조
 
