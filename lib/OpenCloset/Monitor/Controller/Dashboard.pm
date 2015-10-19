@@ -323,4 +323,22 @@ sub preparation {
     );
 }
 
+=head2 repair
+
+    # repair
+    GET /repair
+
+=cut
+
+sub repair {
+    my $self = shift;
+
+    my $rs = $self->DB->resultset('Order')->search(
+        { status_id => $OpenCloset::Status::STATUS_REPAIR },
+        { order_by  => { -asc => 'update_date' } }
+    );
+
+    $self->stash( orders => $rs );
+}
+
 1;
