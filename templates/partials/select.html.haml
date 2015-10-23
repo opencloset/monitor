@@ -67,6 +67,9 @@
       - }
   %ul
     %li
+      %span.label.label-info{:title => '목둘레'}
+        = $user_info->neck || 0
+    %li
       %span.label.label-info{:title => '발'}
         = $user_info->foot || 0
     %li
