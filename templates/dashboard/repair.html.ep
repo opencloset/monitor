@@ -24,7 +24,10 @@
             </abbr>
           </small>
         </h2>
-        <span><%= $comment || '-' %></span>
+        % if ($order->pants) {
+          <code><%= $order->pants %>cm</code> 
+        % }
+        <span><%= $comment || ' ' %></span>
       </li>
     % }
   </ul>
