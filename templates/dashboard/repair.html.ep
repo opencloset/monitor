@@ -14,12 +14,12 @@
       % my $user_info = $user->user_info;
       % my $gender    = $user_info->gender;
       % my $comment   = $user_info->comment;
-      <li class="repair">
+      <li class="repair" data-order-id="<%= $order->id %>">
         <h2>
           <i class="fa fa-<%= $gender%> <%= $gender %>"></i> <%= $user->name %>
           <small>
             <abbr class="timeago" 
-                  title="<%= $order->update_date->ymd %>T<%= $order->update_date->hms%>Z">
+                  title="<%= $order->update_date->ymd %>T<%= $order->update_date->hms %>Z">
               <%= $order->update_date %>
             </abbr>
           </small>
