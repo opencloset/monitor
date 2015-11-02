@@ -57,9 +57,16 @@
         = $user_info->waist || 0
     %li
       - if ($gender eq 'male') {
-        %span.label.label-default{:title => '다리'}
-          다리
-          = $user_info->leg || 0
+        - my $leg = $user_info->leg || 0;
+        - my $pants = $user_info->pants || 0;
+        %span.text-left.label.label-default{:title => '다리/바지'}
+          %small
+            다리
+            = $leg
+          %br
+          %small
+            바지
+            = $pants
       - } else {
         %span.label.label-default{:title => '무릎'}
           무릎
