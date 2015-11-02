@@ -13,7 +13,7 @@ use OpenCloset::Brain;
 
 =head2 order
 
-    # PUT /api/orders/:order_id?status_id=:status_id&bestfit=:bestfit
+    # PUT /api/orders/:order_id?status_id=:status_id&bestfit=:bestfit&pants=:pants
 
 =over params
 
@@ -25,6 +25,10 @@ C<$OpenCloset::Status::STATUS_*>
 
 0 or 1
 
+=item pants
+
+90 ~ 120
+
 =back
 
 =cut
@@ -34,10 +38,12 @@ sub order {
     my $order_id  = $self->param('order_id');
     my $status_id = $self->param('status_id');
     my $bestfit   = $self->param('bestfit');
+    my $pants     = $self->param('pants');
 
     my $queries = { id => $order_id };
     $queries->{status_id} = $status_id if defined $status_id;
     $queries->{bestfit}   = $bestfit   if defined $bestfit;
+    $queries->{pants}     = $pants     if defined $pants;
 
     my $brain = OpenCloset::Brain->new;
     delete $brain->{data}{room}{$order_id};

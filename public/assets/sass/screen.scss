@@ -228,6 +228,10 @@ html, body {
                 }
             }
         }
+        samp.pants {
+            display: inline-block;
+            width: 36px;
+        }
     }
 }
 #preparation {
@@ -346,7 +350,4 @@ html, body {
     table {
         text-align: left;
     }
-}
-.text-left.label {
-    text-align: left;
 }
