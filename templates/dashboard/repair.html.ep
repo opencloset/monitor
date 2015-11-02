@@ -1,6 +1,11 @@
 % title '수선';
 % layout 'default', jses => ['repair.js'];
 
+% use OpenCloset::Status;
+
+% my @sid = qw/13 16 17 20 6 18 19/;
+% my $i = 0;
+
 <div id="event">
   <audio src="/assets/audio/alarm.ogg">
     <p>Your browser does not support the audio element.</p>
@@ -8,6 +13,32 @@
 </div>
 
 <div id="dashboard-repair">
+  <table class="table table-bordered table-condensed">
+    <tr>
+      % for my $sid (@sid) {
+        % if ($sid == 20) {
+          <th><%= substr $OpenCloset::Status::MAP{$sid}, 0, 2 %></th>
+        % } else {
+          <th><%= $OpenCloset::Status::MAP{$sid} %></th>
+        % }
+      % }
+    </tr>
+    <tr>
+      % for my $sid (@sid) {
+        <td>
+          <span><%= $counts->{male}{$sid} + $counts->{female}{$sid} || 0 %></span>
+          <span>
+            (
+            <span class="male"><%= $counts->{male}{$sid} || 0 %></span>
+            /
+            <span class="female"><%= $counts->{female}{$sid} || 0 %></span>
+            )
+          </span>
+        </td>
+      % }
+    </tr>
+  </table>
+
   <ul>
     % while (my $order = $orders->next) {
       % my $user      = $order->user;
