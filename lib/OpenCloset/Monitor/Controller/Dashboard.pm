@@ -333,12 +333,37 @@ sub preparation {
 sub repair {
     my $self = shift;
 
+    my $counts = $self->DB->resultset('Order')->search(
+        { status_id => { -in => [@OpenCloset::Status::ACTIVE_STATUS] } },
+        {
+            select   => ['status_id', { count => 'status_id', -as => 'cnt' }],
+            group_by => 'status_id'
+        }
+    );
+
+    my %counts;
+
+    while ( my $row = $counts->next ) {
+        my $status_id = $row->get_column('status_id');
+        my $cnt       = $row->get_column('cnt');
+
+        ## 탈의를 key 한개로 묶는다
+        if (   $status_id >= $OpenCloset::Status::STATUS_FITTING_ROOM1
+            && $status_id <= $OpenCloset::Status::STATUS_FITTING_ROOM11 )
+        {
+            $counts{$OpenCloset::Status::STATUS_FITTING_ROOM1} += $cnt;
+        }
+        else {
+            $counts{$status_id} = $cnt;
+        }
+    }
+
     my $rs = $self->DB->resultset('Order')->search(
         { status_id => $OpenCloset::Status::STATUS_REPAIR },
         { order_by  => { -asc => 'update_date' } }
     );
 
-    $self->stash( orders => $rs );
+    $self->stash( orders => $rs, counts => {%counts} );
 }
 
 1;
