@@ -70,13 +70,11 @@ $ ->
     repair:
       name: '수선'
       callback: (key, opt) ->
-        order_id = opt.$trigger.data('order-id')
-        updateOrder(order_id, {status_id: 6})
+        bestfitPopup(6, key, opt)
     boxing:
       name: '포장'
       callback: (key, opt) ->
-        order_id = opt.$trigger.data('order-id')
-        updateOrder(order_id, {status_id: 18})
+        bestfitPopup(18, key, opt)
   _.each [1..11], (el, i) ->
     items[el] =
       name: "탈의##{el}"
@@ -99,38 +97,11 @@ $ ->
       b:
         name: '수선'
         callback: (key, opt) ->
-          order_id = opt.$trigger.data('order-id')
-          $bestfit = $('#bestfit-alert')
-          $bestfit.data('order-id', order_id)
-          $bestfit.data('status-id', 6)
-          $bestfit.removeClass('hidden')
-
-          $bestfit.find('.btn').removeClass('bestfit')
-          name = opt.$trigger.find('.name').text()
-          $bestfit.find('h4 small').text(name)
-          isBestfit = opt.$trigger.has('.bestfit').length
-          if isBestfit
-            $bestfit.find('.btn-success').addClass('bestfit')
-          else
-            $bestfit.find('.btn-warning').addClass('bestfit')
+          bestfitPopup(6, key, opt)
       c:
         name: '포장'
         callback: (key, opt) ->
-          order_id = opt.$trigger.data('order-id')
-          isBestfit = opt.$trigger.has('.bestfit').length
-          $bestfit = $('#bestfit-alert')
-          $bestfit.data('order-id', order_id)
-          $bestfit.data('status-id', 18)
-          $bestfit.removeClass('hidden')
-
-          $bestfit.find('.btn').removeClass('bestfit')
-          name = opt.$trigger.find('.name').text()
-          $bestfit.find('h4 small').text(name)
-          isBestfit = opt.$trigger.has('.bestfit').length
-          if isBestfit
-            $bestfit.find('.btn-success').addClass('bestfit')
-          else
-            $bestfit.find('.btn-warning').addClass('bestfit')
+          bestfitPopup(18, key, opt)
 
   $('#bestfit-alert').on 'click', '.btn-success', (e) ->
     $('#bestfit-alert').data('bestfit', 1).addClass('hidden')
@@ -153,7 +124,6 @@ $ ->
     status_id = $(@).data('status-id')
     bestfit   = $(@).data('bestfit')
     return unless bestfit?
-    console.log order_id, status_id, bestfit
     updateOrder(order_id, {status_id: status_id, bestfit: bestfit})
 
   updateOrder = (order_id, params) ->
@@ -182,3 +152,19 @@ $ ->
     bestfit = if $this.hasClass('bestfit') then 0 else 1
     updateOrder(order_id, { bestfit: bestfit })
     $this.toggleClass('bestfit')
+
+  bestfitPopup = (status_id, key, opt) ->
+    order_id = opt.$trigger.data('order-id')
+    $bestfit = $('#bestfit-alert')
+    $bestfit.data('order-id', order_id)
+    $bestfit.data('status-id', status_id)
+    $bestfit.removeClass('hidden')
+
+    $bestfit.find('.btn').removeClass('bestfit')
+    name = opt.$trigger.find('.name').text()
+    $bestfit.find('h4 small').text(name)
+    isBestfit = opt.$trigger.has('.bestfit').length
+    if isBestfit
+      $bestfit.find('.btn-success').addClass('bestfit')
+    else
+      $bestfit.find('.btn-warning').addClass('bestfit')
