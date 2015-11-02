@@ -7,6 +7,7 @@ use Mojo::Redis2;
 
 sub register {
     my ( $self, $app, $conf ) = @_;
+    $app->helper( log => sub { shift->app->log } );
     $app->helper( error          => \&error );
     $app->helper( age            => \&age );
     $app->helper( order_flatten  => \&order_flatten );
