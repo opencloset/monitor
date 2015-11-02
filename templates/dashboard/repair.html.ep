@@ -25,7 +25,16 @@
     </tr>
     <tr>
       % for my $sid (@sid) {
-        <td><%= $counts->{$sid} || 0 %></td>
+        <td>
+          <span><%= $counts->{male}{$sid} + $counts->{female}{$sid} || 0 %></span>
+          <span>
+            (
+            <span class="male"><%= $counts->{male}{$sid} || 0 %></span>
+            /
+            <span class="female"><%= $counts->{female}{$sid} || 0 %></span>
+            )
+          </span>
+        </td>
       % }
     </tr>
   </table>
