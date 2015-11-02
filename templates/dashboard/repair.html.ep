@@ -59,6 +59,8 @@
           <code><%= $order->pants %>cm</code> 
         % }
         <span><%= $comment || ' ' %></span>
+        <small><%= $user_info->purpose || ' ' %></small>
+        <small><%= $user_info->purpose2 || ' ' %></small>
       </li>
     % }
   </ul>
