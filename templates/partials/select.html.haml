@@ -57,19 +57,9 @@
         = $user_info->waist || 0
     %li
       - if ($gender eq 'male') {
-        - my $leg = $order->leg || $user_info->leg || 0;
-        - my $pants = $order->pants || 0;
-        %span.text-left.label.label-default{:title => '다리/바지'}
-          %small{:title => '다리'}
-            다리
-            = $leg
-          %br
-          %small{:title => '바지'}
-            %a.pants.text-danger{:href => '#', :data-rule => 'down'}
-              %i.fa.fa-caret-left
-            %samp.pants= $pants
-            %a.pants.text-danger{:href => '#', :data-rule => 'up'}
-              %i.fa.fa-caret-right
+        %span.label.label-default{:title => '다리'}
+          다리
+          = $user_info->leg || 0
       - } else {
         %span.label.label-default{:title => '무릎'}
           무릎

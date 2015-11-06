@@ -175,7 +175,6 @@ $ ->
   recentClick = null
   $('a.pants').on 'click', (e) ->
     e.preventDefault()
-    e.stopPropagation()    # Prevents the event from bubbling up the DOM tree
     $this = $(@)
     $samp = $this.parent().find('samp')
     current = $samp.text() or 0
@@ -197,3 +196,13 @@ $ ->
           $samp.removeClass 'text-success'
         , 1000
     , 2000
+
+  $('#bestfit-alert').on 'click', 'span.pants', (e) ->
+    e.preventDefault()
+    $this = $(@)
+    size = $this.text()
+    order_id = $('#bestfit-alert').data('order-id')
+    $this.parent().parent().find('.pants')
+      .removeClass('label-success').addClass('label-info')
+    $this.removeClass('label-info').addClass('label-success')
+    updateOrder order_id, { pants: size }

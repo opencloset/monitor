@@ -291,13 +291,13 @@ html, body {
     .repair {
         font-size: 1.5em;
         &.male {
-            .fa {
+            .fa-male {
                 color: #5555ee;
             }
             background-color: lighten(#5555ee, 10%);
         }
         &.female {
-            .fa {
+            .fa-female {
                 color: #ee3333;
             }
             background-color: lighten(#ee3333, 10%);
@@ -332,6 +332,9 @@ html, body {
         font-weight: bold;
         font-size: 1.3em;
         border-width: 5px;
+    }
+    span.pants {
+        cursor: pointer;
     }
 }
 #dashboard-repair {
