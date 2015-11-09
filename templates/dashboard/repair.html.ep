@@ -1,6 +1,11 @@
 % title '수선';
 % layout 'default', jses => ['repair.js'];
 
+% use OpenCloset::Status;
+
+% my @sid = qw/13 16 17 20 6 18 19/;
+% my $i = 0;
+
 <div id="event">
   <audio src="/assets/audio/alarm.ogg">
     <p>Your browser does not support the audio element.</p>
@@ -8,23 +13,54 @@
 </div>
 
 <div id="dashboard-repair">
+  <table class="table table-bordered table-condensed">
+    <tr>
+      % for my $sid (@sid) {
+        % if ($sid == 20) {
+          <th><%= substr $OpenCloset::Status::MAP{$sid}, 0, 2 %></th>
+        % } else {
+          <th><%= $OpenCloset::Status::MAP{$sid} %></th>
+        % }
+      % }
+    </tr>
+    <tr>
+      % for my $sid (@sid) {
+        <td>
+          <span><%= $counts->{male}{$sid} + $counts->{female}{$sid} || 0 %></span>
+          <span>
+            (
+            <span class="male"><%= $counts->{male}{$sid} || 0 %></span>
+            /
+            <span class="female"><%= $counts->{female}{$sid} || 0 %></span>
+            )
+          </span>
+        </td>
+      % }
+    </tr>
+  </table>
+
   <ul>
     % while (my $order = $orders->next) {
       % my $user      = $order->user;
       % my $user_info = $user->user_info;
       % my $gender    = $user_info->gender;
       % my $comment   = $user_info->comment;
-      <li class="repair">
+      <li class="repair" data-order-id="<%= $order->id %>">
         <h2>
           <i class="fa fa-<%= $gender%> <%= $gender %>"></i> <%= $user->name %>
           <small>
             <abbr class="timeago" 
-                  title="<%= $order->update_date->ymd %>T<%= $order->update_date->hms%>Z">
+                  title="<%= $order->update_date->ymd %>T<%= $order->update_date->hms %>Z">
               <%= $order->update_date %>
             </abbr>
           </small>
         </h2>
-        <span><%= $comment || '-' %></span>
+        % if ($order->pants) {
+          <code><%= $order->pants %>cm</code> 
+        % }
+        <span><%= $comment || ' ' %></span>
+        <small><%= $user_info->purpose || ' ' %></small>
+        <small><%= $user_info->purpose2 || ' ' %></small>
       </li>
     % }
   </ul>

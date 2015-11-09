@@ -333,12 +333,42 @@ sub preparation {
 sub repair {
     my $self = shift;
 
+    my $counts = $self->DB->resultset('Order')->search(
+        { status_id => { -in => [@OpenCloset::Status::ACTIVE_STATUS] } },
+        {
+            select =>
+                ['status_id', 'user_info.gender', { count => 'status_id' }],
+            as       => [qw/status_id gender cnt/],
+            group_by => ['status_id', 'user_info.gender'],
+            join     => { user => 'user_info' }
+        }
+    );
+
+    ## SELECT status_id, ui.gender, COUNT(status_id) FROM `order` o JOIN user u ON o.user_id = u.id JOIN user_info ui ON u.id = ui.user_id GROUP BY status_id, ui.gender;
+    my %counts;
+    while ( my $row = $counts->next ) {
+        my $status_id = $row->get_column('status_id');
+        my $gender    = $row->get_column('gender');
+        my $cnt       = $row->get_column('cnt');
+
+        ## 탈의를 key 한개로 묶는다
+        if (   $status_id >= $OpenCloset::Status::STATUS_FITTING_ROOM1
+            && $status_id <= $OpenCloset::Status::STATUS_FITTING_ROOM11 )
+        {
+            $counts{$gender}{$OpenCloset::Status::STATUS_FITTING_ROOM1}
+                += $cnt;
+        }
+        else {
+            $counts{$gender}{$status_id} = $cnt;
+        }
+    }
+
     my $rs = $self->DB->resultset('Order')->search(
         { status_id => $OpenCloset::Status::STATUS_REPAIR },
         { order_by  => { -asc => 'update_date' } }
     );
 
-    $self->stash( orders => $rs );
+    $self->stash( orders => $rs, counts => {%counts} );
 }
 
 1;

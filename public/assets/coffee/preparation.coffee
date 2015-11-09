@@ -70,13 +70,11 @@ $ ->
     repair:
       name: '수선'
       callback: (key, opt) ->
-        order_id = opt.$trigger.data('order-id')
-        updateOrder(order_id, {status_id: 6})
+        bestfitPopup(6, key, opt)
     boxing:
       name: '포장'
       callback: (key, opt) ->
-        order_id = opt.$trigger.data('order-id')
-        updateOrder(order_id, {status_id: 18})
+        bestfitPopup(18, key, opt)
   _.each [1..11], (el, i) ->
     items[el] =
       name: "탈의##{el}"
@@ -99,38 +97,11 @@ $ ->
       b:
         name: '수선'
         callback: (key, opt) ->
-          order_id = opt.$trigger.data('order-id')
-          $bestfit = $('#bestfit-alert')
-          $bestfit.data('order-id', order_id)
-          $bestfit.data('status-id', 6)
-          $bestfit.removeClass('hidden')
-
-          $bestfit.find('.btn').removeClass('bestfit')
-          name = opt.$trigger.find('.name').text()
-          $bestfit.find('h4 small').text(name)
-          isBestfit = opt.$trigger.has('.bestfit').length
-          if isBestfit
-            $bestfit.find('.btn-success').addClass('bestfit')
-          else
-            $bestfit.find('.btn-warning').addClass('bestfit')
+          bestfitPopup(6, key, opt)
       c:
         name: '포장'
         callback: (key, opt) ->
-          order_id = opt.$trigger.data('order-id')
-          isBestfit = opt.$trigger.has('.bestfit').length
-          $bestfit = $('#bestfit-alert')
-          $bestfit.data('order-id', order_id)
-          $bestfit.data('status-id', 18)
-          $bestfit.removeClass('hidden')
-
-          $bestfit.find('.btn').removeClass('bestfit')
-          name = opt.$trigger.find('.name').text()
-          $bestfit.find('h4 small').text(name)
-          isBestfit = opt.$trigger.has('.bestfit').length
-          if isBestfit
-            $bestfit.find('.btn-success').addClass('bestfit')
-          else
-            $bestfit.find('.btn-warning').addClass('bestfit')
+          bestfitPopup(18, key, opt)
 
   $('#bestfit-alert').on 'click', '.btn-success', (e) ->
     $('#bestfit-alert').data('bestfit', 1).addClass('hidden')
@@ -153,10 +124,9 @@ $ ->
     status_id = $(@).data('status-id')
     bestfit   = $(@).data('bestfit')
     return unless bestfit?
-    console.log order_id, status_id, bestfit
     updateOrder(order_id, {status_id: status_id, bestfit: bestfit})
 
-  updateOrder = (order_id, params) ->
+  updateOrder = (order_id, params, cb) ->
     $.ajax "/api/orders/#{order_id}.json",
       type: 'PUT'
       data: params
@@ -164,6 +134,7 @@ $ ->
       error: (jqXHR, textStatus, errorThrown) ->
         location.reload true
       complete: (jqXHR, textStatus) ->
+        do cb if cb
 
   $('#repair .btn-success').click (e) ->
     e.preventDefault()
@@ -182,3 +153,56 @@ $ ->
     bestfit = if $this.hasClass('bestfit') then 0 else 1
     updateOrder(order_id, { bestfit: bestfit })
     $this.toggleClass('bestfit')
+
+  bestfitPopup = (status_id, key, opt) ->
+    order_id = opt.$trigger.data('order-id')
+    $bestfit = $('#bestfit-alert')
+    $bestfit.data('order-id', order_id)
+    $bestfit.data('status-id', status_id)
+    $bestfit.removeClass('hidden')
+
+    $bestfit.find('.btn').removeClass('bestfit')
+    name = opt.$trigger.find('.name').text()
+    $bestfit.find('h4 small').text(name)
+    isBestfit = opt.$trigger.has('.bestfit').length
+    if isBestfit
+      $bestfit.find('.btn-success').addClass('bestfit')
+    else
+      $bestfit.find('.btn-warning').addClass('bestfit')
+
+  PANTS_MIN = 90
+  PANTS_MAX = 120
+  recentClick = null
+  $('a.pants').on 'click', (e) ->
+    e.preventDefault()
+    $this = $(@)
+    $samp = $this.parent().find('samp')
+    current = $samp.text() or 0
+    rule = $(@).data('rule')
+    pad = if rule is 'up' then 2 else -2
+    current = parseInt(current) + pad
+    if current < PANTS_MIN then current = PANTS_MIN
+    if current > PANTS_MAX then current = PANTS_MAX
+    $samp.html(current)
+
+    recentClick = Date.now()
+    setTimeout ->
+      now = Date.now()
+      return unless now - recentClick >= 2000
+      order_id = $this.closest('[data-order-id]').data('order-id')
+      updateOrder order_id, { pants: current }, ->
+        $samp.addClass 'text-success'
+        setTimeout ->
+          $samp.removeClass 'text-success'
+        , 1000
+    , 2000
+
+  $('#bestfit-alert').on 'click', 'span.pants', (e) ->
+    e.preventDefault()
+    $this = $(@)
+    size = $this.text()
+    order_id = $('#bestfit-alert').data('order-id')
+    $this.parent().parent().find('.pants')
+      .removeClass('label-success').addClass('label-info')
+    $this.removeClass('label-info').addClass('label-success')
+    updateOrder order_id, { pants: size }
