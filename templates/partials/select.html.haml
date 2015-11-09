@@ -10,11 +10,11 @@
 - my @colors  = split /,/, $user_info->pre_color;
 - my $histories = history({ order_id => $order->id });
 - my $nth = $histories->count;
-- my $bestfit = $order->bestfit;
+- my $_bestfit = $order->bestfit;
 - my $wearon_date = $order->wearon_date ? $order->wearon_date : $user_info->wearon_date;
 
 .col-md-2.profile
-  %h1.name{:class => "#{$bestfit ? 'bestfit' : ''}"}
+  %h1.name{:class => "#{$_bestfit ? 'bestfit' : ''}"}
     %i.fa{:class => "fa-#{$gender}"}
     = $user->name
   %h2.age= age($user_info->birth)
@@ -57,16 +57,9 @@
         = $user_info->waist || 0
     %li
       - if ($gender eq 'male') {
-        - my $leg = $user_info->leg || 0;
-        - my $pants = $user_info->pants || 0;
-        %span.text-left.label.label-default{:title => '다리/바지'}
-          %small
-            다리
-            = $leg
-          %br
-          %small
-            바지
-            = $pants
+        %span.label.label-default{:title => '다리'}
+          다리
+          = $user_info->leg || 0
       - } else {
         %span.label.label-default{:title => '무릎'}
           무릎
