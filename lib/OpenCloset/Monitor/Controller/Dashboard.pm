@@ -368,7 +368,12 @@ sub repair {
         { order_by  => { -asc => 'update_date' } }
     );
 
-    $self->stash( orders => $rs, counts => {%counts} );
+    $self->respond_to(
+        json => { json => { counts => {%counts} } },
+        html => sub {
+            $self->render( orders => $rs, counts => {%counts} );
+        }
+    );
 }
 
 1;

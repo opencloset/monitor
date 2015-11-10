@@ -9,11 +9,29 @@ $ ->
   sock.onopen = (e) ->
     sock.send '/subscribe order'
   sock.onmessage = (e) ->
-    data = JSON.parse(e.data)
-    console.log data
+    data   = JSON.parse(e.data)
     sender = data.sender
-    if sender is 'order' and parseInt(data.from) is 6 or parseInt(data.to) is 6
-      location.reload()
+    return if sender isnt 'order'
+    if parseInt(data.from) is 6 or parseInt(data.to) is 6
+      return location.reload()
+
+    $.ajax "/repair",
+      type: 'GET'
+      dataType: 'json'
+      success: (data, textStatus, jqXHR) ->
+        male   = data.counts.male
+        female = data.counts.female
+        keys = _.union _.keys(male), _.keys(female)
+        for key in keys
+          $td = $("#dashboard-repair tbody td[data-status=\"#{key}\"]")
+          m = male[key] or 0
+          f = female[key] or 0
+          $td.find('.male').html(m)
+          $td.find('.female').html(f)
+          $td.find('.all').html(parseInt(m) + parseInt(f))
+      error: (jqXHR, textStatus, errorThrown) ->
+        console.log textStatus
+      complete: (jqXHR, textStatus) ->
   sock.onerror = (e) ->
     location.reload()
 
