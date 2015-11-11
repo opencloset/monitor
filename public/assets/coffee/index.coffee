@@ -5,6 +5,7 @@ statusMap =
   16: 'measure'
   17: 'select'
   18: 'boxing'
+  44: 'boxed'
   19: 'payment'
   20: 'undress'
   21: 'undress'
@@ -162,4 +163,3 @@ $ ->
   stream = new EventStream
   stream.on 'error', (e) ->
     location.reload()
-

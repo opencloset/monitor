@@ -47,6 +47,7 @@ sub index {
             }
             when ($OpenCloset::Status::STATUS_REPAIR) { push @repair, $order }
             when ($OpenCloset::Status::STATUS_BOXING) { push @boxing, $order }
+            when ($OpenCloset::Status::STATUS_BOXED)  { push @boxing, $order }
             when ($OpenCloset::Status::STATUS_PAYMENT) {
                 push @payment, $order
             }

@@ -1,4 +1,5 @@
   - 수선화면에서 reload 를 줄이고 dashboard 를 실시간으로 update
+  - 포장완료 상태추가
 
 v0.3.10    Mon, 09 Nov 2015 19:23:07 +0900
   - Show order's pants in repair
