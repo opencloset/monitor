@@ -14,29 +14,35 @@
 
 <div id="dashboard-repair">
   <table class="table table-bordered table-condensed">
-    <tr>
-      % for my $sid (@sid) {
-        % if ($sid == 20) {
-          <th><%= substr $OpenCloset::Status::MAP{$sid}, 0, 2 %></th>
-        % } else {
-          <th><%= $OpenCloset::Status::MAP{$sid} %></th>
+    <thead>
+      <tr>
+        % for my $sid (@sid) {
+          % if ($sid == 20) {
+            <th><%= substr $OpenCloset::Status::MAP{$sid}, 0, 2 %></th>
+          % } else {
+            <th><%= $OpenCloset::Status::MAP{$sid} %></th>
+          % }
         % }
-      % }
-    </tr>
-    <tr>
-      % for my $sid (@sid) {
-        <td>
-          <span><%= $counts->{male}{$sid} + $counts->{female}{$sid} || 0 %></span>
-          <span>
-            (
-            <span class="male"><%= $counts->{male}{$sid} || 0 %></span>
-            /
-            <span class="female"><%= $counts->{female}{$sid} || 0 %></span>
-            )
-          </span>
-        </td>
-      % }
-    </tr>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        % for my $sid (@sid) {
+          % my $male = $counts->{male}{$sid} || 0;
+          % my $female = $counts->{female}{$sid} || 0;
+          <td data-status="<%= $sid %>">
+            <span class="all"><%= $male + $female %></span>
+            <span>
+              (
+              <span class="male"><%= $male %></span>
+              /
+              <span class="female"><%= $female %></span>
+              )
+            </span>
+          </td>
+        % }
+      </tr>
+    </tbody>
   </table>
 
   <ul>

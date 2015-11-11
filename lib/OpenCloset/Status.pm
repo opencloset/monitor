@@ -7,6 +7,7 @@ our $STATUS_MEASURE = 16;
 our $STATUS_SELECT  = 17;
 our $STATUS_BOXING  = 18;
 our $STATUS_PAYMENT = 19;
+our $STATUS_BOXED   = 44;
 
 our $STATUS_FITTING_ROOM1  = 20;
 our $STATUS_FITTING_ROOM2  = 21;
@@ -21,9 +22,10 @@ our $STATUS_FITTING_ROOM10 = 29;
 our $STATUS_FITTING_ROOM11 = 30;
 
 our @ACTIVE_STATUS = (
-    $STATUS_REPAIR, $STATUS_VISIT, $STATUS_MEASURE, $STATUS_SELECT,
-    $STATUS_BOXING, $STATUS_PAYMENT,
-    $STATUS_FITTING_ROOM1 .. $STATUS_FITTING_ROOM11
+    $STATUS_REPAIR,  $STATUS_VISIT,
+    $STATUS_MEASURE, $STATUS_SELECT,
+    $STATUS_BOXING,  $STATUS_PAYMENT,
+    $STATUS_BOXED,   $STATUS_FITTING_ROOM1 .. $STATUS_FITTING_ROOM11
 );
 
 our %MAP = (
@@ -32,6 +34,7 @@ our %MAP = (
     $STATUS_MEASURE        => '치수측정',
     $STATUS_SELECT         => '의류선택',
     $STATUS_BOXING         => '포장',
+    $STATUS_BOXED          => '포장완료',
     $STATUS_PAYMENT        => '결제대기',
     $STATUS_FITTING_ROOM1  => '탈의01',
     $STATUS_FITTING_ROOM2  => '탈의02',
@@ -63,6 +66,7 @@ our %ORDER_MAP = (
     $STATUS_FITTING_ROOM11 => 4,
     $STATUS_REPAIR         => 5,
     $STATUS_BOXING         => 6,
+    $STATUS_BOXED          => 6,
     $STATUS_PAYMENT        => 7,
 );
 
@@ -83,6 +87,7 @@ our %REVERSE_ORDER_MAP = (
     '탈의11'     => 4,
     '수선'       => 5,
     '포장'       => 6,
+    '포장완료' => 6,
     '결제대기' => 7,
 );
 

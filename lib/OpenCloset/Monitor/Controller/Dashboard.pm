@@ -47,6 +47,7 @@ sub index {
             }
             when ($OpenCloset::Status::STATUS_REPAIR) { push @repair, $order }
             when ($OpenCloset::Status::STATUS_BOXING) { push @boxing, $order }
+            when ($OpenCloset::Status::STATUS_BOXED)  { push @boxing, $order }
             when ($OpenCloset::Status::STATUS_PAYMENT) {
                 push @payment, $order
             }
@@ -368,7 +369,12 @@ sub repair {
         { order_by  => { -asc => 'update_date' } }
     );
 
-    $self->stash( orders => $rs, counts => {%counts} );
+    $self->respond_to(
+        json => { json => { counts => {%counts} } },
+        html => sub {
+            $self->render( orders => $rs, counts => {%counts} );
+        }
+    );
 }
 
 1;
