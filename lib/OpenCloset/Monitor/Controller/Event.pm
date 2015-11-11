@@ -4,6 +4,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use Encode 'decode_utf8';
 use Mojo::JSON 'j';
 
+use OpenCloset::Brain;
 use OpenCloset::Status;
 
 has DB => sub { shift->app->DB };
@@ -34,6 +35,14 @@ sub create {
     $validator->when('sender')->regexp(qw/user/)->then(
         sub {
             shift->field('user_id')->required(1);
+        }
+    );
+
+    # brain 의 데이터 변경
+    $validator->when('sender')->regexp(qw/brain/)->then(
+        sub {
+            shift->field( [qw/ns key/] )    # namespace
+                ->each( sub { shift->required(1) } );
         }
     );
 
@@ -85,6 +94,24 @@ sub create {
         $self->redis->publish(
             "$channel:user" => decode_utf8(
                 j( { sender => $sender, user => $self->user_flatten($user) } )
+            )
+        );
+    }
+    elsif ( $sender eq 'brain' ) {
+        my $ns  = $self->param('ns');
+        my $key = $self->param('key');
+
+        my $brain = OpenCloset::Brain->new;
+        if ( $brain->{data}{$ns}{$key} ) {
+            delete $brain->{data}{$ns}{$key};
+        }
+        else {
+            $brain->{data}{$ns}{$key} = 1;
+        }
+
+        $self->redis->publish(
+            "$channel:brain" => decode_utf8(
+                j( { sender => $sender, brain => $brain->{data}{$ns} } )
             )
         );
     }

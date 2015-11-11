@@ -336,6 +336,9 @@ html, body {
     span.pants {
         cursor: pointer;
     }
+    ul {
+        font-size: 1.5em;
+    }
 }
 #dashboard-repair {
     padding: 1em;
@@ -353,4 +356,7 @@ html, body {
     table {
         text-align: left;
     }
+}
+.repair-done {
+    cursor: pointer;
 }
