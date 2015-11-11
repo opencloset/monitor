@@ -48,3 +48,15 @@ $ ->
         $('#event audio').trigger('play')
         return false
   , 60 * 1000
+
+  $('.repair-done').on 'click', ->
+    $this = $(@)
+    order_id = $this.closest('li.repair').data('order-id')
+    $.ajax "/events",
+      type: 'POST'
+      data: { sender: 'brain', ns: 'repair', key: order_id }
+      success: (data, textStatus, jqXHR) ->
+        $this.toggleClass('text-success')
+      error: (jqXHR, textStatus, errorThrown) ->
+        console.log textStatus
+      complete: (jqXHR, textStatus) ->
