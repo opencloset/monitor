@@ -9,6 +9,7 @@ $ ->
     sock.send '/subscribe order'
     sock.send '/subscribe user'
     sock.send '/subscribe active'
+    sock.send '/subscribe brain'
   sock.onmessage = (e) ->
     data = JSON.parse(e.data)
     sender = data.sender
@@ -23,6 +24,12 @@ $ ->
       $($("[data-order-id=#{data.order_id}]")).toggleClass('active')
     else if sender is 'active.select'
       $($("[data-order-id=#{data.order_id}]")).toggleClass('active')
+    else if sender is 'brain'
+      $('#knock audio').trigger('play')
+      $('#repair .repair-done').removeClass('text-success')
+      ids = _.keys data.brain
+      _.each ids, (order_id) ->
+        $("#repair li[data-order-id=\"#{order_id}\"] .repair-done").addClass('text-success')
   sock.onerror = (e) ->
     location.reload()
 

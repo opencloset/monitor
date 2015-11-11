@@ -8,9 +8,15 @@ $ ->
   sock = new ReconnectingWebSocket url, null, { debug: false }
   sock.onopen = (e) ->
     sock.send '/subscribe order'
+    sock.send '/subscribe brain'
   sock.onmessage = (e) ->
     data   = JSON.parse(e.data)
     sender = data.sender
+    if sender is 'brain'
+      $('.repair-done').removeClass('text-success')
+      ids = _.keys data.brain
+      _.each ids, (order_id) ->
+        $("li.repair[data-order-id=\"#{order_id}\"] .repair-done").addClass('text-success')
     return if sender isnt 'order'
     if parseInt(data.from) is 6 or parseInt(data.to) is 6
       return location.reload()
