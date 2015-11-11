@@ -179,7 +179,7 @@ $ ->
     $samp = $this.parent().find('samp')
     current = $samp.text() or 0
     rule = $(@).data('rule')
-    pad = if rule is 'up' then 2 else -2
+    pad = if rule is 'up' then 1 else -1
     current = parseInt(current) + pad
     if current < PANTS_MIN then current = PANTS_MIN
     if current > PANTS_MAX then current = PANTS_MAX
