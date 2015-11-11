@@ -88,6 +88,7 @@
           - my $url = url_for('/api/orders/' . $order->id)->query(status_id => $OpenCloset::Status::STATUS_BOXING);
           - my $bestfit = $order->bestfit;
           %li.list-group-item.repair.text-left{:class => $gender, :data-order-id => '#{$order->id}'}
+            %i.fa.fa-check.repair-done{:class => "#{$done->{$order->id} ? 'text-success' : '' }"}
             %i.fa{:class => "fa-#{$gender}"}
             %samp= "#$room_no"
             %strong.name{:class => "#{$bestfit ? 'bestfit' : ''}"}= $user->name

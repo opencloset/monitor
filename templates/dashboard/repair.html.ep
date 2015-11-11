@@ -53,6 +53,7 @@
       % my $comment   = $user_info->comment;
       <li class="repair" data-order-id="<%= $order->id %>">
         <h2>
+          <i class="fa fa-check-square repair-done<%= $done->{$order->id} ? ' text-success' : '' %>"></i>
           <i class="fa fa-<%= $gender%> <%= $gender %>"></i> <%= $user->name %>
           <small>
             <abbr class="timeago" 

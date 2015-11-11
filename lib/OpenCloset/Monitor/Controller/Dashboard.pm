@@ -267,6 +267,12 @@ sub preparation {
         { order_by  => { -asc => 'update_date' } }
     );
 
+    $brain->{data}{repair} = {} unless @repair;
+
+    my %done;
+    map { $done{$_} = $brain->{data}{repair}{$_} }
+        keys %{ $brain->{data}{repair} };
+
     my %bestfit;
     my $parser = $self->DB->storage->datetime_parser;
     my $attr   = {
@@ -318,13 +324,14 @@ sub preparation {
         $bestfit{week}{$gender} = $cnt;
     }
 
-    $self->stash(
+    $self->render(
         orders        => $rs,
         rooms         => [@room],
         room_active   => [@room_active],
         select_active => [@select_active],
         repair        => [@repair],
-        bestfit       => {%bestfit}
+        bestfit       => {%bestfit},
+        done          => {%done}
     );
 }
 
@@ -368,15 +375,24 @@ sub repair {
         }
     }
 
-    my $rs = $self->DB->resultset('Order')->search(
+    my $brain = OpenCloset::Brain->new;
+    my $rs    = $self->DB->resultset('Order')->search(
         { status_id => $OpenCloset::Status::STATUS_REPAIR },
         { order_by  => { -asc => 'update_date' } }
     );
 
+    my %done;
+    map { $done{$_} = $brain->{data}{repair}{$_} }
+        keys %{ $brain->{data}{repair} };
+
     $self->respond_to(
         json => { json => { counts => {%counts} } },
         html => sub {
-            $self->render( orders => $rs, counts => {%counts} );
+            $self->render(
+                orders => $rs,
+                counts => {%counts},
+                done   => {%done}
+            );
         }
     );
 }
