@@ -31,14 +31,15 @@
           % my $male = $counts->{male}{$sid} || 0;
           % my $female = $counts->{female}{$sid} || 0;
           <td data-status="<%= $sid %>">
-            <span class="all"><%= $male + $female %></span>
             <span>
-              (
+              <i class="fa fa-male male"></i>
               <span class="male"><%= $male %></span>
-              /
+              +
+              <i class="fa fa-female female"></i>
               <span class="female"><%= $female %></span>
-              )
+              =
             </span>
+            <span class="all"><%= $male + $female %></span>
           </td>
         % }
       </tr>

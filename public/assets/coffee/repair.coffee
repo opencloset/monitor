@@ -32,9 +32,9 @@ $ ->
           $td = $("#dashboard-repair tbody td[data-status=\"#{key}\"]")
           m = male[key] or 0
           f = female[key] or 0
-          $td.find('.male').html(m)
-          $td.find('.female').html(f)
-          $td.find('.all').html(parseInt(m) + parseInt(f))
+          $td.find('span.male').html(m)
+          $td.find('span.female').html(f)
+          $td.find('span.all').html(parseInt(m) + parseInt(f))
       error: (jqXHR, textStatus, errorThrown) ->
         console.log textStatus
       complete: (jqXHR, textStatus) ->
