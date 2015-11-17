@@ -62,7 +62,6 @@ $ ->
       type: 'POST'
       data: { sender: 'brain', ns: 'repair', key: order_id }
       success: (data, textStatus, jqXHR) ->
-        $this.toggleClass('text-success')
       error: (jqXHR, textStatus, errorThrown) ->
         console.log textStatus
       complete: (jqXHR, textStatus) ->
