@@ -1,3 +1,6 @@
+v0.4.1    Tue, 17 Nov 2015 12:57:58 +0900
+  - 수선완료 상태 변경 버그 수정
+
 v0.4.0    Wed, 11 Nov 2015 19:32:18 +0900
   - 22:00 예약 사용자는 online 대여자이므로 dashboard 에서 skip
   - Increase font size pants length choice
