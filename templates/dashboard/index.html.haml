@@ -27,6 +27,10 @@
                 %p.user{:id => "order-#{$order->id}"}
                   %span.label.label-info
                     = $order->user->name
+                    - if ($sid[$i] == 6) {
+                      - my $room_no = $order->status_id - 19;
+                      %span.badge= $room_no
+                    - }
                     %span.date= $hms
                   %abbr{:title => '#{$order->create_date}Z'}= $order->create_date . 'Z'
               - }
