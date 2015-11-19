@@ -128,7 +128,15 @@ class NotificationRow extends Backbone.View
         username: @model.get('username')
         create_date: @model.get('create_date')
         booking_date: @model.get('booking_date')
-    guessBooking($(userlabel)).appendTo($("#status-#{status_id}"))
+
+    $userlabel = $(userlabel)
+    $userlabel.find('span.badge').remove()
+    if statusMap[to] is 'undress'
+      $label = $userlabel.find('span.label')
+      $("<span class=\"badge\">#{to - 19}</span>")
+        .insertBefore($label.find('span.date'))
+
+    guessBooking($userlabel).appendTo($("#status-#{status_id}"))
     return @
 
 ## functions
