@@ -1,0 +1,37 @@
+% my %LABEL_MAP = ('대여가능' => 'label-success', '대여중' => 'label-danger');
+
+<li>
+  % my @details = $order->order_details;
+  % next unless @details;
+  <ul>
+    <small><%= $order->rental_date->ymd %></small>
+    % for my $detail (@details) {
+      % my $code = $detail->clothes_code;
+      % next unless $code;
+
+      % my $name    = $detail->name;
+      % my $status  = $detail->clothes->status;
+      % my $comment = $detail->clothes->comment || '';
+      % my ($donation, $size, $color) = (undef, '', '');
+      % if ($code =~ /^0?[JPKSB]/) {
+        % my $clothes = $detail->clothes;
+        % $donation    = $clothes->donation;
+        % $color       = $clothes->color;
+        % $size        = '윗배 '   . $clothes->topbelly if $code =~ /^0?J/;
+        % $size        = '허리 '   . $clothes->waist    if $code =~ /^0?P/;
+        % $size        = '엉덩이 ' . $clothes->hip      if $code =~ /^0?K/;
+        % $size        = '가슴 '   . $clothes->bust     if $code =~ /^0?S/;
+        % $size        = '가슴 '   . $clothes->bust     if $code =~ /^0?B/;
+      % }
+      <li>
+        % my $class = $LABEL_MAP{$status->name} || 'label-default';
+        % my $tooltip = join(' ', $donation ? $donation->user->name : '', $size, $color, $status->name, $comment);
+        <a href="#">
+          <span class="order-status label <%= $class %>" data-toggle="tooltip" data-placement="right" title="<%= $tooltip %>">
+            %= $name
+          </span>
+        </a>
+      </li>
+    % }
+  </ul>
+</li>
