@@ -27,11 +27,9 @@
       <li>
         % my $class = $LABEL_MAP{$status->name} || 'label-default';
         % my $tooltip = join(' ', $donation ? $donation->user->name : '', $size, $color, $status->name, $comment);
-        <a href="#">
-          <span class="order-status label <%= $class %>" data-toggle="tooltip" data-placement="right" title="<%= $tooltip %>">
-            %= $name
-          </span>
-        </a>
+        <span class="order-status label <%= $class %>" data-toggle="tooltip" data-placement="right" title="<%= $tooltip %>">
+          %= $name
+        </span>
       </li>
     % }
   </ul>
