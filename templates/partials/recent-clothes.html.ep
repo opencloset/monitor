@@ -4,7 +4,8 @@
   % my @details = $order->order_details;
   % next unless @details;
   <ul>
-    <small><%= $order->rental_date->ymd %></small>
+    % my $rental_date = $order->rental_date;
+    <span class="label label-inverse"><%= $rental_date ? $rental_date->ymd : '????-??-??' %></span>
     % for my $detail (@details) {
       % my $code = $detail->clothes_code;
       % next unless $code;
