@@ -18,17 +18,18 @@
         % my $clothes = $detail->clothes;
         % $donation    = $clothes->donation;
         % $color       = $clothes->color;
-        % $size        = '윗배 '   . $clothes->topbelly if $code =~ /^0?J/;
-        % $size        = '허리 '   . $clothes->waist    if $code =~ /^0?P/;
-        % $size        = '엉덩이 ' . $clothes->hip      if $code =~ /^0?K/;
-        % $size        = '가슴 '   . $clothes->bust     if $code =~ /^0?S/;
-        % $size        = '가슴 '   . $clothes->bust     if $code =~ /^0?B/;
+        % $size        = $clothes->topbelly if $code =~ /^0?J/;
+        % $size        = $clothes->waist    if $code =~ /^0?P/;
+        % $size        = $clothes->hip      if $code =~ /^0?K/;
+        % $size        = $clothes->bust     if $code =~ /^0?S/;
+        % $size        = $clothes->bust     if $code =~ /^0?B/;
       % }
       <li>
         % my $class = $LABEL_MAP{$status->name} || 'label-default';
-        % my $tooltip = join(' ', $donation ? $donation->user->name : '', $size, $color, $status->name, $comment);
+        % my $tooltip = join(' ', $donation ? $donation->user->name : '', $color, $status->name, $comment);
         <span class="order-status label <%= $class %>" data-toggle="tooltip" data-placement="right" title="<%= $tooltip %>">
           %= $name
+          %= $size
         </span>
       </li>
     % }
