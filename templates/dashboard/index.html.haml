@@ -13,7 +13,7 @@
             %th 대기중
             %th 치수측정
             %th 의류준비
-            %th 탈의
+            %th 탈의실번호
             %th 수선
             %th 포장
             %th 결제대기
@@ -26,11 +26,11 @@
                 - $hms = substr($hms, 0, 5);
                 %p.user{:id => "order-#{$order->id}"}
                   %span.label.label-info
-                    = $order->user->name
                     - if ($sid[$i] == 6) {
                       - my $room_no = $order->status_id - 19;
                       %span.badge= $room_no
                     - }
+                    = $order->user->name
                     %span.date= $hms
                   %abbr{:title => '#{$order->create_date}Z'}= $order->create_date . 'Z'
               - }
