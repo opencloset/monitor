@@ -213,3 +213,5 @@ $ ->
       .removeClass('label-success').addClass('label-info')
     $this.removeClass('label-info').addClass('label-success')
     updateOrder order_id, { pants: size }
+
+  $('[data-toggle="tooltip"]').tooltip()

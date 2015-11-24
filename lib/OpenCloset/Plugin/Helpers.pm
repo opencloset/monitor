@@ -15,6 +15,7 @@ sub register {
     $app->helper( redis          => \&redis );
     $app->helper( previous_order => \&previous_order );
     $app->helper( history        => \&history );
+    $app->helper( recent_orders  => \&recent_orders );
 }
 
 sub order_flatten {
@@ -113,6 +114,20 @@ sub history {
     return $self->app->SQLite->resultset('History')->search( $cond, $attr );
 }
 
+sub recent_orders {
+    my ( $self, $order, $limit ) = @_;
+    return unless $order;
+
+    my $rs = $order->user->search_related(
+        'orders',
+        { -not     => { id    => $order->id } },
+        { order_by => { -desc => 'id' } }
+    );
+
+    $limit = 5 unless $limit;
+    return $rs->slice( 0, $limit - 1 );
+}
+
 1;
 
 =pod
@@ -137,5 +152,15 @@ OpenCloset::Plugin::Helpers - provide helpers for opencloset
         my $required = $self->param('something');
         return $self->error(400, 'oops wat the..') unless $required;
     } => 'foo';
+
+=head2 recent_orders
+
+Arguments: $order, $limit?
+Return: $resultset (scalar context) | @result_objs (list context)
+
+    my $orders = $c->recent_order($order);
+
+사용자의 C<$order> 를 제외한 최근 주문서를 찾습니다.
+C<$limit> 의 기본값은 C<5> 입니다.
 
 =cut
