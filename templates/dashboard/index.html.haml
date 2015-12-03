@@ -26,7 +26,7 @@
                 - $hms = substr($hms, 0, 5);
                 %p.user{:id => "order-#{$order->id}"}
                   %span.label.label-info
-                    - if ($sid[$i] == 6) {
+                    - if ($sid[$i] && $sid[$i] == 6) {
                       - my $room_no = $order->status_id - 19;
                       %span.badge= $room_no
                     - }
