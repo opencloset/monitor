@@ -15,6 +15,7 @@ $ ->
     sender = data.sender
     range = [20..30]
     range.unshift 17
+    range.unshift 18
     range.unshift 6
     if sender is 'order' and parseInt(data.from) in range or parseInt(data.to) in range
       location.reload()
