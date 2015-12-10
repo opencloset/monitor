@@ -352,18 +352,19 @@ sub preparation {
 sub repair {
     my $self = shift;
 
+    ## 각 상태별 주문서의 갯수 를 남녀별로
+    ## 22:00 주문서는 온라인 주문서이기 때문에 제외
     my $counts = $self->DB->resultset('Order')->search(
-        { status_id => { -in => [@OpenCloset::Status::ACTIVE_STATUS] } },
+        { status_id => { -in => [@OpenCloset::Status::ACTIVE_STATUS] }, },
         {
             select =>
                 ['status_id', 'user_info.gender', { count => 'status_id' }],
             as       => [qw/status_id gender cnt/],
             group_by => ['status_id', 'user_info.gender'],
-            join     => { user => 'user_info' }
+            join     => ['booking', { user => 'user_info' }]
         }
-    );
+    )->search_literal('HOUR(`booking`.`date`) != 22');
 
-    ## SELECT status_id, ui.gender, COUNT(status_id) FROM `order` o JOIN user u ON o.user_id = u.id JOIN user_info ui ON u.id = ui.user_id GROUP BY status_id, ui.gender;
     my %counts;
     while ( my $row = $counts->next ) {
         my $status_id = $row->get_column('status_id');
