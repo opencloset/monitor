@@ -9,6 +9,8 @@ use Path::Tiny;
 
 use OpenCloset::Brain;
 
+has DB => sub { shift->app->DB };
+
 =head1 METHODS
 
 =head2 order
@@ -57,6 +59,25 @@ sub order {
     my $res        = $http->request( 'PUT', $url );
     return $self->error( 500, { str => 'Failed to update order' } )
         unless $res->{success};
+
+    ## pants 는 주문서뿐만 아니라 실제 사용자정보도 업데이트 해야 한다
+    if ( my $pants = $queries->{pants} ) {
+        my $order = $self->DB->resultset('Order')->find( { id => $order_id } );
+        my $user = $order->user;
+        my $user_id = $user->id;
+        my $url     = $opencloset->{uri} . "/api/user/$user_id.json";
+        my $res     = $http->request(
+            'PUT', $url,
+            {
+                content => $http->www_form_urlencode( { pants => $pants } ),
+                headers =>
+                    { 'content-type' => 'application/x-www-form-urlencoded' }
+            }
+        );
+        $self->log->error( 'Failed to patch user pants: ' . $res->{reason} )
+            unless $res->{success};
+    }
+
     $self->render( text => decode_utf8( $res->{content} ) );
 }
 
