@@ -1,0 +1,43 @@
+% layout 'dashboard';
+% title 'Online dashboard', jses => ['online.js'];
+
+% use OpenCloset::Status;
+% my @sid = qw/13 16 17 20 6 18 19/;
+% my $i = 0;
+
+<h1>열린옷장 <small><%= title %></small></h1>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>대기중</th>
+      <th>치수측정</th>
+      <th>의류준비</th>
+      <th>탈의</th>
+      <th>수선</th>
+      <th>포장</th>
+      <th>결제대기</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      % for my $group (@$groups) {
+      <td>
+        <ul>
+          % for my $order (@$group) {
+            % my $hms = $order->booking->date->hms;
+            % $hms = substr($hms, 0, 5);
+            <li data-order-id="<%= $order->id %>">
+              <span class="label label-info">
+                %= $order->user->name
+                <span class="date"><%= $hms %></span>
+                <abbr class="timeago" title="<%= $order->create_date%>Z"><%= $order->create_date . 'Z' %></abbr>
+              </span>
+            </li>
+          % }
+        </ul>
+      </td>
+      % }
+    </tr>
+  </tbody>
+</table>

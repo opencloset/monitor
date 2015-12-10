@@ -55,6 +55,8 @@ sub _assets {
     $self->defaults( { jses => [], csses => [] } );
 
     $self->asset( 'statistics.css' => '/assets/sass/screen.scss' );
+    $self->asset( 'opencloset.css' => '/assets/sass/opencloset.scss' );
+    $self->asset( 'dashboard.css'  => '/assets/sass/dashboard.scss' );
     $self->asset(
         'screen.css' => qw{
             /assets/css/cover.css
@@ -128,6 +130,14 @@ sub _assets {
             /assets/coffee/repair.coffee
             }
     );
+    $self->asset(
+        'online.js' => qw{
+            /assets/components/jquery-timeago/jquery.timeago.js
+            /assets/components/jquery-timeago/locales/jquery.timeago.ko.js
+            /assets/components/reconnectingWebsocket/reconnecting-websocket.js
+            /assets/coffee/online.coffee
+            }
+    );
 }
 
 sub _whitelist {
@@ -163,6 +173,7 @@ sub _private_routes {
     $r->put('/api/orders/:order_id')->to('API#order');
 
     $r->get('/repair')->to('dashboard#repair')->name('repair');
+    $r->get('/online')->to('dashboard#online')->name('online');
 }
 
 1;

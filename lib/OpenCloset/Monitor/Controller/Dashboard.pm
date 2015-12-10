@@ -405,4 +405,60 @@ sub repair {
     );
 }
 
+=head2 online
+
+    # online
+    GET /online
+
+=cut
+
+sub online {
+    my $self = shift;
+
+    ## 22:00 주문서는 온라인 주문서
+    ## 각 상태별 주문서를 남녀별로
+    my $rs = $self->DB->resultset('Order')->search(
+        { status_id => { -in  => [@OpenCloset::Status::ACTIVE_STATUS] } },
+        { order_by  => { -asc => 'update_date' }, join => 'booking' }
+    )->search_literal( 'HOUR(`booking`.`date`) = ?', 22 );
+
+    my ( @visit, @measure, @select, @undress, @repair, @boxing, @payment );
+    while ( my $order = $rs->next ) {
+        my $status_id = $order->status_id;
+        use experimental qw/ smartmatch /;
+        given ($status_id) {
+            when ($OpenCloset::Status::STATUS_VISIT) { push @visit, $order }
+            when ($OpenCloset::Status::STATUS_MEASURE) {
+                push @measure, $order
+            }
+            when ($OpenCloset::Status::STATUS_SELECT) { push @select, $order }
+            when (
+                [
+                    $OpenCloset::Status::STATUS_FITTING_ROOM1 ..
+                        $OpenCloset::Status::STATUS_FITTING_ROOM11
+                ]
+                )
+            {
+                push @undress, $order
+            }
+            when ($OpenCloset::Status::STATUS_REPAIR) { push @repair, $order }
+            when ($OpenCloset::Status::STATUS_BOXING) { push @boxing, $order }
+            when ($OpenCloset::Status::STATUS_BOXED)  { push @boxing, $order }
+            when ($OpenCloset::Status::STATUS_PAYMENT) {
+                push @payment, $order
+            }
+            default {
+                $self->app->log->warn("Unknown status: $status_id, $order");
+            }
+        }
+    }
+
+    $self->render(
+        groups => [
+            [@visit], [@measure], [@select], [@undress],
+            [@repair], [@boxing], [@payment]
+        ]
+    );
+}
+
 1;
