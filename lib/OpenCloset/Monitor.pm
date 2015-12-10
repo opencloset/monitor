@@ -135,6 +135,7 @@ sub _assets {
             /assets/components/jquery-timeago/jquery.timeago.js
             /assets/components/jquery-timeago/locales/jquery.timeago.ko.js
             /assets/components/reconnectingWebsocket/reconnecting-websocket.js
+            /assets/components/typeahead.js/dist/typeahead.bundle.min.js
             /assets/coffee/online.coffee
             }
     );
@@ -151,7 +152,6 @@ sub _public_routes { }
 sub _private_routes {
     my $self = shift;
     my $r    = $self->routes->under('/')->to('user#auth');
-
     $r->get('/')->to('dashboard#index')->name('index');
     $r->get('/statistics/elapsed')->to('statistics#elapsed')->name('elapsed');
     $r->get('/statistics/elapsed/:ymd')->to('statistics#elapsed_ymd');
@@ -174,6 +174,7 @@ sub _private_routes {
 
     $r->get('/repair')->to('dashboard#repair')->name('repair');
     $r->get('/online')->to('dashboard#online')->name('online');
+    $r->get('/address')->to('API#address')->name('address');
 }
 
 1;
