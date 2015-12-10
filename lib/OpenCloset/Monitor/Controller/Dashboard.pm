@@ -269,6 +269,12 @@ sub preparation {
 
     $brain->{data}{repair} = {} unless @repair;
 
+    my @boxing = $self->DB->resultset('Order')->search_literal(
+        'status_id = ? AND HOUR(booking.date) != ?',
+        ( $OpenCloset::Status::STATUS_BOXING, 22 ),
+        { join => 'booking', order_by => { -asc => 'update_date' } }
+    );
+
     my %done;
     map { $done{$_} = $brain->{data}{repair}{$_} }
         keys %{ $brain->{data}{repair} };
@@ -330,6 +336,7 @@ sub preparation {
         room_active   => [@room_active],
         select_active => [@select_active],
         repair        => [@repair],
+        boxing        => [@boxing],
         bestfit       => {%bestfit},
         done          => {%done}
     );
