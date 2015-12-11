@@ -22,3 +22,7 @@ $ ->
       ].join('\n')
       suggestion: (data) ->
         "<div><strong>#{data.phone}</strong> | #{data.name} | #{data.email}</div>"
+
+  $('#q.typeahead').on 'typeahead:select', (e, data) ->
+    $('#selected').html("<div><strong>#{data.phone}</strong> | #{data.name} | #{data.email}</div>")
+

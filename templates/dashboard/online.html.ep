@@ -6,6 +6,7 @@
 <form action="">
   <div class="form-group">
     <input id="q" class="typeahead form-control" name="q" type="text" placeholder="이름, 전화번호, 이메일" autocomplete="off">
+    <div id="selected" class="text-muted"></div>
   </div>
   <div class="form-group">
     <textarea name="m" class="form-control" rows="3" placeholder="전송할 문자메세지"></textarea>
