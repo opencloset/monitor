@@ -1,6 +1,19 @@
 $ ->
   $("abbr.timeago").timeago()
 
+  hostname = location.hostname
+  port = location.port
+  protocol = location.protocol
+  schema = if protocol is 'https:' then 'wss:' else 'ws:'
+  url = "#{schema}//#{hostname}:#{port}/socket"
+  sock = new ReconnectingWebSocket url, null, { debug: false }
+  sock.onopen = (e) ->
+    sock.send '/subscribe order'
+  sock.onmessage = (e) ->
+    data   = JSON.parse(e.data)
+    booking_date = data.order.booking.date.substr(11, 5)
+    location.reload() if booking_date is '22:00'
+
   # phonenumber suggestion
   address = new Bloodhound
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('phone')
