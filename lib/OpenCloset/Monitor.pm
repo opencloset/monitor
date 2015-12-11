@@ -6,7 +6,7 @@ use Net::IP::AddrRanges;
 use OpenCloset::Schema;
 use OpenCloset::Monitor::Schema;
 
-use version; our $VERSION = qv("v0.4.4");
+use version; our $VERSION = qv("v0.4.5");
 
 has ranges => sub { Net::IP::AddrRanges->new };
 has DB => sub {
@@ -55,6 +55,8 @@ sub _assets {
     $self->defaults( { jses => [], csses => [] } );
 
     $self->asset( 'statistics.css' => '/assets/sass/screen.scss' );
+    $self->asset( 'opencloset.css' => '/assets/sass/opencloset.scss' );
+    $self->asset( 'dashboard.css'  => '/assets/sass/dashboard.scss' );
     $self->asset(
         'screen.css' => qw{
             /assets/css/cover.css
@@ -128,6 +130,15 @@ sub _assets {
             /assets/coffee/repair.coffee
             }
     );
+    $self->asset(
+        'online.js' => qw{
+            /assets/components/jquery-timeago/jquery.timeago.js
+            /assets/components/jquery-timeago/locales/jquery.timeago.ko.js
+            /assets/components/reconnectingWebsocket/reconnecting-websocket.js
+            /assets/components/typeahead.js/dist/typeahead.bundle.min.js
+            /assets/coffee/online.coffee
+            }
+    );
 }
 
 sub _whitelist {
@@ -141,7 +152,6 @@ sub _public_routes { }
 sub _private_routes {
     my $self = shift;
     my $r    = $self->routes->under('/')->to('user#auth');
-
     $r->get('/')->to('dashboard#index')->name('index');
     $r->get('/statistics/elapsed')->to('statistics#elapsed')->name('elapsed');
     $r->get('/statistics/elapsed/:ymd')->to('statistics#elapsed_ymd');
@@ -163,6 +173,9 @@ sub _private_routes {
     $r->put('/api/orders/:order_id')->to('API#order');
 
     $r->get('/repair')->to('dashboard#repair')->name('repair');
+    $r->get('/online')->to('dashboard#online')->name('online');
+    $r->get('/address')->to('API#address')->name('address');
+    $r->post('/sms')->to('API#create_sms')->name('sms.create');
 }
 
 1;

@@ -81,30 +81,50 @@
           - }
       - }
     %hr
-    #repair.row
-      %ul.list-group
-        - for my $order (@$repair) {
-          - my $user = $order->user;
-          - my $user_info = $user->user_info;
-          - my $gender = $user_info->gender;
-          - my $details = $order->order_details;
-          - my $history = history({ order_id => $order->id })->next;
-          - my $room_no = $history ? $history->room_no : '0';
-          - my $url = url_for('/api/orders/' . $order->id)->query(status_id => $OpenCloset::Status::STATUS_BOXING);
-          - my $bestfit = $order->bestfit;
-          %li.list-group-item.repair.text-left{:class => $gender, :data-order-id => '#{$order->id}'}
-            %i.fa.fa-check.repair-done{:class => "#{$done->{$order->id} ? 'text-success' : '' }"}
-            %i.fa{:class => "fa-#{$gender}"}
-            %samp= "#$room_no"
-            %strong.name{:class => "#{$bestfit ? 'bestfit' : ''}"}= $user->name
-            %span.timeago
-              %small
-                %abbr.timeago{:title => '#{$order->update_date->ymd}T#{$order->update_date->hms}Z'}= $order->update_date
-            %p.pull-right
-              %a.pants.text-danger{:href => '#', :data-rule => 'down'}
-                %i.fa.fa-caret-left
-              %samp.pants= $order->pants || 0
-              %a.pants.text-danger{:href => '#', :data-rule => 'up'}
-                %i.fa.fa-caret-right
-              %a.btn.btn-success.btn-sm{:href => $url} 포장
-        - }
+    .row
+      .col-md-6
+        #repair.row
+          %ul.list-group
+            - for my $order (@$repair) {
+              - my $user = $order->user;
+              - my $user_info = $user->user_info;
+              - my $gender = $user_info->gender;
+              - my $url = url_for('/api/orders/' . $order->id)->query(status_id => $OpenCloset::Status::STATUS_BOXING);
+              - my $bestfit = $order->bestfit;
+              %li.list-group-item.repair.text-left{:class => $gender, :data-order-id => '#{$order->id}'}
+                %i.fa.fa-check.repair-done{:class => "#{$done->{$order->id} ? 'text-success' : '' }"}
+                %i.fa{:class => "fa-#{$gender}"}
+                %strong.name{:class => "#{$bestfit ? 'bestfit' : ''}"}= $user->name
+                %span.timeago
+                  %small
+                    %abbr.timeago{:title => '#{$order->update_date->ymd}T#{$order->update_date->hms}Z'}= $order->update_date
+                %p.pull-right
+                  %a.pants.text-danger{:href => '#', :data-rule => 'down'}
+                    %i.fa.fa-caret-left
+                  %samp.pants= $order->pants || 0
+                  %a.pants.text-danger{:href => '#', :data-rule => 'up'}
+                    %i.fa.fa-caret-right
+                  %a.btn.btn-success.btn-sm{:href => $url} 포장
+            - }
+      .col-md-6
+        #boxing.row
+          %ul.list-group
+            - for my $order (@$boxing) {
+              - my $user = $order->user;
+              - my $user_info = $user->user_info;
+              - my $gender = $user_info->gender;
+              - my $bestfit = $order->bestfit;
+              %li.list-group-item.boxing.text-left{:class => $gender, :data-order-id => '#{$order->id}'}
+                %i.fa{:class => "fa-#{$gender}"}
+                %strong.name{:class => "#{$bestfit ? 'bestfit' : ''}"}= $user->name
+                %span.timeago
+                  %small
+                    %abbr.timeago{:title => '#{$order->update_date->ymd}T#{$order->update_date->hms}Z'}= $order->update_date
+                %p.pull-right
+                  %a.pants.text-danger{:href => '#', :data-rule => 'down'}
+                    %i.fa.fa-caret-left
+                  %samp.pants= $order->pants || 0
+                  %a.pants.text-danger{:href => '#', :data-rule => 'up'}
+                    %i.fa.fa-caret-right
+            - }
+

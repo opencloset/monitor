@@ -4,6 +4,12 @@
 html, body {
     font-family: 'Nanum Myeongjo', serif;
 }
+.fa-male {
+    color: #5555ee;
+}
+.fa-female {
+    color: #ee3333;
+}
 #content {
     margin-top: 1em;
 }
@@ -160,12 +166,6 @@ html, body {
             h1 { font-size: 2em }
             h2 { font-size: 1.8em }
             text-align: center;
-            .fa-male {
-                color: #5555ee;
-            }
-            .fa-female {
-                color: #ee3333;
-            }
         }
         .size {
             font-size: 2em;
@@ -290,20 +290,14 @@ html, body {
     padding: 0.8em;
     border-bottom: 1px solid #eeeeee;
 }
-#repair {
+#repair, #boxing {
     padding: 1em;
-    .repair {
-        font-size: 1.5em;
+    .repair, .boxing {
+        font-size: 1.2em;
         &.male {
-            .fa-male {
-                color: #5555ee;
-            }
             background-color: lighten(#5555ee, 10%);
         }
         &.female {
-            .fa-female {
-                color: #ee3333;
-            }
             background-color: lighten(#ee3333, 10%);
         }
     }

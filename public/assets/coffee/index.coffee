@@ -91,7 +91,7 @@ class NotificationRow extends Backbone.View
     return @ unless @model.get 'desc'
 
     ## 임시로 skip, 22:00 는 온라인 대여자
-    return @ if @model.get 'booking_date' is '22:00'
+    return @ if @model.get('booking_date') is '22:00'
 
     ## 의류준비 - 탈의의 상태가 반복되는 사용자는 알람을 끈다
     _from = if from > 19 and from < 40 then 20 else parseInt(from)

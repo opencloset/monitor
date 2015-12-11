@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Mojo::JSON;
+my $SMS_FROM = '07043257521';
 
 my $db_opts
     = $ENV{OPENCLOSET_DATABASE_OPTS}
@@ -52,4 +53,5 @@ $db_opts->{AutoCommit} //= 1;
         password => $ENV{OPENCLOSET_MONITOR_PASSWORD} || 's3cr3t',
         cookie   => '.cookie.txt'
     },
+    sms_from => $SMS_FROM,
 };

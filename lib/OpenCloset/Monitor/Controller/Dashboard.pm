@@ -269,6 +269,12 @@ sub preparation {
 
     $brain->{data}{repair} = {} unless @repair;
 
+    my @boxing = $self->DB->resultset('Order')->search_literal(
+        'status_id = ? AND HOUR(booking.date) != ?',
+        ( $OpenCloset::Status::STATUS_BOXING, 22 ),
+        { join => 'booking', order_by => { -asc => 'update_date' } }
+    );
+
     my %done;
     map { $done{$_} = $brain->{data}{repair}{$_} }
         keys %{ $brain->{data}{repair} };
@@ -330,6 +336,7 @@ sub preparation {
         room_active   => [@room_active],
         select_active => [@select_active],
         repair        => [@repair],
+        boxing        => [@boxing],
         bestfit       => {%bestfit},
         done          => {%done}
     );
@@ -345,18 +352,19 @@ sub preparation {
 sub repair {
     my $self = shift;
 
+    ## 각 상태별 주문서의 갯수 를 남녀별로
+    ## 22:00 주문서는 온라인 주문서이기 때문에 제외
     my $counts = $self->DB->resultset('Order')->search(
-        { status_id => { -in => [@OpenCloset::Status::ACTIVE_STATUS] } },
+        { status_id => { -in => [@OpenCloset::Status::ACTIVE_STATUS] }, },
         {
             select =>
                 ['status_id', 'user_info.gender', { count => 'status_id' }],
             as       => [qw/status_id gender cnt/],
             group_by => ['status_id', 'user_info.gender'],
-            join     => { user => 'user_info' }
+            join     => ['booking', { user => 'user_info' }]
         }
-    );
+    )->search_literal('HOUR(`booking`.`date`) != 22');
 
-    ## SELECT status_id, ui.gender, COUNT(status_id) FROM `order` o JOIN user u ON o.user_id = u.id JOIN user_info ui ON u.id = ui.user_id GROUP BY status_id, ui.gender;
     my %counts;
     while ( my $row = $counts->next ) {
         my $status_id = $row->get_column('status_id');
@@ -394,6 +402,62 @@ sub repair {
                 done   => {%done}
             );
         }
+    );
+}
+
+=head2 online
+
+    # online
+    GET /online
+
+=cut
+
+sub online {
+    my $self = shift;
+
+    ## 22:00 주문서는 온라인 주문서
+    ## 각 상태별 주문서를 남녀별로
+    my $rs = $self->DB->resultset('Order')->search(
+        { status_id => { -in  => [@OpenCloset::Status::ACTIVE_STATUS] } },
+        { order_by  => { -asc => 'update_date' }, join => 'booking' }
+    )->search_literal( 'HOUR(`booking`.`date`) = ?', 22 );
+
+    my ( @visit, @measure, @select, @undress, @repair, @boxing, @payment );
+    while ( my $order = $rs->next ) {
+        my $status_id = $order->status_id;
+        use experimental qw/ smartmatch /;
+        given ($status_id) {
+            when ($OpenCloset::Status::STATUS_VISIT) { push @visit, $order }
+            when ($OpenCloset::Status::STATUS_MEASURE) {
+                push @measure, $order
+            }
+            when ($OpenCloset::Status::STATUS_SELECT) { push @select, $order }
+            when (
+                [
+                    $OpenCloset::Status::STATUS_FITTING_ROOM1 ..
+                        $OpenCloset::Status::STATUS_FITTING_ROOM11
+                ]
+                )
+            {
+                push @undress, $order
+            }
+            when ($OpenCloset::Status::STATUS_REPAIR) { push @repair, $order }
+            when ($OpenCloset::Status::STATUS_BOXING) { push @boxing, $order }
+            when ($OpenCloset::Status::STATUS_BOXED)  { push @boxing, $order }
+            when ($OpenCloset::Status::STATUS_PAYMENT) {
+                push @payment, $order
+            }
+            default {
+                $self->app->log->warn("Unknown status: $status_id, $order");
+            }
+        }
+    }
+
+    $self->render(
+        groups => [
+            [@visit], [@measure], [@select], [@undress],
+            [@repair], [@boxing], [@payment]
+        ]
     );
 }
 
