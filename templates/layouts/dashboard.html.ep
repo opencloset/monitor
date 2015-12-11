@@ -8,6 +8,7 @@
 
     <link rel="stylesheet" href="/assets/components/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="/assets/components/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="/assets/components/growl/stylesheets/jquery.growl.css">
     % for my $css (@$csses) {
       %= asset $css
     % }
@@ -28,6 +29,7 @@
       </div>
     </div>
     %= asset 'bundle.js'
+    <script src="/assets/components/growl/javascripts/jquery.growl.js"></script>
     % for my $js (@$jses) {
       %= asset $js
     % }
