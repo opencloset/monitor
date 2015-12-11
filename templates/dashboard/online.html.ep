@@ -1,0 +1,52 @@
+% layout 'dashboard';
+% title 'Online dashboard', jses => ['online.js'];
+
+<h1>열린옷장 <small><%= title %></small></h1>
+
+<form id="sms-form" action="<%= url_for('sms.create') %>" method="POST">
+  <div class="form-group">
+    <input id="to" class="typeahead form-control" name="to" type="text" placeholder="이름, 전화번호, 이메일" autocomplete="off">
+    <div id="selected" class="text-muted"></div>
+  </div>
+  <div class="form-group">
+    <textarea name="text" class="form-control" rows="3" placeholder="전송할 문자메세지"></textarea>
+  </div>
+  <button type="submit" class="btn btn-primary">전송</button>
+</form>
+
+<hr>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>대기중</th>
+      <th>치수측정</th>
+      <th>의류준비</th>
+      <th>탈의</th>
+      <th>수선</th>
+      <th>포장</th>
+      <th>결제대기</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      % for my $group (@$groups) {
+      <td>
+        <ul>
+          % for my $order (@$group) {
+            % my $hms = $order->booking->date->hms;
+            % $hms = substr($hms, 0, 5);
+            <li data-order-id="<%= $order->id %>">
+              <span class="label label-info">
+                %= $order->user->name
+                <span class="date"><%= $hms %></span>
+                <abbr class="timeago" title="<%= $order->create_date%>Z"><%= $order->create_date . 'Z' %></abbr>
+              </span>
+            </li>
+          % }
+        </ul>
+      </td>
+      % }
+    </tr>
+  </tbody>
+</table>
