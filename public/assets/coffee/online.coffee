@@ -9,8 +9,8 @@ $ ->
       url: '/address?q=%QUERY'
       wildcard: '%QUERY'
 
-  $('#q.typeahead').typeahead null,
-    name: 'q'
+  $('#to.typeahead').typeahead null,
+    name: 'to'
     display: 'phone'
     source: address
     limit: 10
@@ -23,6 +23,20 @@ $ ->
       suggestion: (data) ->
         "<div><strong>#{data.phone}</strong> | #{data.name} | #{data.email}</div>"
 
-  $('#q.typeahead').on 'typeahead:select', (e, data) ->
+  $('#to.typeahead').on 'typeahead:select', (e, data) ->
     $('#selected').html("<div><strong>#{data.phone}</strong> | #{data.name} | #{data.email}</div>")
 
+  $('#sms-form').submit (e) ->
+    e.preventDefault()
+    action = $(@).attr('action')
+    method = $(@).attr('method')
+    data   = $(@).serialize()
+    $.ajax action,
+      type: method
+      data: data
+      dataType: 'json'
+      success: (data, textStatus, jqXHR) ->
+        $.growl.notice({ message: "메세지를 전송하였습니다" })
+      error: (jqXHR, textStatus, errorThrown) ->
+        $.growl.error({ message: jqXHR.responseJSON.error.str })
+      complete: (jqXHR, textStatus) ->

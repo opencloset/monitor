@@ -116,8 +116,6 @@ sub _auth_opencloset {
     return $cookiejar;
 }
 
-=head1 METHODS
-
 =head2 address
 
     # GET /address?q=:query
@@ -160,6 +158,39 @@ sub address {
     }
 
     return $self->render( json => [@address] );
+}
+
+=head2 create_sms
+
+    # sms.create
+    # POST /sms
+
+=cut
+
+sub create_sms {
+    my $self = shift;
+
+    my $v = $self->validation;
+    $v->required('to')->like(qr/^\d+$/);
+    $v->required('text')->like(qr/^(\s|\S)+$/);
+
+    if ( $v->has_error ) {
+        my $failed = $v->failed;
+        my $error = 'Parameter Validation Failed: ' . join( ', ', @$failed );
+        return $self->error( 400, { str => $error } );
+    }
+
+    my $to   = $v->param('to');
+    my $text = $v->param('text');
+    my $sms
+        = $self->DB->resultset('SMS')
+        ->create(
+        { from => $self->app->config->{sms_from}, to => $to, text => $text } );
+
+    return $self->error( 500, { str => 'Failed to create a new sms' } )
+        unless $sms;
+
+    $self->render( json => { $sms->get_columns } );
 }
 
 1;

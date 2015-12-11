@@ -175,6 +175,7 @@ sub _private_routes {
     $r->get('/repair')->to('dashboard#repair')->name('repair');
     $r->get('/online')->to('dashboard#online')->name('online');
     $r->get('/address')->to('API#address')->name('address');
+    $r->post('/sms')->to('API#create_sms')->name('sms.create');
 }
 
 1;
