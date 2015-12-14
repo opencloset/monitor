@@ -2,7 +2,7 @@
 @import url(//fonts.googleapis.com/earlyaccess/nanummyeongjo.css);
 
 html, body {
-    font-family: 'Nanum Myeongjo', serif;
+    //font-family: 'Nanum Myeongjo', serif;
 }
 .fa-male {
     color: #5555ee;
@@ -358,4 +358,9 @@ html, body {
 }
 .repair-done {
     cursor: pointer;
+}
+#opencloset-info {
+    p {
+        font-size: 1.5em;
+    }
 }

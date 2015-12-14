@@ -1,4 +1,5 @@
 - use utf8;
+- use DateTime;
 - layout 'default', jses => ['index.js'];
 - title 'Dashboard';
 
@@ -35,6 +36,27 @@
                   %abbr{:title => '#{$order->create_date}Z'}= $order->create_date . 'Z'
               - }
           - }
+    #opencloset-info
+      - my $rent_date = DateTime->now;
+      - my $return_date = $rent_date->clone;
+      - $return_date->add(days => 3);
+      - my %WEEK_MAP = (1 => '월', 2 => '화', 3 => '수', 4 => '목', 5 => '금', 6 => '토', 7 => '일');
+      %hr
+      %h2
+        대여기간안내
+        %small 3박 4일
+      %p
+        %strong
+          = '대여일 ' . $rent_date->month . '월 ' . $rent_date->day . '일(' . $WEEK_MAP{$rent_date->day_of_week} . ')'
+          ~
+          = '반납일 ' . $return_date->month . '월 ' . $return_date->day . '일(' . $WEEK_MAP{$return_date->day_of_week} . ')'
+      %p
+        반납일이 일요일/공휴일인 경우는 다음날 반납
+        %br
+        택배 반납은 반납일 1일전 발송
+      %p
+        오늘 대여하신 옷과 구두에는 기증자의 마음이 담겨있습니다. 소중히 입고 깨끗하게 반납 부탁드립니다.
+
   .col-md-5
     #event
       %audio{:src => "/assets/audio/whisper.ogg"}
