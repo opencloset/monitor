@@ -101,7 +101,7 @@
                 %p.pull-right
                   %a.pants.text-danger{:href => '#', :data-rule => 'down'}
                     %i.fa.fa-caret-left
-                  %samp.pants= $order->pants || 0
+                  %samp.pants= $order->pants || $user_info->pants || 0
                   %a.pants.text-danger{:href => '#', :data-rule => 'up'}
                     %i.fa.fa-caret-right
                   %a.btn.btn-success.btn-sm{:href => $url} 포장
@@ -123,7 +123,7 @@
                 %p.pull-right
                   %a.pants.text-danger{:href => '#', :data-rule => 'down'}
                     %i.fa.fa-caret-left
-                  %samp.pants= $order->pants || 0
+                  %samp.pants= $order->pants || $user_info->pants || 0
                   %a.pants.text-danger{:href => '#', :data-rule => 'up'}
                     %i.fa.fa-caret-right
             - }
