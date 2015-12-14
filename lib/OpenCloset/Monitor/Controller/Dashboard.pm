@@ -378,6 +378,10 @@ sub repair {
             $counts{$gender}{$OpenCloset::Status::STATUS_FITTING_ROOM1}
                 += $cnt;
         }
+        elsif ( $status_id == $OpenCloset::Status::STATUS_BOXED ) {
+            ## 18: 포장, 44: 포장완료 는 같은 상태로 본다
+            $counts{$gender}{$OpenCloset::Status::STATUS_BOXING} += $cnt;
+        }
         else {
             $counts{$gender}{$status_id} = $cnt;
         }
