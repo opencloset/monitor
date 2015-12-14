@@ -39,6 +39,7 @@ sub startup {
     $self->plugin('OpenCloset::Plugin::Helpers');
     $self->plugin('haml_renderer');
     $self->plugin('validator');
+    $self->plugin('RemoteAddr');
     $self->secrets( [time] );
     $self->sessions->default_expiration(86400);
 

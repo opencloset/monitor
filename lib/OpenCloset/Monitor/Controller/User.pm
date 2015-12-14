@@ -11,7 +11,7 @@ use Mojo::Base 'Mojolicious::Controller';
 
 sub auth {
     my $self    = shift;
-    my $address = $self->tx->remote_address;
+    my $address = $self->remote_addr;
     my $method  = $self->tx->req->method;
 
     return 1 if $method ne 'GET';
