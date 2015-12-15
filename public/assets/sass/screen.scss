@@ -1,9 +1,3 @@
-@import url(//fonts.googleapis.com/earlyaccess/nanumgothic.css);
-@import url(//fonts.googleapis.com/earlyaccess/nanummyeongjo.css);
-
-html, body {
-    //font-family: 'Nanum Myeongjo', serif;
-}
 .fa-male {
     color: #5555ee;
 }
@@ -360,6 +354,9 @@ html, body {
     cursor: pointer;
 }
 #opencloset-info {
+    h2, h3 {
+        font-size: 3em;
+    }
     p {
         font-size: 1.5em;
     }
