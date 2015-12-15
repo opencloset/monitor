@@ -34,14 +34,19 @@
       <td>
         <ul>
           % for my $order (@$group) {
-            % my $hms = $order->booking->date->hms;
+            % my $booking_date = $order->booking->date;
+            % my $ymd = $booking_date->ymd;
+            % my $hms = $booking_date->hms;
+            % my $hhmm = sprintf "%02d%02d", $booking_date->hour, $booking_date->minute;
             % $hms = substr($hms, 0, 5);
             <li data-order-id="<%= $order->id %>">
-              <span class="label label-info">
-                %= $order->user->name
-                <span class="date"><%= $hms %></span>
-                <abbr class="timeago" title="<%= $order->create_date%>Z"><%= $order->create_date . 'Z' %></abbr>
-              </span>
+              <a href="<%= app->config->{opencloset}{uri} %>/timetable/<%= $ymd %>#timetable-<%= $hhmm %>">
+                <span class="label label-info">
+                  %= $order->user->name
+                  <span class="date"><%= $hms %></span>
+                  <abbr class="timeago" title="<%= $order->create_date%>Z"><%= $order->create_date . 'Z' %></abbr>
+                </span>
+              </a>
             </li>
           % }
         </ul>
