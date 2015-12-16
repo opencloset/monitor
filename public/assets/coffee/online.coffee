@@ -60,5 +60,4 @@ $ ->
     re = new RegExp(' ', 'g')
     text = $(@).attr('title')
     text = text.replace('000', to.split('|')[1].replace(re, '')) if to
-    console.log("|text|")
     $('textarea[name=text]').val(text)
