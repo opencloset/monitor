@@ -1,5 +1,10 @@
 % title '수선';
-% layout 'default', jses => ['repair.js'];
+% layout 'default', jses => [
+%   '/assets/components/jquery-timeago/jquery.timeago.js',
+%   '/assets/components/jquery-timeago/locales/jquery.timeago.ko.js',
+%   '/assets/components/reconnectingWebsocket/reconnecting-websocket.js',
+%   '/assets/dist/js/repair.min.js'
+% ];
 
 % use OpenCloset::Status;
 

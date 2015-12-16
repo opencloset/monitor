@@ -1,3 +1,4 @@
+"use strict"
 $ ->
   $("abbr.timeago").timeago()
 
@@ -53,3 +54,10 @@ $ ->
       error: (jqXHR, textStatus, errorThrown) ->
         $.growl.error({ message: jqXHR.responseJSON.error.str })
       complete: (jqXHR, textStatus) ->
+
+  $('.sms-macro').click ->
+    to = $('#selected div').text()
+    re = new RegExp(' ', 'g')
+    text = $(@).attr('title')
+    text = text.replace('000', to.split('|')[1].replace(re, '')) if to
+    $('textarea[name=text]').val(text)

@@ -1,3 +1,4 @@
+"use strict"
 $ ->
   hostname = location.hostname
   port = location.port

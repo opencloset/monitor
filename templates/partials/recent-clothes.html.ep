@@ -1,11 +1,12 @@
 % my %LABEL_MAP = ('대여가능' => 'label-success', '대여중' => 'label-danger');
+% my $bestfit = $order->bestfit;
 
 <li>
   % my @details = $order->order_details;
   % next unless @details;
   <ul>
     % my $rental_date = $order->rental_date;
-    <span class="label label-inverse"><%= $rental_date ? $rental_date->ymd : '????-??-??' %></span>
+    <span class="label label-inverse<%= $bestfit ? ' bestfit' : '' %>"><%= $rental_date ? $rental_date->ymd : '????-??-??' %></span>
     % for my $detail (@details) {
       % my $code = $detail->clothes_code;
       % next unless $code;
