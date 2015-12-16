@@ -1,3 +1,4 @@
+"use strict"
 alert = (cls, msg, target) ->
   unless msg
     msg = cls

@@ -1,3 +1,4 @@
+"use strict"
 ## Status map
 statusMap =
   6:  'repair'
@@ -170,6 +171,6 @@ distanceMinutes = (millis) ->
 $ ->
   $('.user').each (i, el) ->
     guessBooking($(el))
-  stream = new EventStream
+  stream = new EventStream()
   stream.on 'error', (e) ->
     location.reload()
