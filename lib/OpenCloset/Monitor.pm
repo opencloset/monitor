@@ -43,9 +43,16 @@ sub startup {
     $self->secrets( [time] );
     $self->sessions->default_expiration(86400);
 
+    $self->_assets;
     $self->_whitelist;
     $self->_public_routes;
     $self->_private_routes;
+}
+
+sub _assets {
+    my $self = shift;
+
+    $self->defaults( { jses => [], csses => [] } );
 }
 
 sub _whitelist {
