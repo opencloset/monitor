@@ -33,14 +33,16 @@ $ ->
         $("#dashboard-repair tbody span.female").empty()
         for key in keys
           $td = $("#dashboard-repair tbody td[data-status=\"#{key}\"]")
-          m = male[key] or 0
-          f = female[key] or 0
-          $male = $td.find('span.male')
-          _.each _.range(m), ->
-            $male.append "<i class=\"fa fa-male male\"></i>"
-          $female = $td.find('span.female')
-          _.each _.range(f), ->
-            $female.append "<i class=\"fa fa-female female\"></i>"
+          if male
+            m = male[key] or 0
+            $male = $td.find('span.male')
+            _.each _.range(m), ->
+              $male.append "<i class=\"fa fa-male male\"></i>"
+          if female
+            f = female[key] or 0
+            $female = $td.find('span.female')
+            _.each _.range(f), ->
+              $female.append "<i class=\"fa fa-female female\"></i>"
       error: (jqXHR, textStatus, errorThrown) ->
         console.log textStatus
       complete: (jqXHR, textStatus) ->
