@@ -1,14 +1,10 @@
-public/assets/coffee/js/
 public/assets/components/
-public/assets/css/
-public/assets/js/
+public/assets/dist/
 monitor.conf
 node_modules/
-.sass-cache/
 .opencloset.json
 run
 *.db
-packed/
 .cookie.txt
 
 # editor swap files
