@@ -1,6 +1,10 @@
 - use utf8;
 - use DateTime;
-- layout 'default', jses => ['index.js'];
+- layout 'default', jses => [
+-   '/assets/components/reconnectingWebsocket/reconnecting-websocket.js',
+-   '/assets/components/backbone/backbone.js',
+-   '/assets/dist/js/index.min.js'
+- ];
 - title 'Dashboard';
 
 - my @sid = qw/13 16 17 20 6 18 19/;

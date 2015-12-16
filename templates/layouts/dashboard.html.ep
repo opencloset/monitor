@@ -9,11 +9,11 @@
     <link rel="stylesheet" href="/assets/components/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="/assets/components/font-awesome/css/font-awesome.css">
     <link rel="stylesheet" href="/assets/components/growl/stylesheets/jquery.growl.css">
+    <link rel="stylesheet" href="/assets/dist/css/opencloset.min.css">
+    <link rel="stylesheet" href="/assets/dist/css/dashboard.min.css">
     % for my $css (@$csses) {
-      %= asset $css
+      <link rel="stylesheet" href="<%= $css %>">
     % }
-    %= asset 'opencloset.css'
-    %= asset 'dashboard.css'
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -28,10 +28,12 @@
         <%= content %>
       </div>
     </div>
-    %= asset 'bundle.js'
+    <script src="/assets/components/jquery/dist/jquery.min.js"></script>
+    <script src="/assets/components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/assets/components/underscore/underscore.js"></script>
     <script src="/assets/components/growl/javascripts/jquery.growl.js"></script>
     % for my $js (@$jses) {
-      %= asset $js
+      <script src="<%= $js %>"></script>
     % }
   </body>
 </html>
