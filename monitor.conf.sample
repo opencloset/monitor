@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Mojo::JSON;
+my $PORT = $ENV{OPENCLOSET_MONITOR_PORT} || '8002';
 my $SMS_FROM = '07043257521';
 
 my $db_opts
@@ -29,7 +30,7 @@ $db_opts->{AutoCommit} //= 1;
     # for Mojolicious hypnotoad server
     #
     hypnotoad => {
-        listen   => ['http://*:8002'],
+        listen   => ["http://*:$PORT"],
         workers  => 3,
         pid_file => 'hypnotoad.pid',
     },
