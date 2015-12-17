@@ -67,8 +67,6 @@ sub index {
     my $return = DateTime->now->add( days => 3 );
     if ( my $ymd = $brain->{data}{expiration} ) {
         my $dt = DateTime::Format::ISO8601->parse_datetime($ymd);
-        $self->log->debug($return);
-        $self->log->debug($dt);
         $return = $dt if DateTime->compare( $return, $dt ) == -1;
     }
 

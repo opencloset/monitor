@@ -57,7 +57,6 @@
           = '대여일 ' . $rent_date->month . '월 ' . $rent_date->day . '일(' . $WEEK_MAP{$rent_date->day_of_week} . ')'
           ~
           %span.datepicker= '반납일 ' . $return_date->month . '월 ' . $return_date->day . '일(' . $WEEK_MAP{$return_date->day_of_week} . ')'
-        %input#expiration{:type => 'hidden'}
       %p
         반납일이 일요일/공휴일인 경우는 다음날 반납
         %br
