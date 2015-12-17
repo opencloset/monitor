@@ -65,8 +65,10 @@ sub index {
 
     my $brain = OpenCloset::Brain->new;
     my $return = DateTime->now->add( days => 3 );
+    $return->set_time_zone('Asia/Seoul');
     if ( my $ymd = $brain->{data}{expiration} ) {
         my $dt = DateTime::Format::ISO8601->parse_datetime($ymd);
+        $dt->set_time_zone('Asia/Seoul');
         $return = $dt if DateTime->compare( $return, $dt ) == -1;
     }
 
