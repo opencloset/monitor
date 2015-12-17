@@ -193,4 +193,41 @@ sub create_sms {
     $self->render( json => { $sms->get_columns } );
 }
 
+=head2 update_brain
+
+    # brain.update
+    # PUT /brain
+
+=over parameters
+
+=item k
+
+=item v
+
+=back
+
+=cut
+
+sub update_brain {
+    my $self = shift;
+
+    my $v = $self->validation;
+    $v->required('k')->like(qr/^[a-z]+$/);
+    $v->required('v');
+
+    if ( $v->has_error ) {
+        my $failed = $v->failed;
+        my $error = 'Parameter Validation Failed: ' . join( ', ', @$failed );
+        return $self->error( 400, { str => $error } );
+    }
+
+    my $key   = $v->param('k');
+    my $value = $v->param('v');
+
+    my $brain = OpenCloset::Brain->new;
+    $brain->{data}{$key} = $value;
+
+    $self->render( json => { data => { $key => $value } } );
+}
+
 1;
