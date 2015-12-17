@@ -6,7 +6,7 @@ use Net::IP::AddrRanges;
 use OpenCloset::Schema;
 use OpenCloset::Monitor::Schema;
 
-use version; our $VERSION = qv("v0.5.0");
+use version; our $VERSION = qv("v0.5.1");
 
 has ranges => sub { Net::IP::AddrRanges->new };
 has DB => sub {
@@ -90,6 +90,7 @@ sub _private_routes {
     $r->get('/online')->to('dashboard#online')->name('online');
     $r->get('/address')->to('API#address')->name('address');
     $r->post('/sms')->to('API#create_sms')->name('sms.create');
+    $r->put('/brain')->to('API#update_brain')->name('brain.update');
 }
 
 1;

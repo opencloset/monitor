@@ -174,3 +174,19 @@ $ ->
   stream = new EventStream()
   stream.on 'error', (e) ->
     location.reload()
+
+  $('.datepicker').datepicker
+    language: 'kr'
+    todayHighlight: true
+    format: 'yyyy-mm-dd'
+    autoclose: true
+  .on 'changeDate', (e) ->
+    ymd = $(@).datepicker('getFormattedDate')
+    $.ajax "/brain",
+      type: 'PUT'
+      data: { k: 'expiration', v: ymd }
+      success: (data, textStatus, jqXHR) ->
+        location.reload()
+      error: (jqXHR, textStatus, errorThrown) ->
+      complete: (jqXHR, textStatus) ->
+

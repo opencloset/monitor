@@ -4,6 +4,8 @@ use Mojo::Base 'Mojolicious::Controller';
 use OpenCloset::Brain;
 use OpenCloset::Status;
 
+use DateTime;
+use DateTime::Format::ISO8601;
 use Encode 'decode_utf8';
 use Mojo::JSON 'j';
 
@@ -61,6 +63,15 @@ sub index {
         }
     }
 
+    my $brain = OpenCloset::Brain->new;
+    my $return = DateTime->now->add( days => 3 );
+    if ( my $ymd = $brain->{data}{expiration} ) {
+        my $dt = DateTime::Format::ISO8601->parse_datetime($ymd);
+        $self->log->debug($return);
+        $self->log->debug($dt);
+        $return = $dt if DateTime->compare( $return, $dt ) == -1;
+    }
+
     $self->respond_to(
         json => sub {
             my @orders;
@@ -74,7 +85,8 @@ sub index {
                 orders => [
                     [@visit], [@measure], [@select], [@undress],
                     [@repair], [@boxing], [@payment]
-                ]
+                ],
+                expiration => $return
             );
         }
     );

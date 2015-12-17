@@ -3,7 +3,11 @@
 - layout 'default', jses => [
 -   '/assets/components/reconnectingWebsocket/reconnecting-websocket.js',
 -   '/assets/components/backbone/backbone.js',
+-   '/assets/components/bootstrap-datepicker/js/bootstrap-datepicker.js',
+-   '/assets/components/bootstrap-datepicker/js/locales/bootstrap-datepicker.kr.js',
 -   '/assets/dist/js/index.min.js'
+- ], csses => [
+-   '/assets/components/bootstrap-datepicker/css/datepicker3.css'
 - ];
 - title 'Dashboard';
 
@@ -42,8 +46,7 @@
           - }
     #opencloset-info
       - my $rent_date = DateTime->now;
-      - my $return_date = $rent_date->clone;
-      - $return_date->add(days => 3);
+      - my $return_date = $expiration;
       - my %WEEK_MAP = (1 => '월', 2 => '화', 3 => '수', 4 => '목', 5 => '금', 6 => '토', 7 => '일');
       %hr
       %h2
@@ -53,7 +56,8 @@
         %strong
           = '대여일 ' . $rent_date->month . '월 ' . $rent_date->day . '일(' . $WEEK_MAP{$rent_date->day_of_week} . ')'
           ~
-          = '반납일 ' . $return_date->month . '월 ' . $return_date->day . '일(' . $WEEK_MAP{$return_date->day_of_week} . ')'
+          %span.datepicker= '반납일 ' . $return_date->month . '월 ' . $return_date->day . '일(' . $WEEK_MAP{$return_date->day_of_week} . ')'
+        %input#expiration{:type => 'hidden'}
       %p
         반납일이 일요일/공휴일인 경우는 다음날 반납
         %br
