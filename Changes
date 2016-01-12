@@ -1,3 +1,7 @@
+v0.5.3    Wed, 13 Jan 2016 08:35:55 +0900
+  - 대여, 반납일에 local timezone 적용
+  - opencloset.css bower package 를 사용
+
 v0.5.2    Thu, 17 Dec 2015 16:54:50 +0900
   - font++ @dashboard
 
