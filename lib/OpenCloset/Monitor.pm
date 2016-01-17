@@ -6,7 +6,7 @@ use Net::IP::AddrRanges;
 use OpenCloset::Schema;
 use OpenCloset::Monitor::Schema;
 
-use version; our $VERSION = qv("v0.5.3");
+use version; our $VERSION = qv("v0.5.4");
 
 has ranges => sub { Net::IP::AddrRanges->new };
 has DB => sub {
