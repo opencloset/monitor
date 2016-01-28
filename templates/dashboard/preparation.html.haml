@@ -29,8 +29,10 @@
         %samp= $bestfit->{week}{male} || 0
         %i.fa{:class => "fa-female female"}
         %samp= $bestfit->{week}{female} || 0
+
 #preparation.row
   #select.col-md-8
+    = include 'partials/waiting', waiting => $waiting;
     - while (my $order = $orders->next) {
       - if (grep { $order->id == $_ } @$select_active) {
         .row.select.active{:data-order-id => '#{$order->id}'}= include 'partials/select', order => $order;

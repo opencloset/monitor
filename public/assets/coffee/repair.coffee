@@ -26,8 +26,8 @@ $ ->
       type: 'GET'
       dataType: 'json'
       success: (data, textStatus, jqXHR) ->
-        male   = data.counts.male
-        female = data.counts.female
+        male   = data.waiting.male
+        female = data.waiting.female
         keys = _.union _.keys(male), _.keys(female)
         $("#dashboard-repair tbody span.male").empty()
         $("#dashboard-repair tbody span.female").empty()

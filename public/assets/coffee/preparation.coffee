@@ -18,8 +18,35 @@ $ ->
     range.unshift 17
     range.unshift 18
     range.unshift 6
-    if sender is 'order' and parseInt(data.from) in range or parseInt(data.to) in range
-      location.reload()
+    if sender is 'order'
+      if parseInt(data.from) in range or parseInt(data.to) in range
+        return location.reload()
+
+      $.ajax "/repair",
+        type: 'GET'
+        dataType: 'json'
+        success: (data, textStatus, jqXHR) ->
+          male   = data.waiting.male
+          female = data.waiting.female
+          keys = _.union _.keys(male), _.keys(female)
+          $(".table-waiting tbody span.male").empty()
+          $(".table-waiting tbody span.female").empty()
+          for key in keys
+            $td = $(".table-waiting tbody td[data-status=\"#{key}\"]")
+            if male
+              m = male[key] or 0
+              $male = $td.find('span.male')
+              _.each _.range(m), ->
+                $male.append "<i class=\"fa fa-male male\"></i>"
+            if female
+              f = female[key] or 0
+              $female = $td.find('span.female')
+              _.each _.range(f), ->
+                $female.append "<i class=\"fa fa-female female\"></i>"
+        error: (jqXHR, textStatus, errorThrown) ->
+          console.log textStatus
+        complete: (jqXHR, textStatus) ->
+
     else if sender is 'user'
       location.reload()
     else if sender is 'active.room'
