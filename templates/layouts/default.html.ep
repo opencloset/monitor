@@ -12,6 +12,7 @@
     % for my $css (@$csses) {
       <link rel="stylesheet" href="<%= $css %>">
     % }
+    <link rel="stylesheet" href="/assets/components/opencloset.css/dist/css/opencloset.min.css">
     <link rel="stylesheet" href="/assets/dist/css/screen.min.css">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
