@@ -6,11 +6,6 @@
 %   '/assets/dist/js/repair.min.js'
 % ];
 
-% use OpenCloset::Status;
-
-% my @sid = qw/13 16 17 20 6 18 19/;
-% my $i = 0;
-
 <div id="event">
   <audio src="/assets/audio/alarm.ogg">
     <p>Your browser does not support the audio element.</p>
@@ -18,40 +13,7 @@
 </div>
 
 <div id="dashboard-repair">
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        % for my $sid (@sid) {
-          % if ($sid == 20) {
-            <th><%= substr $OpenCloset::Status::MAP{$sid}, 0, 2 %></th>
-          % } else {
-            <th><%= $OpenCloset::Status::MAP{$sid} %></th>
-          % }
-        % }
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        % for my $sid (@sid) {
-          % my $male = $counts->{male}{$sid} || 0;
-          % my $female = $counts->{female}{$sid} || 0;
-          <td data-status="<%= $sid %>">
-            <span class="male">
-              % for (0 .. $male - 1) {
-                <i class="fa fa-male male"></i>
-              % }
-            </span>
-            <span class="female">
-              % for (0 .. $female - 1) {
-                <i class="fa fa-female female"></i>
-              % }
-            </span>
-          </td>
-        % }
-      </tr>
-    </tbody>
-  </table>
-
+  %= include 'partials/waiting', waiting => $waiting;
   <ul>
     % while (my $order = $orders->next) {
       % my $user      = $order->user;

@@ -350,7 +350,8 @@ sub preparation {
         repair        => [@repair],
         boxing        => [@boxing],
         bestfit       => {%bestfit},
-        done          => {%done}
+        done          => {%done},
+        waiting       => $self->app->_waiting_list,
     );
 }
 
@@ -364,43 +365,9 @@ sub preparation {
 sub repair {
     my $self = shift;
 
-    ## 각 상태별 주문서의 갯수 를 남녀별로
-    ## 22:00 주문서는 온라인 주문서이기 때문에 제외
-    my $counts = $self->DB->resultset('Order')->search(
-        { status_id => { -in => [@OpenCloset::Status::ACTIVE_STATUS] }, },
-        {
-            select =>
-                ['status_id', 'user_info.gender', { count => 'status_id' }],
-            as       => [qw/status_id gender cnt/],
-            group_by => ['status_id', 'user_info.gender'],
-            join     => ['booking', { user => 'user_info' }]
-        }
-    )->search_literal('HOUR(`booking`.`date`) != 22');
-
-    my %counts;
-    while ( my $row = $counts->next ) {
-        my $status_id = $row->get_column('status_id');
-        my $gender    = $row->get_column('gender');
-        my $cnt       = $row->get_column('cnt');
-
-        ## 탈의를 key 한개로 묶는다
-        if (   $status_id >= $OpenCloset::Status::STATUS_FITTING_ROOM1
-            && $status_id <= $OpenCloset::Status::STATUS_FITTING_ROOM11 )
-        {
-            $counts{$gender}{$OpenCloset::Status::STATUS_FITTING_ROOM1}
-                += $cnt;
-        }
-        elsif ( $status_id == $OpenCloset::Status::STATUS_BOXED ) {
-            ## 18: 포장, 44: 포장완료 는 같은 상태로 본다
-            $counts{$gender}{$OpenCloset::Status::STATUS_BOXING} += $cnt;
-        }
-        else {
-            $counts{$gender}{$status_id} = $cnt;
-        }
-    }
-
-    my $brain = OpenCloset::Brain->new;
-    my $rs    = $self->DB->resultset('Order')->search(
+    my $waiting = $self->app->_waiting_list;
+    my $brain   = OpenCloset::Brain->new;
+    my $rs      = $self->DB->resultset('Order')->search(
         { status_id => $OpenCloset::Status::STATUS_REPAIR },
         { order_by  => { -asc => 'update_date' } }
     );
@@ -410,12 +377,12 @@ sub repair {
         keys %{ $brain->{data}{repair} };
 
     $self->respond_to(
-        json => { json => { counts => {%counts} } },
+        json => { json => { waiting => $waiting } },
         html => sub {
             $self->render(
-                orders => $rs,
-                counts => {%counts},
-                done   => {%done}
+                orders  => $rs,
+                waiting => $waiting,
+                done    => {%done}
             );
         }
     );
