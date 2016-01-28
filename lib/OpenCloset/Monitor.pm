@@ -3,8 +3,9 @@ use Mojo::Base 'Mojolicious';
 
 use Net::IP::AddrRanges;
 
-use OpenCloset::Schema;
 use OpenCloset::Monitor::Schema;
+use OpenCloset::Schema;
+use OpenCloset::Status;
 
 use version; our $VERSION = qv("v0.5.4");
 
@@ -91,6 +92,57 @@ sub _private_routes {
     $r->get('/address')->to('API#address')->name('address');
     $r->post('/sms')->to('API#create_sms')->name('sms.create');
     $r->put('/brain')->to('API#update_brain')->name('brain.update');
+}
+
+=head2 _waiting_list
+
+성별/상태별 대기인원의 수를 돌려줌
+
+    my $waiting_list = $self->app->_waiting_list;
+    print $waiting_list->{male}{18};      # 포장 상태인 남성의 수
+    print $waiting_list->{female}{18};    # 포장 상태인 여성의 수
+
+=cut
+
+sub _waiting_list {
+    my $self = shift;
+
+    ## 각 상태별 주문서의 갯수 를 남녀별로
+    ## 22:00 주문서는 온라인 주문서이기 때문에 제외
+    my $rs = $self->DB->resultset('Order')->search(
+        { status_id => { -in => [@OpenCloset::Status::ACTIVE_STATUS] }, },
+        {
+            select =>
+                ['status_id', 'user_info.gender', { count => 'status_id' }],
+            as       => [qw/status_id gender cnt/],
+            group_by => ['status_id', 'user_info.gender'],
+            join     => ['booking', { user => 'user_info' }]
+        }
+    )->search_literal('HOUR(`booking`.`date`) != 22');
+
+    my %waiting;
+    while ( my $row = $rs->next ) {
+        my $status_id = $row->get_column('status_id');
+        my $gender    = $row->get_column('gender');
+        my $cnt       = $row->get_column('cnt');
+
+        ## 탈의를 key 한개로 묶는다
+        if (   $status_id >= $OpenCloset::Status::STATUS_FITTING_ROOM1
+            && $status_id <= $OpenCloset::Status::STATUS_FITTING_ROOM11 )
+        {
+            $waiting{$gender}{$OpenCloset::Status::STATUS_FITTING_ROOM1}
+                += $cnt;
+        }
+        elsif ( $status_id == $OpenCloset::Status::STATUS_BOXED ) {
+            ## 18: 포장, 44: 포장완료 는 같은 상태로 본다
+            $waiting{$gender}{$OpenCloset::Status::STATUS_BOXING} += $cnt;
+        }
+        else {
+            $waiting{$gender}{$status_id} = $cnt;
+        }
+    }
+
+    return \%waiting;
 }
 
 1;
