@@ -93,6 +93,7 @@ sub _private_routes {
     $r->post('/sms')->to('API#create_sms')->name('sms.create');
     $r->put('/brain')->to('API#update_brain')->name('brain.update');
     $r->get('/target_date')->to('API#target_dt')->name('api.target_date');
+    $r->options('/target_date')->to('API#cors');
 }
 
 =head2 _waiting_list
