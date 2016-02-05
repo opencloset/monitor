@@ -46,7 +46,6 @@ $ ->
         error: (jqXHR, textStatus, errorThrown) ->
           console.log textStatus
         complete: (jqXHR, textStatus) ->
-
     else if sender is 'user'
       location.reload()
     else if sender is 'active.room'

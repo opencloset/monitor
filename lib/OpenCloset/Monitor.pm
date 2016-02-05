@@ -7,7 +7,7 @@ use OpenCloset::Monitor::Schema;
 use OpenCloset::Schema;
 use OpenCloset::Status;
 
-use version; our $VERSION = qv("v0.5.6");
+use version; our $VERSION = qv("v0.5.7");
 
 has ranges => sub { Net::IP::AddrRanges->new };
 has DB => sub {
@@ -37,7 +37,7 @@ sub startup {
     my $self = shift;
 
     $self->plugin('Config');
-    $self->plugin('OpenCloset::Plugin::Helpers');
+    $self->plugin('OpenCloset::Monitor::Plugin::Helpers');
     $self->plugin('haml_renderer');
     $self->plugin('validator');
     $self->plugin('RemoteAddr');
@@ -92,6 +92,7 @@ sub _private_routes {
     $r->get('/address')->to('API#address')->name('address');
     $r->post('/sms')->to('API#create_sms')->name('sms.create');
     $r->put('/brain')->to('API#update_brain')->name('brain.update');
+    $r->get('/target_date')->to('API#target_dt')->name('api.target_date');
 }
 
 =head2 _waiting_list

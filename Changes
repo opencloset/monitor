@@ -1,3 +1,8 @@
+v0.5.7    Fri, 05 Feb 2016 11:22:11 +0900
+  - opencloset.css 적용
+  - Rename OpenCloset::Plugin::Helpers OpenCloset::Monitor::Plugin::Helpers
+  - Add route 'GET /target_date.json'
+
 v0.5.6    Thu, 28 Jan 2016 15:28:44 +0900
   - 일요일/공휴일에 대한 반납 문구 삭제
 
