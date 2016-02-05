@@ -70,7 +70,7 @@ sub error {
 
 sub age {
     my ( $self, $birth ) = @_;
-    my $now = DateTime::Tiny->now;
+    my $now = DateTime->now;
     return $now->year - $birth;
 }
 
