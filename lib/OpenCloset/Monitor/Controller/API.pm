@@ -240,9 +240,32 @@ sub update_brain {
 sub target_dt {
     my $self = shift;
 
+    my $origin = $self->req->headers->header('origin');
+    $self->res->headers->header( 'Access-Control-Allow-Origin' => $origin );
+
     my $target_date = $self->target_date;
     $self->render(
         json => { ymd => $target_date->ymd, epoch => $target_date->epoch } );
+}
+
+=head2 cors
+
+    OPTIONS /target_date
+
+=cut
+
+sub cors {
+    my $self = shift;
+
+    my $origin = $self->req->headers->header('origin');
+    my $method = $self->req->headers->header('access-control-request-method');
+
+    # return $self->error( 400, "Not Allowed Origin: $origin" )
+    #     unless $origin =~ m/theopencloset\.net/;
+
+    $self->res->headers->header( 'Access-Control-Allow-Origin'  => $origin );
+    $self->res->headers->header( 'Access-Control-Allow-Methods' => $method );
+    $self->respond_to( any => { data => '', status => 200 } );
 }
 
 1;

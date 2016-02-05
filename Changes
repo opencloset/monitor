@@ -1,3 +1,5 @@
+  - Allow cors to get target date
+
 v0.5.7    Fri, 05 Feb 2016 11:22:11 +0900
   - opencloset.css 적용
   - Rename OpenCloset::Plugin::Helpers OpenCloset::Monitor::Plugin::Helpers
