@@ -2,8 +2,10 @@ package OpenCloset::Monitor::Plugin::Helpers;
 
 use Mojo::Base 'Mojolicious::Plugin';
 
-use DateTime::Tiny;
+use DateTime;
 use Mojo::Redis2;
+
+use OpenCloset::Brain;
 
 sub register {
     my ( $self, $app, $conf ) = @_;
@@ -16,6 +18,7 @@ sub register {
     $app->helper( previous_order => \&previous_order );
     $app->helper( history        => \&history );
     $app->helper( recent_orders  => \&recent_orders );
+    $app->helper( target_date    => \&target_date );
 }
 
 sub order_flatten {
@@ -128,6 +131,21 @@ sub recent_orders {
     return $rs->slice( 0, $limit - 1 );
 }
 
+sub target_date {
+    my $self = shift;
+
+    my $brain = OpenCloset::Brain->new;
+    my $target_date = DateTime->now->add( days => 3 );
+    $target_date->set_time_zone('Asia/Seoul');
+    if ( my $ymd = $brain->{data}{expiration} ) {
+        my $dt = DateTime::Format::ISO8601->parse_datetime($ymd);
+        $dt->set_time_zone('Asia/Seoul');
+        $target_date = $dt if DateTime->compare( $target_date, $dt ) == -1;
+    }
+
+    return $target_date;
+}
+
 1;
 
 =pod
@@ -162,5 +180,9 @@ Return: $resultset (scalar context) | @result_objs (list context)
 
 사용자의 C<$order> 를 제외한 최근 주문서를 찾습니다.
 C<$limit> 의 기본값은 C<5> 입니다.
+
+=head2 target_date
+
+return target_date
 
 =cut
