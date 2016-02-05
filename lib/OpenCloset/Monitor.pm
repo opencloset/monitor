@@ -37,7 +37,7 @@ sub startup {
     my $self = shift;
 
     $self->plugin('Config');
-    $self->plugin('OpenCloset::Plugin::Helpers');
+    $self->plugin('OpenCloset::Monitor::Plugin::Helpers');
     $self->plugin('haml_renderer');
     $self->plugin('validator');
     $self->plugin('RemoteAddr');

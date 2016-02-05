@@ -1,4 +1,4 @@
-package OpenCloset::Plugin::Helpers;
+package OpenCloset::Monitor::Plugin::Helpers;
 
 use Mojo::Base 'Mojolicious::Plugin';
 
