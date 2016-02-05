@@ -230,4 +230,19 @@ sub update_brain {
     $self->render( json => { data => { $key => $value } } );
 }
 
+=head2 target_dt
+
+    # target_date
+    GET /target_date
+
+=cut
+
+sub target_dt {
+    my $self = shift;
+
+    my $target_date = $self->target_date;
+    $self->render(
+        json => { ymd => $target_date->ymd, epoch => $target_date->epoch } );
+}
+
 1;

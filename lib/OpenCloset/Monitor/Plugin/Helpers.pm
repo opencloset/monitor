@@ -2,6 +2,7 @@ package OpenCloset::Monitor::Plugin::Helpers;
 
 use Mojo::Base 'Mojolicious::Plugin';
 
+use DateTime::Format::ISO8601;
 use DateTime;
 use Mojo::Redis2;
 
