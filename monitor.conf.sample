@@ -46,4 +46,6 @@ $db_opts->{AutoCommit} //= 1;
         cookie   => '.cookie.txt'
     },
     sms_from => $SMS_FROM,
+    secrets  => [$ENV{OPENCLOSET_SECRET}],    # must set secret of staff.theopencloset.net
+    cookie_domain => $ENV{OPENCLOSET_DOMAIN} || 'localhost' || '.theopencloset.net',
 };

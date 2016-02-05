@@ -41,7 +41,10 @@ sub startup {
     $self->plugin('haml_renderer');
     $self->plugin('validator');
     $self->plugin('RemoteAddr');
-    $self->secrets( [time] );
+
+    $self->secrets( $self->config->{secrets} );
+    $self->sessions->cookie_domain( $self->config->{cookie_domain} );
+    $self->sessions->cookie_name('opencloset');
     $self->sessions->default_expiration(86400);
 
     $self->_assets;
