@@ -100,7 +100,6 @@ $ ->
         console.log textStatus
       complete: (jqXHR, textStatus) ->
 
-  # refs Window::OpenCloset::status in opencloset/coffee/bundle.coffee
   items =
     repair:
       name: '수선'
@@ -110,33 +109,98 @@ $ ->
       name: '포장'
       callback: (key, opt) ->
         bestfitPopup(18, key, opt)
-  _.each [1..11], (el, i) ->
+
+  reservedRoom = []
+
+  $('.select[data-order-id]').each (i, el) ->
+    $el = $(el)
+    $prev = $el.find('.previous strong')
+
+    return true unless $prev.length
+
+    n = parseInt($prev.text().split('/')[0].substring(1))
+    reservedRoom.push(n)
+    menu = _.clone(items)
+    menu[n] =
+      name: "탈의##{n}"
+      callback: (key, opt) ->
+        order_id = opt.$trigger.data('order-id')
+        updateOrder(order_id, {status_id: n + 19})
+    $.contextMenu
+      selector: ".select[data-order-id='#{$el.data('order-id')}']"
+      items: menu
+
+  $('[data-order-id]:not(.select)').each (i, el) ->
+    $el = $(el)
+
+    if $el.hasClass('repair')
+      ## 수선목록의 contextMenu
+      $.contextMenu
+        selector: "[data-order-id='#{$el.data('order-id')}']"
+        items:
+          a:
+            name: '의류준비'
+            callback: (key, opt) ->
+              order_id = opt.$trigger.data('order-id')
+              updateOrder(order_id, {status_id: 17})
+          b:
+            name: '포장'
+            callback: (key, opt) ->
+              bestfitPopup(18, key, opt)
+    else if $el.hasClass('boxing')
+      ## 포장목록의 contextMenu
+      $.contextMenu
+        selector: "[data-order-id='#{$el.data('order-id')}']"
+        items:
+          a:
+            name: '의류준비'
+            callback: (key, opt) ->
+              order_id = opt.$trigger.data('order-id')
+              updateOrder(order_id, {status_id: 17})
+          b:
+            name: '수선'
+            callback: (key, opt) ->
+              bestfitPopup(6, key, opt)
+    else
+      ## 탈의목록의 contextMenu
+      n = parseInt($el.find('h3').text().trim().substring(1))
+      reservedRoom.push(n)
+
+      $.contextMenu
+        selector: "[data-order-id='#{$el.data('order-id')}']"
+        items:
+          a:
+            name: '의류준비'
+            callback: (key, opt) ->
+              order_id = opt.$trigger.data('order-id')
+              updateOrder(order_id, {status_id: 17})
+          b:
+            name: '수선'
+            callback: (key, opt) ->
+              bestfitPopup(6, key, opt)
+          c:
+            name: '포장'
+            callback: (key, opt) ->
+              bestfitPopup(18, key, opt)
+
+  available = _.difference([1..11], reservedRoom)
+  _.each available, (el, i) ->
     items[el] =
       name: "탈의##{el}"
       callback: (key, opt) ->
         order_id = opt.$trigger.data('order-id')
         updateOrder(order_id, {status_id: parseInt(el) + 19})
 
-  $.contextMenu
-    selector: '.select[data-order-id]'
-    items: items
+  # 앞서 한바퀴 돌리면서 reservedRoom 을 채우고 이를 다시 돌면서 활용
+  $('.select[data-order-id]').each (i, el) ->
+    $el = $(el)
+    $prev = $el.find('.previous strong')
 
-  $.contextMenu
-    selector: '[data-order-id]:not(.select)'
-    items:
-      a:
-        name: '의류준비'
-        callback: (key, opt) ->
-          order_id = opt.$trigger.data('order-id')
-          updateOrder(order_id, {status_id: 17})
-      b:
-        name: '수선'
-        callback: (key, opt) ->
-          bestfitPopup(6, key, opt)
-      c:
-        name: '포장'
-        callback: (key, opt) ->
-          bestfitPopup(18, key, opt)
+    return true if $prev.length
+
+    $.contextMenu
+      selector: ".select[data-order-id='#{$el.data('order-id')}']"
+      items: items
 
   $('#bestfit-alert').on 'click', '.btn-success', (e) ->
     $('#bestfit-alert').data('bestfit', 1).addClass('hidden')
