@@ -6,7 +6,7 @@ module.exports = (grunt) ->
 
     # Task configuration
     clean:
-      dist: 'dist'
+      dist: 'public/assets/dist'
 
     coffee:
       dist:
