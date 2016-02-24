@@ -5,6 +5,7 @@ use DateTime;
 use Encode 'decode_utf8';
 use HTTP::CookieJar;
 use HTTP::Tiny;
+use Mojo::JSON qw/decode_json j/;
 use Path::Tiny;
 
 use OpenCloset::Brain;
@@ -59,6 +60,18 @@ sub order {
     my $res        = $http->request( 'PUT', $url );
     return $self->error( 500, { str => 'Failed to update order' } )
         unless $res->{success};
+
+    ## 주문서의 bestfit 업데이트는 staff 로 부터 이벤트가 오지 않는다.
+    ## 해서 스스로 발생
+    if ( defined $queries->{bestfit} ) {
+        my $channel = $self->app->redis_channel;
+        my $extra   = decode_json( $res->{content} );
+        my $data    = { extra => $extra };
+        $data->{sender}   = 'order';
+        $data->{order_id} = $extra->{id};
+        $data->{from}     = $data->{to} = $extra->{status_id};
+        $self->redis->publish( "$channel:order" => decode_utf8( j($data) ) );
+    }
 
     ## pants 는 주문서뿐만 아니라 실제 사용자정보도 업데이트 해야 한다
     if ( my $pants = $queries->{pants} ) {

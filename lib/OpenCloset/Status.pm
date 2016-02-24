@@ -1,13 +1,14 @@
 package OpenCloset::Status;
 use utf8;
 
-our $STATUS_REPAIR  = 6;
-our $STATUS_VISIT   = 13;
-our $STATUS_MEASURE = 16;
-our $STATUS_SELECT  = 17;
-our $STATUS_BOXING  = 18;
-our $STATUS_PAYMENT = 19;
-our $STATUS_BOXED   = 44;
+our $STATUS_REPAIR        = 6;
+our $STATUS_VISIT         = 13;
+our $STATUS_MEASURE       = 16;
+our $STATUS_SELECT        = 17;
+our $STATUS_BOXING        = 18;
+our $STATUS_PAYMENT       = 19;
+our $STATUS_BOXED         = 44;
+our $STATUS_DO_NOT_RENTAL = 40;
 
 our $STATUS_FITTING_ROOM1  = 20;
 our $STATUS_FITTING_ROOM2  = 21;
@@ -36,6 +37,7 @@ our %MAP = (
     $STATUS_BOXING         => '포장',
     $STATUS_BOXED          => '포장완료',
     $STATUS_PAYMENT        => '결제대기',
+    $STATUS_DO_NOT_RENTAL  => '대여안함',
     $STATUS_FITTING_ROOM1  => '탈의01',
     $STATUS_FITTING_ROOM2  => '탈의02',
     $STATUS_FITTING_ROOM3  => '탈의03',
