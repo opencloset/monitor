@@ -64,7 +64,7 @@ $ ->
 
   $("abbr.timeago").timeago()
 
-  $('.room').click (e) ->
+  $('.room:not(.empty)').click (e) ->
     e.preventDefault()
     $this = $(@)
     order_id = $this.parent().data('order-id')
