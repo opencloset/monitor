@@ -1,3 +1,4 @@
+v0.6.1    Thu, 25 Feb 2016 18:23:33 +0900
   - active 상태표시를 위한 API 변경
     + POST   /active?key=:key
     + DELETE /active/:order_id?key=:key

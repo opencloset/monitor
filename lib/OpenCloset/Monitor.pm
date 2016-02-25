@@ -7,7 +7,7 @@ use OpenCloset::Monitor::Schema;
 use OpenCloset::Schema;
 use OpenCloset::Status;
 
-use version; our $VERSION = qv("v0.6.0");
+use version; our $VERSION = qv("v0.6.1");
 
 has ranges => sub { Net::IP::AddrRanges->new };
 has DB => sub {
