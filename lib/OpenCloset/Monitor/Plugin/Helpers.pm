@@ -17,6 +17,7 @@ sub register {
     $app->helper( user_flatten   => \&user_flatten );
     $app->helper( redis          => \&redis );
     $app->helper( previous_order => \&previous_order );
+    $app->helper( prev_order     => \&previous_order );
     $app->helper( history        => \&history );
     $app->helper( recent_orders  => \&recent_orders );
     $app->helper( target_date    => \&target_date );
