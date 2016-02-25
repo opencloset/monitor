@@ -77,11 +77,12 @@ sub create {
         ###
         ### 정리가 필요한 탈의실 표시
         ###
-        ### `탈의` -> `(대여안함|포장|수선)` 으로 이동했을때에 탈의실의 정리가 필요해서
+        ### `의류준비|탈의` -> `대여안함|포장|수선` 으로 이동했을때에 탈의실의 정리가 필요해서
         ### 이를 강조해주기 위한 데이터 추가
         if (
-               $from >= $OpenCloset::Status::STATUS_FITTING_ROOM1
-            && $from <= $OpenCloset::Status::STATUS_FITTING_ROOM11
+            $from == $OpenCloset::Status::STATUS_SELECT
+            || (   $from >= $OpenCloset::Status::STATUS_FITTING_ROOM1
+                && $from <= $OpenCloset::Status::STATUS_FITTING_ROOM11 )
             && (   $to == $OpenCloset::Status::STATUS_DO_NOT_RENTAL
                 || $to == $OpenCloset::Status::STATUS_BOXING
                 || $to == $OpenCloset::Status::STATUS_REPAIR )
@@ -89,6 +90,7 @@ sub create {
         {
             my $brain = OpenCloset::Brain->new;
             $brain->{data}{refresh}{ $from - 19 } = 1;
+            $brain->save;
         }
 
         $self->redis->publish(
