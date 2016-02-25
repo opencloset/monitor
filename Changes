@@ -1,3 +1,4 @@
+  - improve OpenCloset::Monitor::Plugin::Helpers doc
   - active 상태표시를 위한 API 변경
     + POST   /active?key=:key
     + DELETE /active/:order_id?key=:key

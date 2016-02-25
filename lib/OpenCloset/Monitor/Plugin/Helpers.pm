@@ -8,6 +8,23 @@ use Mojo::Redis2;
 
 use OpenCloset::Brain;
 
+=pod
+
+=encoding utf8
+
+=head1 NAME
+
+OpenCloset::Plugin::Helpers - provide helpers for opencloset
+
+=head1 SYNOPSIS
+
+    # Mojolicious::Lite
+    plugin 'OpenCloset::Plugin::Helpers';
+
+=head1 HELPERS
+
+=cut
+
 sub register {
     my ( $self, $app, $conf ) = @_;
     $app->helper( log => sub { shift->app->log } );
@@ -46,6 +63,16 @@ sub user_flatten {
     delete $columns{user_info}{password};
     return {%columns};
 }
+
+=head2 error
+
+    get '/foo' => sub {
+        my $self = shift;
+        my $required = $self->param('something');
+        return $self->error(400, 'oops wat the..') unless $required;
+    } => 'foo';
+
+=cut
 
 sub error {
     my ( $self, $status, $error ) = @_;
@@ -119,6 +146,18 @@ sub history {
     return $self->app->SQLite->resultset('History')->search( $cond, $attr );
 }
 
+=head2 recent_orders
+
+Arguments: $order, $limit?
+Return: $resultset (scalar context) | @result_objs (list context)
+
+    my $orders = $c->recent_order($order);
+
+사용자의 C<$order> 를 제외한 최근 주문서를 찾습니다.
+C<$limit> 의 기본값은 C<5> 입니다.
+
+=cut
+
 sub recent_orders {
     my ( $self, $order, $limit ) = @_;
     return unless $order;
@@ -132,6 +171,12 @@ sub recent_orders {
     $limit = 5 unless $limit;
     return $rs->slice( 0, $limit - 1 );
 }
+
+=head2 target_date
+
+return target_date
+
+=cut
 
 sub target_date {
     my $self = shift;
@@ -149,42 +194,3 @@ sub target_date {
 }
 
 1;
-
-=pod
-
-=encoding utf8
-
-=head1 NAME
-
-OpenCloset::Plugin::Helpers - provide helpers for opencloset
-
-=head1 SYNOPSIS
-
-    # Mojolicious::Lite
-    plugin 'OpenCloset::Plugin::Helpers';
-
-=head1 HELPERS
-
-=head2 error
-
-    get '/foo' => sub {
-        my $self = shift;
-        my $required = $self->param('something');
-        return $self->error(400, 'oops wat the..') unless $required;
-    } => 'foo';
-
-=head2 recent_orders
-
-Arguments: $order, $limit?
-Return: $resultset (scalar context) | @result_objs (list context)
-
-    my $orders = $c->recent_order($order);
-
-사용자의 C<$order> 를 제외한 최근 주문서를 찾습니다.
-C<$limit> 의 기본값은 C<5> 입니다.
-
-=head2 target_date
-
-return target_date
-
-=cut
