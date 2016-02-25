@@ -8,6 +8,7 @@
   - improve OpenCloset::Monitor::Plugin::Helpers doc
   - helper previous_order supports @status_in option
   - 의류준비중인 사용자 이름을 탈의실에 나타냄
+  - 정리가 필요한 방의 표시 제거
 
 v0.6.0    Wed, 24 Feb 2016 18:31:47 +0900
   - 좀 더 편리한 우클릭 메뉴의 제안

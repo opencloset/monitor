@@ -52,6 +52,9 @@ $ ->
         location.reload()
       when 'active.room', 'active.select'
         $("[data-order-id=#{data.order_id}]").toggleClass('active')
+      when 'active.refresh'
+        room_no = data.order_id
+        $("#room-#{room_no} .p-refresh").remove()
       when 'brain'
         $('#knock audio').trigger('play')
         $('#repair .repair-done').removeClass('text-success')
@@ -96,6 +99,20 @@ $ ->
     $.ajax path,
       type: method
       data: data
+      success: (data, textStatus, jqXHR) ->
+      error: (jqXHR, textStatus, errorThrown) ->
+        console.log textStatus
+      complete: (jqXHR, textStatus) ->
+
+  $('.room.empty').click (e) ->
+    e.preventDefault()
+    $this = $(@)
+    $p = $this.find('.p-refresh')
+    return unless $p.length
+
+    room_no = $this.find('h3').text().trim().substring(1)
+    $.ajax "/active/#{room_no}?key=refresh",
+      type: 'DELETE'
       success: (data, textStatus, jqXHR) ->
       error: (jqXHR, textStatus, errorThrown) ->
         console.log textStatus

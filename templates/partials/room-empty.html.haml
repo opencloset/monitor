@@ -6,5 +6,6 @@
   %p= $pre_order->user->name if $pre_order
   - if (!$pre_order && $refresh_active->{$n}) {
     %p.p-refresh
-      %i.fa.fa-refresh
+      %br
+      %i.fa.fa-refresh.fa-2x
   - }
