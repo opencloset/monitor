@@ -328,15 +328,16 @@ sub preparation {
     }
 
     $self->render(
-        orders        => $rs,
-        rooms         => [@room],
-        room_active   => [@room_active],
-        select_active => [@select_active],
-        repair        => [@repair],
-        boxing        => [@boxing],
-        bestfit       => {%bestfit},
-        done          => {%done},
-        waiting       => $self->app->_waiting_list,
+        orders         => $rs,
+        rooms          => [@room],
+        room_active    => [@room_active],
+        select_active  => [@select_active],
+        refresh_active => $brain->{data}{refresh} || {},
+        repair         => [@repair],
+        boxing         => [@boxing],
+        bestfit        => {%bestfit},
+        done           => {%done},
+        waiting        => $self->app->_waiting_list,
     );
 }
 
