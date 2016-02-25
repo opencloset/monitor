@@ -72,12 +72,10 @@ sub _private_routes {
     $r->get('/statistics/elapsed/:ymd')->to('statistics#elapsed_ymd');
 
     $r->get('/room')->to('dashboard#room')->name('rooms');
-    $r->post('/room')->to('dashboard#create_room');
-    $r->delete('/room/:order_id')->to('dashboard#delete_room');
-
     $r->get('/select')->to('dashboard#select')->name('select');
-    $r->post('/select')->to('dashboard#create_select');
-    $r->delete('/select/:order_id')->to('dashboard#delete_select');
+
+    $r->post('/active')->to('dashboard#create_active');
+    $r->delete('/active/:order_id')->to('dashboard#delete_active');
 
     $r->get('/preparation')->to('dashboard#preparation')->name('preparation');
 

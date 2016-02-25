@@ -18,60 +18,64 @@ $ ->
     range.unshift 17
     range.unshift 18
     range.unshift 6
-    if sender is 'order'
-      if parseInt(data.from) in range or parseInt(data.to) in range
-        return location.reload()
 
-      $.ajax "/repair",
-        type: 'GET'
-        dataType: 'json'
-        success: (data, textStatus, jqXHR) ->
-          male   = data.waiting.male
-          female = data.waiting.female
-          keys = _.union _.keys(male), _.keys(female)
-          $(".table-waiting tbody span.male").empty()
-          $(".table-waiting tbody span.female").empty()
-          for key in keys
-            $td = $(".table-waiting tbody td[data-status=\"#{key}\"]")
-            if male
-              m = male[key] or 0
-              $male = $td.find('span.male')
-              _.each _.range(m), ->
-                $male.append "<i class=\"fa fa-male male\"></i>"
-            if female
-              f = female[key] or 0
-              $female = $td.find('span.female')
-              _.each _.range(f), ->
-                $female.append "<i class=\"fa fa-female female\"></i>"
-        error: (jqXHR, textStatus, errorThrown) ->
-          console.log textStatus
-        complete: (jqXHR, textStatus) ->
-    else if sender is 'user'
-      location.reload()
-    else if sender is 'active.room'
-      $($("[data-order-id=#{data.order_id}]")).toggleClass('active')
-    else if sender is 'active.select'
-      $($("[data-order-id=#{data.order_id}]")).toggleClass('active')
-    else if sender is 'brain'
-      $('#knock audio').trigger('play')
-      $('#repair .repair-done').removeClass('text-success')
-      ids = _.keys data.brain
-      _.each ids, (order_id) ->
-        $("#repair li[data-order-id=\"#{order_id}\"] .repair-done").addClass('text-success')
+    switch sender
+      when 'order'
+        if parseInt(data.from) in range or parseInt(data.to) in range
+          return location.reload()
+
+        $.ajax "/repair",
+          type: 'GET'
+          dataType: 'json'
+          success: (data, textStatus, jqXHR) ->
+            male   = data.waiting.male
+            female = data.waiting.female
+            keys = _.union _.keys(male), _.keys(female)
+            $(".table-waiting tbody span.male").empty()
+            $(".table-waiting tbody span.female").empty()
+            for key in keys
+              $td = $(".table-waiting tbody td[data-status=\"#{key}\"]")
+              if male
+                m = male[key] or 0
+                $male = $td.find('span.male')
+                _.each _.range(m), ->
+                  $male.append "<i class=\"fa fa-male male\"></i>"
+              if female
+                f = female[key] or 0
+                $female = $td.find('span.female')
+                _.each _.range(f), ->
+                  $female.append "<i class=\"fa fa-female female\"></i>"
+          error: (jqXHR, textStatus, errorThrown) ->
+            console.log textStatus
+          complete: (jqXHR, textStatus) ->
+      when 'user'
+        location.reload()
+      when 'active.room', 'active.select'
+        $("[data-order-id=#{data.order_id}]").toggleClass('active')
+      when 'active.refresh'
+        room_no = data.order_id
+        $("#room-#{room_no} .p-refresh").remove()
+      when 'brain'
+        $('#knock audio').trigger('play')
+        $('#repair .repair-done').removeClass('text-success')
+        ids = _.keys data.brain
+        _.each ids, (order_id) ->
+          $("#repair li[data-order-id=\"#{order_id}\"] .repair-done").addClass('text-success')
+      else ''
   sock.onerror = (e) ->
     location.reload()
 
   $("abbr.timeago").timeago()
 
-  $('.room').click (e) ->
+  $('.room:not(.empty)').click (e) ->
     e.preventDefault()
     $this = $(@)
     order_id = $this.parent().data('order-id')
     if $this.parent().hasClass('active')
-      path = "/room/#{order_id}"
+      path = "/active/#{order_id}?key=room"
       method = 'DELETE'
     else
-      path = "/room"
+      path = "/active?key=room"
       method = 'POST'
       data = { order_id: order_id }
     $.ajax path,
@@ -86,15 +90,29 @@ $ ->
     $this = $(@)
     order_id = $this.data('order-id')
     if $this.hasClass('active')
-      path = "/select/#{order_id}"
+      path = "/active/#{order_id}?key=select"
       method = 'DELETE'
     else
-      path = "/select"
+      path = "/active?key=select"
       method = 'POST'
       data = { order_id: order_id }
     $.ajax path,
       type: method
       data: data
+      success: (data, textStatus, jqXHR) ->
+      error: (jqXHR, textStatus, errorThrown) ->
+        console.log textStatus
+      complete: (jqXHR, textStatus) ->
+
+  $('.room.empty').click (e) ->
+    e.preventDefault()
+    $this = $(@)
+    $p = $this.find('.p-refresh')
+    return unless $p.length
+
+    room_no = $this.find('h3').text().trim().substring(1)
+    $.ajax "/active/#{room_no}?key=refresh",
+      type: 'DELETE'
       success: (data, textStatus, jqXHR) ->
       error: (jqXHR, textStatus, errorThrown) ->
         console.log textStatus

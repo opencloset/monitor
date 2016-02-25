@@ -7,15 +7,11 @@
 - my $details = $order->order_details;
 - my @clothes = split /,/, $user_info->pre_category;
 - my @colors  = split /,/, $user_info->pre_color;
-- my $pre_order = previous_order($n);
 - my $bf = $order->bestfit;
-.well.room{:class => $gender}
+.well.room{:class => $gender, :id => "room-$n"}
   %h3
     %i.fa{:class => "fa-#{$gender}"}
     = "#$n"
-  - if ($pre_order) {
-    %p.previous= $pre_order->user->name
-  - }
   %p.name{:class => "#{$bf ? 'bestfit' : ''}"}
     = $user->name
     %small= age($user_info->birth)
