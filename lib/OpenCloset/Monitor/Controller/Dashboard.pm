@@ -83,6 +83,101 @@ sub index {
     );
 }
 
+=head2 create_active
+
+    POST /active
+
+    key=room&order_id=1862
+
+=head3 params
+
+=over
+
+=item key
+
+=over
+
+=item room
+
+=item select
+
+=back
+
+=item order_id
+
+=back
+
+=cut
+
+sub create_active {
+    my $self = shift;
+
+    my $v = $self->validation;
+    $v->required('key');
+    $v->required('order_id');
+
+    if ( $v->has_error ) {
+        my $failed = $v->failed;
+        my $error = 'Parameter Validation Failed: ' . join( ', ', @$failed );
+        return $self->error( 400, { str => $error } );
+    }
+
+    my $key      = $v->param('key');
+    my $order_id = $v->param('order_id');
+
+    my $brain = OpenCloset::Brain->new;
+    $brain->{data}{$key}{$order_id} = 1;
+
+    my $channel = $self->app->redis_channel;
+    $self->redis->publish(
+        "$channel:active" => decode_utf8(
+            j( { sender => "active.$key", order_id => $order_id } )
+        )
+    );
+
+    $self->render(
+        text   => "Successfully posted order_id($order_id)",
+        status => 201
+    );
+}
+
+
+=head2 delete_active
+
+    DELETE /active/:order_id
+
+=cut
+
+sub delete_active {
+    my $self     = shift;
+    my $order_id = $self->param('order_id');
+
+    my $v = $self->validation;
+    $v->required('key');
+
+    if ( $v->has_error ) {
+        my $failed = $v->failed;
+        my $error = 'Parameter Validation Failed: ' . join( ', ', @$failed );
+        return $self->error( 400, { str => $error } );
+    }
+
+    my $key = $v->param('key');
+
+    my $brain = OpenCloset::Brain->new;
+    delete $brain->{data}{$key}{$order_id};
+
+    my $channel = $self->app->redis_channel;
+    $self->redis->publish(
+        "$channel:active" => decode_utf8(
+            j( { sender => "active.$key", order_id => $order_id } )
+        )
+    );
+    $self->render(
+        text   => "Successfully deleted order_id($order_id)",
+        status => 201
+    );
+}
+
 =head2 room
 
     # rooms
@@ -110,56 +205,6 @@ sub room {
     $self->stash( rooms => [@room], active => [@active] );
 }
 
-=head2 create_room
-
-    POST /room
-
-=cut
-
-sub create_room {
-    my $self     = shift;
-    my $order_id = $self->param('order_id');
-
-    my $brain = OpenCloset::Brain->new;
-    $brain->{data}{room}{$order_id} = 1;
-
-    my $channel = $self->app->redis_channel;
-    $self->redis->publish(
-        "$channel:active" => decode_utf8(
-            j( { sender => 'active.room', order_id => $order_id } )
-        )
-    );
-    $self->render(
-        text   => "Successfully posted order_id($order_id)",
-        status => 201
-    );
-}
-
-=head2 delete_room
-
-    DELETE /room/:order_id
-
-=cut
-
-sub delete_room {
-    my $self     = shift;
-    my $order_id = $self->param('order_id');
-
-    my $brain = OpenCloset::Brain->new;
-    delete $brain->{data}{room}{$order_id};
-
-    my $channel = $self->app->redis_channel;
-    $self->redis->publish(
-        "$channel:active" => decode_utf8(
-            j( { sender => 'active.room', order_id => $order_id } )
-        )
-    );
-    $self->render(
-        text   => "Successfully deleted order_id($order_id)",
-        status => 201
-    );
-}
-
 =head2 select
 
     # select
@@ -179,57 +224,6 @@ sub select {
     $brain->{data}{select} = {} unless $rs->count;
     my @active = keys %{ $brain->{data}{select} ||= {} };
     $self->stash( orders => $rs, active => [@active] );
-}
-
-=head2 create_select
-
-    POST /select
-
-=cut
-
-sub create_select {
-    my $self     = shift;
-    my $order_id = $self->param('order_id');
-
-    my $brain = OpenCloset::Brain->new;
-    $brain->{data}{select}{$order_id} = 1;
-
-    my $channel = $self->app->redis_channel;
-    $self->redis->publish(
-        "$channel:active" => decode_utf8(
-            j( { sender => 'active.select', order_id => $order_id } )
-        )
-    );
-
-    $self->render(
-        text   => "Successfully posted order_id($order_id)",
-        status => 201
-    );
-}
-
-=head2 delete_select
-
-    DELETE /select/:order_id
-
-=cut
-
-sub delete_select {
-    my $self     = shift;
-    my $order_id = $self->param('order_id');
-
-    my $brain = OpenCloset::Brain->new;
-    delete $brain->{data}{select}{$order_id};
-
-    my $channel = $self->app->redis_channel;
-    $self->redis->publish(
-        "$channel:active" => decode_utf8(
-            j( { sender => 'active.select', order_id => $order_id } )
-        )
-    );
-    $self->render(
-        text   => "Successfully deleted order_id($order_id)",
-        status => 201
-    );
 }
 
 =head2 preparation

@@ -68,10 +68,10 @@ $ ->
     $this = $(@)
     order_id = $this.parent().data('order-id')
     if $this.parent().hasClass('active')
-      path = "/room/#{order_id}"
+      path = "/active/#{order_id}?key=room"
       method = 'DELETE'
     else
-      path = "/room"
+      path = "/active?key=room"
       method = 'POST'
       data = { order_id: order_id }
     $.ajax path,
@@ -86,10 +86,10 @@ $ ->
     $this = $(@)
     order_id = $this.data('order-id')
     if $this.hasClass('active')
-      path = "/select/#{order_id}"
+      path = "/active/#{order_id}?key=select"
       method = 'DELETE'
     else
-      path = "/select"
+      path = "/active?key=select"
       method = 'POST'
       data = { order_id: order_id }
     $.ajax path,
