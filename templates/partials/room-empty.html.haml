@@ -1,13 +1,7 @@
 - use utf8;
-- use OpenCloset::Status;
-- my $pre_order  = previous_order($n);
-- my @status_should_clean = ($OpenCloset::Status::STATUS_REPAIR, $OpenCloset::Status::STATUS_BOXING, $OpenCloset::Status::STATUS_DO_NOT_RENTAL);
-.well.room.empty
+- my $pre_order  = prev_order($n);
+.well.room.empty{:id => "room-#{$n}"}
   %h3= "#$n"
   - if ($pre_order) {
-    - my $status = $pre_order->status_id;
-    - if ("@status_should_clean" =~ m/$status/) {
-      %p.text-muted
-        %i.fa.fa-refresh
-    - }
+    %p.previous= $pre_order->user->name
   - }
