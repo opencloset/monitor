@@ -122,8 +122,20 @@ sub redis {
     };
 }
 
+=head2 prev_order
+
+C<previous_order> alias
+
+=head2 previous_order($room_no, @status_in?)
+
+C<$room_no> 탈의실에 머물렀던 이전 사용자의 주문서.
+C<@status_in> 가 전달된다면, 이전 사용자의 주문서의
+현재 상태가 C<@status_in> 에 속해있는 것만 해당됩니다.
+
+=cut
+
 sub previous_order {
-    my ( $self, $room_no ) = @_;
+    my ( $self, $room_no, @status_in ) = @_;
     return unless $room_no;
 
     my $rs
@@ -133,10 +145,17 @@ sub previous_order {
 
     $rs->next;    # ignore myself
     my $history = $rs->next;
-
     return unless $history;
-    return $self->app->DB->resultset('Order')
+
+    my $order = $self->app->DB->resultset('Order')
         ->find( { id => $history->order_id } );
+
+    if ( $order && @status_in ) {
+        my $bool = grep { $order->status_id == $_ } @status_in;
+        return unless $bool;
+    }
+
+    return $order;
 }
 
 sub history {

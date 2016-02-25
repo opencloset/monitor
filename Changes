@@ -1,4 +1,3 @@
-  - improve OpenCloset::Monitor::Plugin::Helpers doc
   - active 상태표시를 위한 API 변경
     + POST   /active?key=:key
     + DELETE /active/:order_id?key=:key
@@ -6,6 +5,8 @@
     - DELETE /room/:order_id
     - POST   /select
     - DELETE /select/:order_id
+  - improve OpenCloset::Monitor::Plugin::Helpers doc
+  - helper previous_order supports @status_in option
 
 v0.6.0    Wed, 24 Feb 2016 18:31:47 +0900
   - 좀 더 편리한 우클릭 메뉴의 제안
