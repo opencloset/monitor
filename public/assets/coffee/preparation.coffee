@@ -18,46 +18,47 @@ $ ->
     range.unshift 17
     range.unshift 18
     range.unshift 6
-    if sender is 'order'
-      if parseInt(data.from) in range or parseInt(data.to) in range
-        return location.reload()
 
-      $.ajax "/repair",
-        type: 'GET'
-        dataType: 'json'
-        success: (data, textStatus, jqXHR) ->
-          male   = data.waiting.male
-          female = data.waiting.female
-          keys = _.union _.keys(male), _.keys(female)
-          $(".table-waiting tbody span.male").empty()
-          $(".table-waiting tbody span.female").empty()
-          for key in keys
-            $td = $(".table-waiting tbody td[data-status=\"#{key}\"]")
-            if male
-              m = male[key] or 0
-              $male = $td.find('span.male')
-              _.each _.range(m), ->
-                $male.append "<i class=\"fa fa-male male\"></i>"
-            if female
-              f = female[key] or 0
-              $female = $td.find('span.female')
-              _.each _.range(f), ->
-                $female.append "<i class=\"fa fa-female female\"></i>"
-        error: (jqXHR, textStatus, errorThrown) ->
-          console.log textStatus
-        complete: (jqXHR, textStatus) ->
-    else if sender is 'user'
-      location.reload()
-    else if sender is 'active.room'
-      $($("[data-order-id=#{data.order_id}]")).toggleClass('active')
-    else if sender is 'active.select'
-      $($("[data-order-id=#{data.order_id}]")).toggleClass('active')
-    else if sender is 'brain'
-      $('#knock audio').trigger('play')
-      $('#repair .repair-done').removeClass('text-success')
-      ids = _.keys data.brain
-      _.each ids, (order_id) ->
-        $("#repair li[data-order-id=\"#{order_id}\"] .repair-done").addClass('text-success')
+    switch sender
+      when 'order'
+        if parseInt(data.from) in range or parseInt(data.to) in range
+          return location.reload()
+
+        $.ajax "/repair",
+          type: 'GET'
+          dataType: 'json'
+          success: (data, textStatus, jqXHR) ->
+            male   = data.waiting.male
+            female = data.waiting.female
+            keys = _.union _.keys(male), _.keys(female)
+            $(".table-waiting tbody span.male").empty()
+            $(".table-waiting tbody span.female").empty()
+            for key in keys
+              $td = $(".table-waiting tbody td[data-status=\"#{key}\"]")
+              if male
+                m = male[key] or 0
+                $male = $td.find('span.male')
+                _.each _.range(m), ->
+                  $male.append "<i class=\"fa fa-male male\"></i>"
+              if female
+                f = female[key] or 0
+                $female = $td.find('span.female')
+                _.each _.range(f), ->
+                  $female.append "<i class=\"fa fa-female female\"></i>"
+          error: (jqXHR, textStatus, errorThrown) ->
+            console.log textStatus
+          complete: (jqXHR, textStatus) ->
+      when 'user'
+        location.reload()
+      when 'active.room', 'active.select'
+        $("[data-order-id=#{data.order_id}]").toggleClass('active')
+      when 'brain'
+        $('#knock audio').trigger('play')
+        $('#repair .repair-done').removeClass('text-success')
+        ids = _.keys data.brain
+        _.each ids, (order_id) ->
+          $("#repair li[data-order-id=\"#{order_id}\"] .repair-done").addClass('text-success')
+      else ''
   sock.onerror = (e) ->
     location.reload()
 
