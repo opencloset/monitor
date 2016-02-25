@@ -122,7 +122,7 @@ sub redis {
     };
 }
 
-=head2 prev_order
+=head2 prev_order($room_no, @status_in?)
 
 C<previous_order> alias
 
@@ -141,9 +141,8 @@ sub previous_order {
     my $rs
         = $self->app->SQLite->resultset('History')
         ->search( { room_no => $room_no },
-        { rows => 2, order_by => { -desc => 'id' } } );
+        { rows => 1, order_by => { -desc => 'id' } } );
 
-    $rs->next;    # ignore myself
     my $history = $rs->next;
     return unless $history;
 
