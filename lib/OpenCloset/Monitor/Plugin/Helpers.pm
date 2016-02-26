@@ -6,6 +6,8 @@ use DateTime::Format::ISO8601;
 use DateTime;
 use Mojo::Redis2;
 
+use OpenCloset::Brain;
+
 =pod
 
 =encoding utf8
@@ -197,9 +199,10 @@ return target_date
 sub target_date {
     my $self = shift;
 
+    my $brain = $self->app->brain;
     my $target_date = DateTime->now->add( days => 3 );
     $target_date->set_time_zone('Asia/Seoul');
-    if ( my $ymd = $self->app->brain->{data}{expiration} ) {
+    if ( my $ymd = $brain->{data}{expiration} ) {
         my $dt = DateTime::Format::ISO8601->parse_datetime($ymd);
         $dt->set_time_zone('Asia/Seoul');
         $target_date = $dt if DateTime->compare( $target_date, $dt ) == -1;
