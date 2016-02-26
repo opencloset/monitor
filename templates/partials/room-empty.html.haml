@@ -1,11 +1,14 @@
 - use utf8;
 - use OpenCloset::Status;
-- my $pre_order = prev_order($n, $OpenCloset::Status::STATUS_SELECT);
+- my $prev_order = prev_order($n, $OpenCloset::Status::STATUS_SELECT);
 .well.room.empty{:id => "room-#{$n}"}
   %h3= "#$n"
-  %p= $pre_order->user->name if $pre_order
-  - if (!$pre_order && $refresh_active->{$n}) {
-    %p.p-refresh
-      %br
-      %i.fa.fa-refresh.fa-2x
+  - if ($prev_order) {
+    %p= $prev_order->user->name
+  - } else {
+    - if ($refresh_active->{$n}) {
+      %p.p-refresh
+        %br
+        %i.fa.fa-refresh.fa-2x
+    - }
   - }
