@@ -99,6 +99,8 @@ sub create {
             }
         }
 
+        $brain->save;
+
         $self->redis->publish(
             "$channel:order" => decode_utf8(
                 j(
