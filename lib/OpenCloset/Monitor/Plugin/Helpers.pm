@@ -199,7 +199,7 @@ return target_date
 sub target_date {
     my $self = shift;
 
-    my $brain = OpenCloset::Brain->new;
+    my $brain = OpenCloset::Brain->new( redis => $self->redis );
     my $target_date = DateTime->now->add( days => 3 );
     $target_date->set_time_zone('Asia/Seoul');
     if ( my $ymd = $brain->{data}{expiration} ) {

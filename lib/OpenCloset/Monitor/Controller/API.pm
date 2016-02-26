@@ -48,7 +48,7 @@ sub order {
     $queries->{bestfit}   = $bestfit   if defined $bestfit;
     $queries->{pants}     = $pants     if defined $pants;
 
-    my $brain = OpenCloset::Brain->new;
+    my $brain = OpenCloset::Brain->new( redis => $self->redis );
     delete $brain->{data}{room}{$order_id};
     delete $brain->{data}{select}{$order_id};
 
@@ -237,7 +237,7 @@ sub update_brain {
     my $key   = $v->param('k');
     my $value = $v->param('v');
 
-    my $brain = OpenCloset::Brain->new;
+    my $brain = OpenCloset::Brain->new( redis => $self->redis );
     $brain->{data}{$key} = $value;
 
     $self->render( json => { data => { $key => $value } } );

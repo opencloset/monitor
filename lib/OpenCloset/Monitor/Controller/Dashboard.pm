@@ -125,7 +125,7 @@ sub create_active {
     my $key      = $v->param('key');
     my $order_id = $v->param('order_id');
 
-    my $brain = OpenCloset::Brain->new;
+    my $brain = OpenCloset::Brain->new( redis => $self->redis );
     $brain->{data}{$key}{$order_id} = 1;
 
     my $channel = $self->app->redis_channel;
@@ -163,7 +163,7 @@ sub delete_active {
 
     my $key = $v->param('key');
 
-    my $brain = OpenCloset::Brain->new;
+    my $brain = OpenCloset::Brain->new( redis => $self->redis );
     delete $brain->{data}{$key}{$order_id};
 
     my $channel = $self->app->redis_channel;
@@ -188,7 +188,7 @@ sub delete_active {
 sub room {
     my $self = shift;
 
-    my $brain = OpenCloset::Brain->new;
+    my $brain = OpenCloset::Brain->new( redis => $self->redis );
     my ( @active, @room );
     for my $n ( 1 .. 11 ) {
         my $room;
@@ -220,7 +220,7 @@ sub select {
         { order_by  => { -asc => 'update_date' } }
     );
 
-    my $brain = OpenCloset::Brain->new;
+    my $brain = OpenCloset::Brain->new( redis => $self->redis );
     $brain->{data}{select} = {} unless $rs->count;
     my @active = keys %{ $brain->{data}{select} ||= {} };
     $self->stash( orders => $rs, active => [@active] );
@@ -236,7 +236,7 @@ sub select {
 sub preparation {
     my $self = shift;
 
-    my $brain = OpenCloset::Brain->new;
+    my $brain = OpenCloset::Brain->new( redis => $self->redis );
     my ( @room_active, @room );
     my $rs = $self->DB->resultset('Order')->search(
         { status_id => $OpenCloset::Status::STATUS_SELECT },
@@ -352,7 +352,7 @@ sub repair {
     my $self = shift;
 
     my $waiting = $self->app->_waiting_list;
-    my $brain   = OpenCloset::Brain->new;
+    my $brain   = OpenCloset::Brain->new( redis => $self->redis );
     my $rs      = $self->DB->resultset('Order')->search(
         { status_id => $OpenCloset::Status::STATUS_REPAIR },
         { order_by  => { -asc => 'update_date' } }
