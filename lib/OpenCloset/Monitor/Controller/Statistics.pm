@@ -61,7 +61,7 @@ sub elapsed_ymd {
             };
     }
 
-    my $brain   = OpenCloset::Brain->new;
+    my $brain = OpenCloset::Brain->new( redis => $self->redis );
     my $average = $brain->{data}{statistics}{elapsed_time};
 
     $color{male}   = '#0000ff';
