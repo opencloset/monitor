@@ -4,7 +4,6 @@ use Mojo::Base 'Mojolicious::Controller';
 use Encode 'decode_utf8';
 use Mojo::JSON 'j';
 
-use OpenCloset::Brain;
 use OpenCloset::Status;
 
 has DB => sub { shift->app->DB };
@@ -79,7 +78,7 @@ sub create {
         ###
         ### `의류준비|탈의` -> `대여안함|포장|수선` 으로 이동했을때에 탈의실의 정리가 필요해서
         ### 이를 강조해주기 위한 데이터 추가
-        my $brain = OpenCloset::Brain->new( redis => $self->redis );
+        my $brain = $self->app->brain;
         if (   $to == $OpenCloset::Status::STATUS_DO_NOT_RENTAL
             || $to == $OpenCloset::Status::STATUS_BOXING
             || $to == $OpenCloset::Status::STATUS_REPAIR )
@@ -98,8 +97,6 @@ sub create {
                 $brain->{data}{refresh}{ $from - 19 } = 1;
             }
         }
-
-        $brain->save;
 
         $self->redis->publish(
             "$channel:order" => decode_utf8(
@@ -128,8 +125,8 @@ sub create {
         my $ns  = $self->param('ns');
         my $key = $self->param('key');
 
-        my $brain = OpenCloset::Brain->new( redis => $self->redis );
-        if ( $brain->{data}{$ns}{$key} ) {
+        my $brain = $self->app->brain;
+        if ( $self->app->brain->{data}{$ns}{$key} ) {
             delete $brain->{data}{$ns}{$key};
         }
         else {
