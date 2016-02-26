@@ -1,7 +1,6 @@
 package OpenCloset::Monitor::Controller::Dashboard;
 use Mojo::Base 'Mojolicious::Controller';
 
-use OpenCloset::Brain;
 use OpenCloset::Status;
 
 use DateTime;
@@ -125,8 +124,7 @@ sub create_active {
     my $key      = $v->param('key');
     my $order_id = $v->param('order_id');
 
-    my $brain = OpenCloset::Brain->new( redis => $self->redis );
-    $brain->{data}{$key}{$order_id} = 1;
+    $self->app->brain->{data}{$key}{$order_id} = 1;
 
     my $channel = $self->app->redis_channel;
     $self->redis->publish(
@@ -163,8 +161,7 @@ sub delete_active {
 
     my $key = $v->param('key');
 
-    my $brain = OpenCloset::Brain->new( redis => $self->redis );
-    delete $brain->{data}{$key}{$order_id};
+    delete $self->app->brain->{data}{$key}{$order_id};
 
     my $channel = $self->app->redis_channel;
     $self->redis->publish(
@@ -186,9 +183,9 @@ sub delete_active {
 =cut
 
 sub room {
-    my $self = shift;
+    my $self  = shift;
+    my $brain = $self->app->brain;
 
-    my $brain = OpenCloset::Brain->new( redis => $self->redis );
     my ( @active, @room );
     for my $n ( 1 .. 11 ) {
         my $room;
@@ -213,14 +210,14 @@ sub room {
 =cut
 
 sub select {
-    my $self = shift;
+    my $self  = shift;
+    my $brain = $self->app->brain;
 
     my $rs = $self->DB->resultset('Order')->search(
         { status_id => $OpenCloset::Status::STATUS_SELECT },
         { order_by  => { -asc => 'update_date' } }
     );
 
-    my $brain = OpenCloset::Brain->new( redis => $self->redis );
     $brain->{data}{select} = {} unless $rs->count;
     my @active = keys %{ $brain->{data}{select} ||= {} };
     $self->stash( orders => $rs, active => [@active] );
@@ -236,7 +233,7 @@ sub select {
 sub preparation {
     my $self = shift;
 
-    my $brain = OpenCloset::Brain->new( redis => $self->redis );
+    my $brain = $self->app->brain;
     my ( @room_active, @room );
     my $rs = $self->DB->resultset('Order')->search(
         { status_id => $OpenCloset::Status::STATUS_SELECT },
@@ -352,7 +349,7 @@ sub repair {
     my $self = shift;
 
     my $waiting = $self->app->_waiting_list;
-    my $brain   = OpenCloset::Brain->new( redis => $self->redis );
+    my $brain   = $self->app->brain;
     my $rs      = $self->DB->resultset('Order')->search(
         { status_id => $OpenCloset::Status::STATUS_REPAIR },
         { order_by  => { -asc => 'update_date' } }

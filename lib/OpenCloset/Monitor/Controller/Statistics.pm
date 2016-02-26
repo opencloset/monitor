@@ -3,7 +3,6 @@ use Mojo::Base 'Mojolicious::Controller';
 
 use Path::Tiny;
 
-use OpenCloset::Brain;
 use OpenCloset::Status;
 
 has DB => sub { shift->app->DB };
@@ -61,7 +60,7 @@ sub elapsed_ymd {
             };
     }
 
-    my $brain = OpenCloset::Brain->new( redis => $self->redis );
+    my $brain   = $self->app->brain;
     my $average = $brain->{data}{statistics}{elapsed_time};
 
     $color{male}   = '#0000ff';

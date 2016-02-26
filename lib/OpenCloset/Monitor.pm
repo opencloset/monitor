@@ -3,6 +3,7 @@ use Mojo::Base 'Mojolicious';
 
 use Net::IP::AddrRanges;
 
+use OpenCloset::Brain;
 use OpenCloset::Monitor::Schema;
 use OpenCloset::Schema;
 use OpenCloset::Status;
@@ -32,6 +33,8 @@ has SQLite        => sub {
         }
     );
 };
+
+has brain => sub { OpenCloset::Brain->new( redis => shift->redis ) };
 
 sub startup {
     my $self = shift;
