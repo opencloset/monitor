@@ -8,8 +8,6 @@ use HTTP::Tiny;
 use Mojo::JSON qw/decode_json j/;
 use Path::Tiny;
 
-use OpenCloset::Brain;
-
 has DB => sub { shift->app->DB };
 
 =head1 METHODS
@@ -48,7 +46,7 @@ sub order {
     $queries->{bestfit}   = $bestfit   if defined $bestfit;
     $queries->{pants}     = $pants     if defined $pants;
 
-    my $brain = OpenCloset::Brain->new( redis => $self->redis );
+    my $brain = $self->app->brain;
     delete $brain->{data}{room}{$order_id};
     delete $brain->{data}{select}{$order_id};
 
@@ -237,7 +235,7 @@ sub update_brain {
     my $key   = $v->param('k');
     my $value = $v->param('v');
 
-    my $brain = OpenCloset::Brain->new( redis => $self->redis );
+    my $brain = $self->app->brain;
     $brain->{data}{$key} = $value;
 
     $self->render( json => { data => { $key => $value } } );

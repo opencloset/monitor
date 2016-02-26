@@ -1,3 +1,6 @@
+v0.6.4    Fri, 26 Feb 2016 16:58:02 +0900
+  - Use in-memory brain rather than local brain
+
 v0.6.3    Fri, 26 Feb 2016 16:19:05 +0900
   - Save brain data explicitly for refresh room 
   - Brain 을 file 대신에 redis 에 저장

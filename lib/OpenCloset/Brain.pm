@@ -62,7 +62,9 @@ sub merge {
 
 sub refresh {
     my $self = shift;
-    $self->merge( decode_json( $self->source->slurp_utf8 || '{}' ) );
+
+    my $json = $self->redis->get('opencloset:storage') || '{}';
+    $self->merge( decode_json( decode_utf8($json) ) );
     return $self;
 }
 
