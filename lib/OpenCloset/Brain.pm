@@ -2,23 +2,22 @@ package OpenCloset::Brain;
 
 use Moo;
 
+use Encode qw/encode_utf8 decode_utf8/;
 use JSON;
-use Path::Tiny;
 
-our $BRAIN_SOURCE = $ENV{OPENCLOSET_BRAIN} || '.opencloset.json';
-
+has redis => ( is => 'ro' );
 has events => ( is => 'rw', default => sub { {} } );
-has source => ( is => 'ro', default => sub { path($BRAIN_SOURCE)->touch } );
 
 sub BUILD {
     my $self = shift;
-    $self->{data} = {};
-    $self->merge( decode_json( $self->source->slurp_utf8 || '{}' ) );
+    my $json = $self->redis->get('opencloset:storage') || '{}';
+    $self->merge( decode_json( decode_utf8($json) ) );
     $self->on(
         'save',
         sub {
             my ( $me, $data ) = @_;    # me is self
-            $me->source->spew_utf8( encode_json($data) );
+            my $json = encode_json($data);
+            $me->redis->set( 'opencloset:storage', encode_utf8($json) );
         }
     );
 }
