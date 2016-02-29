@@ -126,7 +126,7 @@ sub create {
         my $key = $self->param('key');
 
         my $brain = $self->app->brain;
-        if ( $self->app->brain->{data}{$ns}{$key} ) {
+        if ( $brain->{data}{$ns}{$key} ) {
             delete $brain->{data}{$ns}{$key};
         }
         else {
