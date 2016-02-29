@@ -51,6 +51,7 @@ sub startup {
     $self->_whitelist;
     $self->_public_routes;
     $self->_private_routes;
+    $self->_hooks;
 }
 
 sub _assets {
@@ -95,6 +96,30 @@ sub _private_routes {
     $r->put('/brain')->to('API#update_brain')->name('brain.update');
     $r->get('/target_date')->to('API#target_dt')->name('api.target_date');
     $r->options('/target_date')->to('API#cors');
+}
+
+sub _hooks {
+    my $self = shift;
+
+    $self->hook(
+        before_routes => sub {
+            my $c = shift;
+
+            my $route = $c->req->url->path->to_route;
+            return if $route =~ m/\.\w+$/;
+            $c->app->brain->refresh;
+        },
+    );
+
+    $self->hook(
+        after_dispatch => sub {
+            my $c = shift;
+
+            my $route = $c->req->url->path->to_route;
+            return if $route =~ m/\.\w+$/;
+            $c->app->brain->save;
+        },
+    );
 }
 
 =head2 _waiting_list
