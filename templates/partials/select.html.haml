@@ -53,9 +53,15 @@
             = $user_info->hip || 0
         - }
       %li
-        %span.label.label-default{:title => '허리'}
-          허리
-          = $user_info->waist || 0
+        - if ($gender eq 'male') {
+          %span.label.label-default{:title => '허리'}
+            허리
+            = $user_info->waist || 0
+        - } else {
+          %span.label.label-default{:title => '스커트'}
+            스커트
+            = $user_info->skirt || 0
+        - }
       %li
         - if ($gender eq 'male') {
           %span.label.label-default{:title => '다리'}
