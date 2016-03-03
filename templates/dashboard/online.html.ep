@@ -78,3 +78,13 @@
     </tr>
   </tbody>
 </table>
+
+<hr>
+
+<ul>
+  % while(my $order = $all->next) {
+  <li>
+    %= include 'partials/measurement', order => $order;
+  </li>
+  % }
+</ul>
