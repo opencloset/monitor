@@ -237,8 +237,8 @@ sub preparation {
     my ( @room_active, @room );
     my $rs = $self->DB->resultset('Order')->search(
         { status_id => $OpenCloset::Status::STATUS_SELECT },
-        { order_by  => { -asc => 'update_date' } }
-    );
+        { order_by  => { -asc => 'update_date' }, join => 'booking' }
+    )->search_literal( 'HOUR(`booking`.`date`) != ?', 22 );
 
     for my $n ( 1 .. 11 ) {
         my $room;
@@ -420,6 +420,7 @@ sub online {
     }
 
     $self->render(
+        all    => $rs->reset,
         groups => [
             [@visit], [@measure], [@select], [@undress],
             [@repair], [@boxing], [@payment]
