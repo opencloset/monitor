@@ -420,6 +420,7 @@ sub online {
     }
 
     $self->render(
+        all    => $rs->reset,
         groups => [
             [@visit], [@measure], [@select], [@undress],
             [@repair], [@boxing], [@payment]
