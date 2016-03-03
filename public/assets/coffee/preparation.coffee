@@ -287,7 +287,7 @@ $ ->
     else
       $bestfit.find('.btn-warning').addClass('bestfit')
 
-  PANTS_MIN = 90
+  PANTS_MIN = 80
   PANTS_MAX = 120
   recentClick = null
   $('a.pants').on 'click', (e) ->
