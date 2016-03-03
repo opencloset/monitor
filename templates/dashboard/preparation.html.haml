@@ -93,6 +93,7 @@
     .row
       .col-md-6
         #repair.row
+          %h4 수선
           %ul.list-group
             - for my $order (@$repair) {
               - my $user = $order->user;
@@ -117,6 +118,7 @@
             - }
       .col-md-6
         #boxing.row
+          %h4 포장
           %ul.list-group
             - for my $order (@$boxing) {
               - my $user = $order->user;
