@@ -1,4 +1,4 @@
-package OpenCloset::Status;
+package OpenCloset::Monitor::Status;
 use utf8;
 
 our $STATUS_REPAIR        = 6;

@@ -1,3 +1,5 @@
+  - rename OpenCloset::Status OpenCloset::Monitor::Status
+
 v0.6.8    Fri, 25 Mar 2016 18:25:27 +0900
   - 의류준비에서 여성의 경우 스커트둘레 대신 허리를 표시 (#106)
 
