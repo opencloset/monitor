@@ -20,7 +20,7 @@ has DB => sub { shift->app->DB };
 
 =item status_id
 
-C<$OpenCloset::Status::STATUS_*>
+C<$OpenCloset::Monitor::Status::STATUS_*>
 
 =item bestfit
 

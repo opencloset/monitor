@@ -4,7 +4,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use Encode 'decode_utf8';
 use Mojo::JSON 'j';
 
-use OpenCloset::Status;
+use OpenCloset::Monitor::Status;
 
 has DB => sub { shift->app->DB };
 
@@ -62,8 +62,8 @@ sub create {
         my $from = $self->param('from');
         my $to   = $self->param('to');
 
-        if (   $to >= $OpenCloset::Status::STATUS_FITTING_ROOM1
-            && $to <= $OpenCloset::Status::STATUS_FITTING_ROOM11 )
+        if (   $to >= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1
+            && $to <= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM11 )
         {
             $self->app->SQLite->resultset('History')
                 ->create( { room_no => $to - 19, order_id => $order->id } );
@@ -79,11 +79,11 @@ sub create {
         ### `의류준비|탈의` -> `대여안함|포장|수선` 으로 이동했을때에 탈의실의 정리가 필요해서
         ### 이를 강조해주기 위한 데이터 추가
         my $brain = $self->app->brain;
-        if (   $to == $OpenCloset::Status::STATUS_DO_NOT_RENTAL
-            || $to == $OpenCloset::Status::STATUS_BOXING
-            || $to == $OpenCloset::Status::STATUS_REPAIR )
+        if (   $to == $OpenCloset::Monitor::Status::STATUS_DO_NOT_RENTAL
+            || $to == $OpenCloset::Monitor::Status::STATUS_BOXING
+            || $to == $OpenCloset::Monitor::Status::STATUS_REPAIR )
         {
-            if ( $from == $OpenCloset::Status::STATUS_SELECT ) {
+            if ( $from == $OpenCloset::Monitor::Status::STATUS_SELECT ) {
                 my $history
                     = $self->app->SQLite->resultset('History')
                     ->search( { order_id => $order->id },
@@ -91,8 +91,8 @@ sub create {
 
                 $brain->{data}{refresh}{ $history->room_no } = 1 if $history;
             }
-            elsif ($from >= $OpenCloset::Status::STATUS_FITTING_ROOM1
-                && $from <= $OpenCloset::Status::STATUS_FITTING_ROOM11 )
+            elsif ($from >= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1
+                && $from <= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM11 )
             {
                 $brain->{data}{refresh}{ $from - 19 } = 1;
             }

@@ -1,4 +1,4 @@
-% use OpenCloset::Status;
+% use OpenCloset::Monitor::Status;
 % my @sid = qw/13 16 17 20 6 18 19/;
 % my $i = 0;
 <table class="table table-bordered table-condensed table-waiting">
@@ -6,9 +6,9 @@
     <tr>
       % for my $sid (@sid) {
         % if ($sid == 20) {
-          <th><%= substr $OpenCloset::Status::MAP{$sid}, 0, 2 %></th>
+          <th><%= substr $OpenCloset::Monitor::Status::MAP{$sid}, 0, 2 %></th>
         % } else {
-          <th><%= $OpenCloset::Status::MAP{$sid} %></th>
+          <th><%= $OpenCloset::Monitor::Status::MAP{$sid} %></th>
         % }
       % }
     </tr>
