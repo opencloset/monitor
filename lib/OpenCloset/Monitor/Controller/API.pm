@@ -12,7 +12,7 @@ has DB => sub { shift->app->DB };
 
 =head1 METHODS
 
-=head2 order
+=head2 update_order
 
     # PUT /api/orders/:order_id?status_id=:status_id&bestfit=:bestfit&pants=:pants
 
@@ -34,7 +34,7 @@ C<$OpenCloset::Monitor::Status::STATUS_*>
 
 =cut
 
-sub order {
+sub update_order {
     my $self      = shift;
     my $order_id  = $self->param('order_id');
     my $status_id = $self->param('status_id');
