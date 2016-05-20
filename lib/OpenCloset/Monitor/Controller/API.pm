@@ -8,6 +8,9 @@ use HTTP::Tiny;
 use Mojo::JSON qw/decode_json j/;
 use Path::Tiny;
 
+use OpenCloset::Constants::Category
+    qw/%REVERSE_MAP $LABEL_JACKET $LABEL_PANTS $LABEL_SHIRT $LABEL_TIE $LABEL_SHOES $LABEL_SKIRT $LABEL_BLOUSE/;
+
 has DB => sub { shift->app->DB };
 
 =head1 METHODS
@@ -88,6 +91,77 @@ sub update_order {
         $self->log->error( 'Failed to patch user pants: ' . $res->{reason} )
             unless $res->{success};
     }
+
+    $self->render( text => decode_utf8( $res->{content} ) );
+}
+
+=head2 update_user
+
+    # PUT /api/users/:user_id
+
+=over
+
+=item category
+
+=back
+
+=cut
+
+sub update_user {
+    my $self    = shift;
+    my $user_id = $self->param('user_id');
+
+    my $v = $self->validation;
+    $v->optional('category')->in(
+        $LABEL_JACKET, $LABEL_PANTS, $LABEL_SHIRT, $LABEL_TIE,
+        $LABEL_SHOES,  $LABEL_SKIRT, $LABEL_BLOUSE
+    );
+
+    if ( $v->has_error ) {
+        my $failed = $v->failed;
+        my $error = 'Parameter Validation Failed: ' . join( ', ', @$failed );
+        return $self->error( 400, { str => $error } );
+    }
+
+    my $user = $self->DB->resultset('User')->find( { id => $user_id } );
+    return $self->error( 400, { str => "Not found user: $user_id" } )
+        unless $user;
+
+    my $user_info = $user->user_info;
+    my $category = $REVERSE_MAP{ $v->param('category') } || '';
+
+    return $self->render( json => { $user_info->get_columns } )
+        unless $category;
+
+    my $pre_category = $user_info->pre_category;
+    my %categories;
+    map { $categories{$_}++ } split /,/, $pre_category;
+
+    if ( $categories{$category} ) {
+        delete $categories{$category};
+    }
+    else {
+        $categories{$category}++;
+    }
+
+    my %params;
+    $params{pre_category} = join( ',', keys %categories );
+
+    my $opencloset = $self->app->config->{opencloset};
+    my $cookie     = $self->_auth_opencloset;
+    my $http       = HTTP::Tiny->new( timeout => 3, cookie_jar => $cookie );
+    my $url        = $opencloset->{uri} . "/api/user/$user_id.json";
+    my $res        = $http->request(
+        'PUT', $url,
+        {
+            content => $http->www_form_urlencode( {%params} ),
+            headers =>
+                { 'content-type' => 'application/x-www-form-urlencoded' }
+        }
+    );
+
+    return $self->error( 500, { str => 'Failed to update user' } )
+        unless $res->{success};
 
     $self->render( text => decode_utf8( $res->{content} ) );
 }

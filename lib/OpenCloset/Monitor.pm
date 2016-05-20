@@ -88,6 +88,7 @@ sub _private_routes {
     $r->websocket('/socket')->to('socket#socket')->name('socket');
 
     $r->put('/api/orders/:order_id')->to('API#update_order');
+    $r->put('/api/users/:user_id')->to('API#update_user');
 
     $r->get('/repair')->to('dashboard#repair')->name('repair');
     $r->get('/online')->to('dashboard#online')->name('online');
