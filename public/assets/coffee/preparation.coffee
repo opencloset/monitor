@@ -325,3 +325,22 @@ $ ->
     updateOrder order_id, { pants: size }
 
   $('[data-toggle="tooltip"]').tooltip()
+
+  updateUser = (user_id, params, cb) ->
+    $.ajax "/api/users/#{user_id}.json",
+      type: 'PUT'
+      data: params
+      success: (data, textStatus, jqXHR) ->
+      error: (jqXHR, textStatus, errorThrown) ->
+        location.reload true
+      complete: (jqXHR, textStatus) ->
+        do cb if cb
+
+  $('.js-category').click (e) ->
+    e.stopPropagation()
+
+    $this    = $(@)
+    category = $this.text().trim()
+    user_id  = $this.data('user-id')
+    updateUser user_id, { category: category }, ->
+      $this.toggleClass('text-info text-meuted')

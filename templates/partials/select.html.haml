@@ -1,5 +1,5 @@
 - use utf8;
-- my %clothes_map = (jacket => '자켓', pants => '팬츠', shirt => '셔츠', tie => '타이', shoes => '구두', belt => '벨트', skirt => '스커트', blouse => '블라우스');
+- use OpenCloset::Constants::Category qw/%LABEL_MAP/;
 - my %color_map = (black => '검정', navy => '남색', gray => '회색', brown => '갈색', etc => '기타', staff => '직추', charcoalgray => '차콜', dark => '다크');
 - my %label_map = ('대여가능' => 'label-success', '대여중' => 'label-danger');
 - my $user = $order->user;
@@ -108,9 +108,9 @@
           %tr.text-center
             - for my $category (@man_category) {
               - if (grep {/^$category$/} @clothes) {
-                %td.text-info= $clothes_map{$category}
+                %td.js-category.text-info{'data-user-id' => "#{$user->id}"}= $LABEL_MAP{$category}
               - } else {
-                %td.text-muted= $clothes_map{$category}
+                %td.js-category.text-muted{'data-user-id' => "#{$user->id}"}= $LABEL_MAP{$category}
               - }
             - }
     - }
@@ -120,9 +120,9 @@
           %tr.text-center
             - for my $category (@woman_category) {
               - if (grep {/^$category$/} @clothes) {
-                %td.text-info= $clothes_map{$category}
+                %td.js-category.text-info{'data-user-id' => "#{$user->id}"}= $LABEL_MAP{$category}
               - } else {
-                %td.text-muted= $clothes_map{$category}
+                %td.js-category.text-muted{'data-user-id' => "#{$user->id}"}= $LABEL_MAP{$category}
               - }
             - }
     - }

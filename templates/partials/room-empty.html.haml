@@ -1,6 +1,6 @@
 - use utf8;
-- use OpenCloset::Status;
-- my $prev_order = prev_order($n, $OpenCloset::Status::STATUS_SELECT);
+- use OpenCloset::Monitor::Status;
+- my $prev_order = prev_order($n, $OpenCloset::Monitor::Status::STATUS_SELECT);
 .well.room.empty{:id => "room-#{$n}"}
   %h3= "#$n"
   - if ($prev_order) {

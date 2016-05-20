@@ -1,7 +1,7 @@
 package OpenCloset::Monitor::Controller::Dashboard;
 use Mojo::Base 'Mojolicious::Controller';
 
-use OpenCloset::Status;
+use OpenCloset::Monitor::Status;
 
 use DateTime;
 use DateTime::Format::ISO8601;
@@ -24,7 +24,7 @@ sub index {
     my $rs
         = $self->DB->resultset('Order')
         ->search(
-        { status_id => { -in  => [@OpenCloset::Status::ACTIVE_STATUS] } },
+        { status_id => { -in  => [@OpenCloset::Monitor::Status::ACTIVE_STATUS] } },
         { order_by  => { -asc => 'update_date' } } );
 
     my ( @visit, @measure, @select, @undress, @repair, @boxing, @payment );
@@ -36,24 +36,24 @@ sub index {
         my $status_id = $order->status_id;
         use experimental qw/ smartmatch /;
         given ($status_id) {
-            when ($OpenCloset::Status::STATUS_VISIT) { push @visit, $order }
-            when ($OpenCloset::Status::STATUS_MEASURE) {
+            when ($OpenCloset::Monitor::Status::STATUS_VISIT) { push @visit, $order }
+            when ($OpenCloset::Monitor::Status::STATUS_MEASURE) {
                 push @measure, $order
             }
-            when ($OpenCloset::Status::STATUS_SELECT) { push @select, $order }
+            when ($OpenCloset::Monitor::Status::STATUS_SELECT) { push @select, $order }
             when (
                 [
-                    $OpenCloset::Status::STATUS_FITTING_ROOM1 ..
-                        $OpenCloset::Status::STATUS_FITTING_ROOM11
+                    $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1 ..
+                        $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM11
                 ]
                 )
             {
                 push @undress, $order
             }
-            when ($OpenCloset::Status::STATUS_REPAIR) { push @repair, $order }
-            when ($OpenCloset::Status::STATUS_BOXING) { push @boxing, $order }
-            when ($OpenCloset::Status::STATUS_BOXED)  { push @boxing, $order }
-            when ($OpenCloset::Status::STATUS_PAYMENT) {
+            when ($OpenCloset::Monitor::Status::STATUS_REPAIR) { push @repair, $order }
+            when ($OpenCloset::Monitor::Status::STATUS_BOXING) { push @boxing, $order }
+            when ($OpenCloset::Monitor::Status::STATUS_BOXED)  { push @boxing, $order }
+            when ($OpenCloset::Monitor::Status::STATUS_PAYMENT) {
                 push @payment, $order
             }
             default {
@@ -191,7 +191,7 @@ sub room {
         my $room;
         my $order = $self->DB->resultset('Order')->search(
             {
-                status_id => $OpenCloset::Status::STATUS_FITTING_ROOM1 + $n - 1
+                status_id => $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1 + $n - 1
             }
         )->next;
         $active[$n] = $brain->{data}{room}{ $order->id } if $order;
@@ -214,7 +214,7 @@ sub select {
     my $brain = $self->app->brain;
 
     my $rs = $self->DB->resultset('Order')->search(
-        { status_id => $OpenCloset::Status::STATUS_SELECT },
+        { status_id => $OpenCloset::Monitor::Status::STATUS_SELECT },
         { order_by  => { -asc => 'update_date' } }
     );
 
@@ -236,7 +236,7 @@ sub preparation {
     my $brain = $self->app->brain;
     my ( @room_active, @room );
     my $rs = $self->DB->resultset('Order')->search(
-        { status_id => $OpenCloset::Status::STATUS_SELECT },
+        { status_id => $OpenCloset::Monitor::Status::STATUS_SELECT },
         { order_by  => { -asc => 'update_date' }, join => 'booking' }
     )->search_literal( 'HOUR(`booking`.`date`) != ?', 22 );
 
@@ -244,7 +244,7 @@ sub preparation {
         my $room;
         my $order = $self->DB->resultset('Order')->search(
             {
-                status_id => $OpenCloset::Status::STATUS_FITTING_ROOM1 + $n - 1
+                status_id => $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1 + $n - 1
             }
         )->next;
         $room_active[$n] = $brain->{data}{room}{ $order->id } if $order;
@@ -257,7 +257,7 @@ sub preparation {
     $brain->{data}{select} = {} unless $rs->count;
 
     my @repair = $self->DB->resultset('Order')->search(
-        { status_id => $OpenCloset::Status::STATUS_REPAIR },
+        { status_id => $OpenCloset::Monitor::Status::STATUS_REPAIR },
         { order_by  => { -asc => 'update_date' } }
     );
 
@@ -265,7 +265,7 @@ sub preparation {
 
     my @boxing = $self->DB->resultset('Order')->search_literal(
         'status_id = ? AND HOUR(booking.date) != ?',
-        ( $OpenCloset::Status::STATUS_BOXING, 22 ),
+        ( $OpenCloset::Monitor::Status::STATUS_BOXING, 22 ),
         { join => 'booking', order_by => { -asc => 'update_date' } }
     );
 
@@ -351,7 +351,7 @@ sub repair {
     my $waiting = $self->app->_waiting_list;
     my $brain   = $self->app->brain;
     my $rs      = $self->DB->resultset('Order')->search(
-        { status_id => $OpenCloset::Status::STATUS_REPAIR },
+        { status_id => $OpenCloset::Monitor::Status::STATUS_REPAIR },
         { order_by  => { -asc => 'update_date' } }
     );
 
@@ -384,7 +384,7 @@ sub online {
     ## 22:00 주문서는 온라인 주문서
     ## 각 상태별 주문서를 남녀별로
     my $rs = $self->DB->resultset('Order')->search(
-        { status_id => { -in  => [@OpenCloset::Status::ACTIVE_STATUS] } },
+        { status_id => { -in  => [@OpenCloset::Monitor::Status::ACTIVE_STATUS] } },
         { order_by  => { -asc => 'update_date' }, join => 'booking' }
     )->search_literal( 'HOUR(`booking`.`date`) = ?', 22 );
 
@@ -393,24 +393,24 @@ sub online {
         my $status_id = $order->status_id;
         use experimental qw/ smartmatch /;
         given ($status_id) {
-            when ($OpenCloset::Status::STATUS_VISIT) { push @visit, $order }
-            when ($OpenCloset::Status::STATUS_MEASURE) {
+            when ($OpenCloset::Monitor::Status::STATUS_VISIT) { push @visit, $order }
+            when ($OpenCloset::Monitor::Status::STATUS_MEASURE) {
                 push @measure, $order
             }
-            when ($OpenCloset::Status::STATUS_SELECT) { push @select, $order }
+            when ($OpenCloset::Monitor::Status::STATUS_SELECT) { push @select, $order }
             when (
                 [
-                    $OpenCloset::Status::STATUS_FITTING_ROOM1 ..
-                        $OpenCloset::Status::STATUS_FITTING_ROOM11
+                    $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1 ..
+                        $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM11
                 ]
                 )
             {
                 push @undress, $order
             }
-            when ($OpenCloset::Status::STATUS_REPAIR) { push @repair, $order }
-            when ($OpenCloset::Status::STATUS_BOXING) { push @boxing, $order }
-            when ($OpenCloset::Status::STATUS_BOXED)  { push @boxing, $order }
-            when ($OpenCloset::Status::STATUS_PAYMENT) {
+            when ($OpenCloset::Monitor::Status::STATUS_REPAIR) { push @repair, $order }
+            when ($OpenCloset::Monitor::Status::STATUS_BOXING) { push @boxing, $order }
+            when ($OpenCloset::Monitor::Status::STATUS_BOXED)  { push @boxing, $order }
+            when ($OpenCloset::Monitor::Status::STATUS_PAYMENT) {
                 push @payment, $order
             }
             default {
