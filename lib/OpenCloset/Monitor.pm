@@ -87,7 +87,8 @@ sub _private_routes {
 
     $r->websocket('/socket')->to('socket#socket')->name('socket');
 
-    $r->put('/api/orders/:order_id')->to('API#order');
+    $r->put('/api/orders/:order_id')->to('API#update_order');
+    $r->put('/api/users/:user_id')->to('API#update_user');
 
     $r->get('/repair')->to('dashboard#repair')->name('repair');
     $r->get('/online')->to('dashboard#online')->name('online');
@@ -138,7 +139,10 @@ sub _waiting_list {
     ## 각 상태별 주문서의 갯수 를 남녀별로
     ## 22:00 주문서는 온라인 주문서이기 때문에 제외
     my $rs = $self->DB->resultset('Order')->search(
-        { status_id => { -in => [@OpenCloset::Monitor::Status::ACTIVE_STATUS] }, },
+        {
+            status_id =>
+                { -in => [@OpenCloset::Monitor::Status::ACTIVE_STATUS] },
+        },
         {
             select =>
                 ['status_id', 'user_info.gender', { count => 'status_id' }],
@@ -156,14 +160,16 @@ sub _waiting_list {
 
         ## 탈의를 key 한개로 묶는다
         if (   $status_id >= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1
-            && $status_id <= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM11 )
+            && $status_id
+            <= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM11 )
         {
-            $waiting{$gender}{$OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1}
-                += $cnt;
+            $waiting{$gender}
+                {$OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1} += $cnt;
         }
         elsif ( $status_id == $OpenCloset::Monitor::Status::STATUS_BOXED ) {
             ## 18: 포장, 44: 포장완료 는 같은 상태로 본다
-            $waiting{$gender}{$OpenCloset::Monitor::Status::STATUS_BOXING} += $cnt;
+            $waiting{$gender}{$OpenCloset::Monitor::Status::STATUS_BOXING}
+                += $cnt;
         }
         else {
             $waiting{$gender}{$status_id} = $cnt;
