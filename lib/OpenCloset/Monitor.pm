@@ -71,17 +71,19 @@ sub _public_routes { }
 sub _private_routes {
     my $self = shift;
     my $r    = $self->routes->under('/')->to('user#auth');
+
     $r->get('/')->to('dashboard#index')->name('index');
     $r->get('/statistics/elapsed')->to('statistics#elapsed')->name('elapsed');
     $r->get('/statistics/elapsed/:ymd')->to('statistics#elapsed_ymd');
 
     $r->get('/room')->to('dashboard#room')->name('rooms');
     $r->get('/select')->to('dashboard#select')->name('select');
+    $r->get('/preparation')->to('dashboard#preparation')->name('preparation');
+    $r->get('/repair')->to('dashboard#repair')->name('repair');
+    $r->get('/online')->to('dashboard#online')->name('online');
 
     $r->post('/active')->to('dashboard#create_active');
     $r->delete('/active/:order_id')->to('dashboard#delete_active');
-
-    $r->get('/preparation')->to('dashboard#preparation')->name('preparation');
 
     $r->post('/events')->to('event#create');
 
@@ -90,8 +92,6 @@ sub _private_routes {
     $r->put('/api/orders/:order_id')->to('API#update_order');
     $r->put('/api/users/:user_id')->to('API#update_user');
 
-    $r->get('/repair')->to('dashboard#repair')->name('repair');
-    $r->get('/online')->to('dashboard#online')->name('online');
     $r->get('/address')->to('API#address')->name('address');
     $r->post('/sms')->to('API#create_sms')->name('sms.create');
     $r->put('/brain')->to('API#update_brain')->name('brain.update');
