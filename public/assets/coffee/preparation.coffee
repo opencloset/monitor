@@ -344,3 +344,12 @@ $ ->
     user_id  = $this.data('user-id')
     updateUser user_id, { category: category }, ->
       $this.toggleClass('text-info text-muted')
+
+  $('#select').load '/region/selects', ->
+    $(@).find("abbr.timeago").timeago()
+
+  $('#fitting-room').load '/region/rooms', ->
+    $(@).find("abbr.timeago").timeago()
+
+  $('#repair').load '/region/status/repair'
+  $('#boxing').load '/region/status/boxing'
