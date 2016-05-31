@@ -69,9 +69,9 @@ sub _whitelist {
 sub _public_routes { }
 
 sub _private_routes {
-    my $self     = shift;
-    my $r        = $self->routes->under('/')->to('user#auth');
-    my $partials = $r->under('/partials');
+    my $self   = shift;
+    my $r      = $self->routes->under('/')->to('user#auth');
+    my $region = $r->under('/region');
 
     $r->get('/')->to('dashboard#index')->name('index');
     $r->get('/statistics/elapsed')->to('statistics#elapsed')->name('elapsed');
@@ -99,11 +99,11 @@ sub _private_routes {
     $r->get('/target_date')->to('API#target_dt')->name('api.target_date');
     $r->options('/target_date')->to('API#cors');
 
-    $partials->get('/selects')->to('partials#selects')->name('partials.selects');
-    $partials->get('/rooms')->to('partials#rooms')->name('partials.rooms');
-    $partials->get('/rooms/:no')->to('partials#room')->name('partials.room');
-    $partials->get('/status/repair')->to('partials#status_repair');
-    $partials->get('/status/boxed')->to('partials#status_boxed');
+    $region->get('/selects')->to('region#selects')->name('region.selects');
+    $region->get('/rooms')->to('region#rooms')->name('region.rooms');
+    $region->get('/rooms/:no')->to('region#room')->name('region.room');
+    $region->get('/status/repair')->to('region#status_repair');
+    $region->get('/status/boxed')->to('region#status_boxed');
 }
 
 sub _hooks {
