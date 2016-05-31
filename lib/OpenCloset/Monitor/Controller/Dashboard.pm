@@ -127,16 +127,10 @@ sub create_active {
     $self->app->brain->{data}{$key}{$order_id} = 1;
 
     my $channel = $self->app->redis_channel;
-    $self->redis->publish(
-        "$channel:active" => decode_utf8(
-            j( { sender => "active.$key", order_id => $order_id } )
-        )
-    );
+    $self->redis->publish( "$channel:active" =>
+            decode_utf8( j( { sender => "active.$key", order_id => $order_id } ) ) );
 
-    $self->render(
-        text   => "Successfully posted order_id($order_id)",
-        status => 201
-    );
+    $self->render( text => "Successfully posted order_id($order_id)", status => 201 );
 }
 
 
@@ -164,15 +158,9 @@ sub delete_active {
     delete $self->app->brain->{data}{$key}{$order_id};
 
     my $channel = $self->app->redis_channel;
-    $self->redis->publish(
-        "$channel:active" => decode_utf8(
-            j( { sender => "active.$key", order_id => $order_id } )
-        )
-    );
-    $self->render(
-        text   => "Successfully deleted order_id($order_id)",
-        status => 201
-    );
+    $self->redis->publish( "$channel:active" =>
+            decode_utf8( j( { sender => "active.$key", order_id => $order_id } ) ) );
+    $self->render( text => "Successfully deleted order_id($order_id)", status => 201 );
 }
 
 =head2 room
@@ -189,11 +177,11 @@ sub room {
     my ( @active, @room );
     for my $n ( 1 .. 11 ) {
         my $room;
-        my $order = $self->DB->resultset('Order')->search(
-            {
-                status_id => $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1 + $n - 1
-            }
-        )->next;
+        my $order
+            = $self->DB->resultset('Order')
+            ->search(
+            { status_id => $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1 + $n - 1 } )
+            ->next;
         $active[$n] = $brain->{data}{room}{ $order->id } if $order;
         $room[$n] = $order;
     }
@@ -213,10 +201,10 @@ sub select {
     my $self  = shift;
     my $brain = $self->app->brain;
 
-    my $rs = $self->DB->resultset('Order')->search(
-        { status_id => $OpenCloset::Monitor::Status::STATUS_SELECT },
-        { order_by  => { -asc => 'update_date' } }
-    );
+    my $rs
+        = $self->DB->resultset('Order')
+        ->search( { status_id => $OpenCloset::Monitor::Status::STATUS_SELECT },
+        { order_by => { -asc => 'update_date' } } );
 
     $brain->{data}{select} = {} unless $rs->count;
     my @active = keys %{ $brain->{data}{select} ||= {} };
@@ -232,46 +220,6 @@ sub select {
 
 sub preparation {
     my $self = shift;
-
-    my $brain = $self->app->brain;
-    my ( @room_active, @room );
-    my $rs = $self->DB->resultset('Order')->search(
-        { status_id => $OpenCloset::Monitor::Status::STATUS_SELECT },
-        { order_by  => { -asc => 'update_date' }, join => 'booking' }
-    )->search_literal( 'HOUR(`booking`.`date`) != ?', 22 );
-
-    for my $n ( 1 .. 11 ) {
-        my $room;
-        my $order = $self->DB->resultset('Order')->search(
-            {
-                status_id => $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1 + $n - 1
-            }
-        )->next;
-        $room_active[$n] = $brain->{data}{room}{ $order->id } if $order;
-        $room[$n] = $order;
-    }
-
-    my @select_active = keys %{ $brain->{data}{select} ||= {} };
-
-    $brain->{data}{room}   = {} unless @room_active;
-    $brain->{data}{select} = {} unless $rs->count;
-
-    my @repair = $self->DB->resultset('Order')->search(
-        { status_id => $OpenCloset::Monitor::Status::STATUS_REPAIR },
-        { order_by  => { -asc => 'update_date' } }
-    );
-
-    $brain->{data}{repair} = {} unless @repair;
-
-    my @boxing = $self->DB->resultset('Order')->search_literal(
-        'status_id = ? AND HOUR(booking.date) != ?',
-        ( $OpenCloset::Monitor::Status::STATUS_BOXING, 22 ),
-        { join => 'booking', order_by => { -asc => 'update_date' } }
-    );
-
-    my %done;
-    map { $done{$_} = $brain->{data}{repair}{$_} }
-        keys %{ $brain->{data}{repair} };
 
     my %bestfit;
     my $parser = $self->DB->storage->datetime_parser;
@@ -290,10 +238,8 @@ sub preparation {
         {
             bestfit        => 1,
             'booking.date' => {
-                -between => [
-                    $parser->format_datetime($start),
-                    $parser->format_datetime($end),
-                ]
+                -between =>
+                    [$parser->format_datetime($start), $parser->format_datetime($end),]
             }
         },
         $attr
@@ -310,10 +256,8 @@ sub preparation {
         {
             bestfit        => 1,
             'booking.date' => {
-                -between => [
-                    $parser->format_datetime($start),
-                    $parser->format_datetime($end),
-                ]
+                -between =>
+                    [$parser->format_datetime($start), $parser->format_datetime($end),]
             }
         },
         $attr
@@ -324,18 +268,7 @@ sub preparation {
         $bestfit{week}{$gender} = $cnt;
     }
 
-    $self->render(
-        orders         => $rs,
-        rooms          => [@room],
-        room_active    => [@room_active],
-        select_active  => [@select_active],
-        refresh_active => $brain->{data}{refresh} || {},
-        repair         => [@repair],
-        boxing         => [@boxing],
-        bestfit        => {%bestfit},
-        done           => {%done},
-        waiting        => $self->app->_waiting_list,
-    );
+    $self->render( bestfit => {%bestfit}, waiting => $self->app->_waiting_list );
 }
 
 =head2 repair
@@ -350,23 +283,18 @@ sub repair {
 
     my $waiting = $self->app->_waiting_list;
     my $brain   = $self->app->brain;
-    my $rs      = $self->DB->resultset('Order')->search(
-        { status_id => $OpenCloset::Monitor::Status::STATUS_REPAIR },
-        { order_by  => { -asc => 'update_date' } }
-    );
+    my $rs
+        = $self->DB->resultset('Order')
+        ->search( { status_id => $OpenCloset::Monitor::Status::STATUS_REPAIR },
+        { order_by => { -asc => 'update_date' } } );
 
     my %done;
-    map { $done{$_} = $brain->{data}{repair}{$_} }
-        keys %{ $brain->{data}{repair} };
+    map { $done{$_} = $brain->{data}{repair}{$_} } keys %{ $brain->{data}{repair} };
 
     $self->respond_to(
         json => { json => { waiting => $waiting } },
         html => sub {
-            $self->render(
-                orders  => $rs,
-                waiting => $waiting,
-                done    => {%done}
-            );
+            $self->render( orders => $rs, waiting => $waiting, done => {%done} );
         }
     );
 }

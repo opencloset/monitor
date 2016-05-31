@@ -40,158 +40,48 @@
 </nav>
 
 <div id="preparation" class="row">
-  <div id="select" class="col-md-8">
-    %= include 'partials/waiting', waiting => $waiting;
-    % while (my $order = $orders->next) {
-    %   my $is_active = grep { $order->id == $_ } @$select_active;
-    <div class="row select <%= $is_active ? ' active' : '' %>" data-order-id="<%= $order->id %>">
-      %= include 'partials/select', order => $order;
+  <div class="col-md-8">
+    <div id="waiting">
+      %= include 'partials/waiting', waiting => $waiting;
     </div>
-    % }
+    <div id="select"></div>
   </div>
 
-  <div id="fitting-room" class="col-md-4">
-    <div class="row">
-      <div id="bestfit-alert" class="alert alert-success alert-dismissible fade in hidden" role="alert">
-        <button class="close" aria-label="Close" type="button">
-          <span aria-hidden="true"> x</span>
-        </button>
-        <h4>
-          잘 어울린다고 생각하십니까?
-          <small></small>
-        </h4>
-        <p>
-          <button class="btn btn-success" type="button">Best-Fit</button>
-          <button class="btn btn-warning" type="button">보통</button>
-        </p>
-        <ul class="list-inline">
-          <%
-             my @size = (90 .. 120);
-             my $cnt  = 0;
-             for my $size (@size) {
-               $cnt++;
-               if ($cnt > (@size / 4)) {
-               $cnt = 0;
-          %>
-          <br>
-          <%   } # endif %>
-          <li><span class="pants label label-info"><%= $size %></span></li>
-          <% } # endfor %>
-        </ul>
-      </div>
-
-      % for my $n (qw/7 8 9 10 11/) {
-      % my $is_active = $room_active->[$n];
-      <div class="col-md-2">
-        % if (my $order = $rooms->[$n]) {
-        <div class="<%= $is_active ? 'active' : '' %>" data-order-id="<%= $order->id %>">
-          %= include 'partials/room-preparation', order => $order, n => $n
-        </div>
-        % } else {
-        %= include 'partials/room-empty', n => $n;
-        % }
-      </div>
-      % }
+  <div class="col-md-4">
+    <div id="bestfit-alert" class="alert alert-success alert-dismissible fade in hidden" role="alert">
+      <button class="close" aria-label="Close" type="button">
+        <span aria-hidden="true"> x</span>
+      </button>
+      <h4>
+        잘 어울린다고 생각하십니까?
+        <small></small>
+      </h4>
+      <p>
+        <button class="btn btn-success" type="button">Best-Fit</button>
+        <button class="btn btn-warning" type="button">보통</button>
+      </p>
+      <ul class="list-inline">
+        <%
+           my @size = (90 .. 120);
+           my $cnt  = 0;
+           for my $size (@size) {
+             $cnt++;
+             if ($cnt > (@size / 4)) {
+             $cnt = 0;
+        %>
+        <br>
+        <%   } # endif %>
+        <li><span class="pants label label-info"><%= $size %></span></li>
+        <% } # endfor %>
+      </ul>
     </div>
 
-    <hr>
-
-    <div class="row">
-      % for my $n (qw/6 5 4 3 2 1/) {
-      % my $is_active = $room_active->[$n];
-      <div class="col-md-2">
-        % if (my $order = $rooms->[$n]) {
-        <div class="<%= $is_active ? 'active' : '' %>" data-order-id="<%= $order->id %>">
-          %= include 'partials/room-preparation', order => $order, n => $n
-        </div>
-        % } else {
-        %= include 'partials/room-empty', n => $n;
-        % }
-      </div>
-      % }
+    <div id="fitting-room" class="row">
     </div>
 
-    <hr>
-
     <div class="row">
-      <div class="col-md-6">
-        <div id="repair" class="row">
-          <h4>수선</h4>
-          <ul class="list-group">
-            <%
-               for my $order (@$repair) {
-                 my $user = $order->user;
-                 my $user_info = $user->user_info;
-                 my $gender = $user_info->gender;
-                 my $url = url_for("/api/orders/" . $order->id)->query(status_id => $OpenCloset::Monitor::Status::STATUS_BOXING);
-                 my $bestfit = $order->bestfit;
-            %>
-            <li class="list-group-item repair text-left <%= $gender %>" data-order-id="<%= $order->id %>">
-              <i class="fa fa-check repair-done<%= $done->{$order->id} ? ' text-success' : '' %>"></i>
-              <i class="fa fa-<%= $gender %>"></i>
-              <strong class="name<%= $bestfit ? ' bestfit' : ''%>"><%= $user->name %></strong>
-              <span class="timeago">
-                <small>
-                  <abbr class="timeago" title="<%= $order->update_date->ymd %>T<%= $order->update_date->hms %>Z">
-                    %= $order->update_date
-                  </abbr>
-                </small>
-              </span>
-              <p class="pull-right">
-                <a class="pants text-danger" href="#" data-rule="down">
-                  <i class="fa fa-caret-left"></i>
-                </a>
-                <samp class="pants">
-                  %= $order->pants || $user_info->pants || 0
-                </samp>
-                <a class="pants text-danger" href="#" data-rule="up">
-                  <i class="fa fa-caret-right"></i>
-                </a>
-                <a class="btn btn-success btn-sm" href="<%= $url %>">포장</a>
-              </p>
-            </li>
-            <% } # endfor %>
-          </ul>
-        </div>
-      </div>
-
-      <div class="col-md-6">
-        <div id="boxing" class="row">
-          <h4>포장</h4>
-          <ul class="list-group">
-            <%
-               for my $order (@$boxing) {
-                 my $user = $order->user;
-                 my $user_info = $user->user_info;
-                 my $gender = $user_info->gender;
-                 my $bestfit = $order->bestfit;
-            %>
-            <li class="list-group-item boxing text-left <%= $gender %>" data-order-id="<%= $order->id %>">
-              <i class="fa fa-<%= $gender %>"></i>
-              <strong class="name<%= $bestfit ? ' bestfit' : ''%>"><%= $user->name %></strong>
-              <span class="timeago">
-                <small>
-                  <abbr class="timeago" title="<%= $order->update_date->ymd %>T<%= $order->update_date->hms %>Z">
-                    %= $order->update_date
-                  </abbr>
-                </small>
-              </span>
-              <p class="pull-right">
-                <a class="pants text-danger" href="#" data-rule="down">
-                  <i class="fa fa-caret-left"></i>
-                </a>
-                <samp class="pants">
-                  %= $order->pants || $user_info->pants || 0
-                </samp>
-                <a class="pants text-danger" href="#" data-rule="up">
-                  <i class="fa fa-caret-right"></i>
-                </a>
-              </p>
-            </li>
-            <% } # endfor %>
-          </ul>
-        </div>
-      </div>
+      <div id="repair" class="col-md-6"></div>
+      <div id="boxing" class="col-md-6"></div>
     </div>
   </div>
 </div>

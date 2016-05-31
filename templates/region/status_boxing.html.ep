@@ -1,0 +1,33 @@
+<h4>포장</h4>
+<ul class="list-group">
+  <%
+     for my $order (@$boxing) {
+       my $user = $order->user;
+       my $user_info = $user->user_info;
+       my $gender = $user_info->gender;
+       my $bestfit = $order->bestfit;
+  %>
+  <li class="list-group-item boxing text-left <%= $gender %>" data-order-id="<%= $order->id %>">
+    <i class="fa fa-<%= $gender %>"></i>
+    <strong class="name<%= $bestfit ? ' bestfit' : ''%>"><%= $user->name %></strong>
+    <span class="timeago">
+      <small>
+        <abbr class="timeago" title="<%= $order->update_date->ymd %>T<%= $order->update_date->hms %>Z">
+          %= $order->update_date
+        </abbr>
+      </small>
+    </span>
+    <p class="pull-right">
+      <a class="pants text-danger" href="#" data-rule="down">
+        <i class="fa fa-caret-left"></i>
+      </a>
+      <samp class="pants">
+        %= $order->pants || $user_info->pants || 0
+      </samp>
+      <a class="pants text-danger" href="#" data-rule="up">
+        <i class="fa fa-caret-right"></i>
+      </a>
+    </p>
+  </li>
+  <% } # endfor %>
+</ul>

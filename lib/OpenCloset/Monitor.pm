@@ -101,9 +101,8 @@ sub _private_routes {
 
     $region->get('/selects')->to('region#selects')->name('region.selects');
     $region->get('/rooms')->to('region#rooms')->name('region.rooms');
-    $region->get('/rooms/:no')->to('region#room')->name('region.room');
     $region->get('/status/repair')->to('region#status_repair');
-    $region->get('/status/boxed')->to('region#status_boxed');
+    $region->get('/status/boxing')->to('region#status_boxing');
 }
 
 sub _hooks {
