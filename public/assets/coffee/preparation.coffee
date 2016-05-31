@@ -65,9 +65,8 @@ $ ->
   sock.onerror = (e) ->
     location.reload()
 
-  $("abbr.timeago").timeago()
 
-  $('.room:not(.empty)').click (e) ->
+  $('#fitting-room').on 'click', '.room:not(.empty)', (e) ->
     e.preventDefault()
     $this = $(@)
     order_id = $this.parent().data('order-id')
@@ -86,7 +85,7 @@ $ ->
         console.log textStatus
       complete: (jqXHR, textStatus) ->
 
-  $('.select').click (e) ->
+  $('#select').on 'click', '.select', (e) ->
     $this = $(@)
     order_id = $this.data('order-id')
     if $this.hasClass('active')
@@ -104,7 +103,7 @@ $ ->
         console.log textStatus
       complete: (jqXHR, textStatus) ->
 
-  $('.room.empty').click (e) ->
+  $('#fitting-room').on 'click', '.room.empty', (e) ->
     e.preventDefault()
     $this = $(@)
     $p = $this.find('.p-refresh')
