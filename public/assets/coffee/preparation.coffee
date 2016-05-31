@@ -335,7 +335,7 @@ $ ->
       complete: (jqXHR, textStatus) ->
         do cb if cb
 
-  $('.js-category').click (e) ->
+  $('#select').on 'click', '.js-category', (e) ->
     e.stopPropagation()
 
     $this    = $(@)
