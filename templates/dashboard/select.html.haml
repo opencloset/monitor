@@ -9,8 +9,8 @@
 #select
   - while (my $order = $orders->next) {
     - if (grep { $order->id == $_ } @$active) {
-      .row.select.active{:data-order-id => '#{$order->id}'}= include 'partials/select', order => $order;
+      .row.select.active{:data-order-id => '#{$order->id}'}= include 'partials/select', order => $order, handler => 'ep';
     - } else {
-      .row.select{:data-order-id => '#{$order->id}'}= include 'partials/select', order => $order;
+      .row.select{:data-order-id => '#{$order->id}'}= include 'partials/select', order => $order, handler => 'ep';
     - }
   - }
