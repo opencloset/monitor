@@ -3,11 +3,13 @@
   % my $is_active = $room_active->[$n];
   <div class="col-md-2">
     % if (my $order = $rooms->[$n]) {
-    <div class="<%= $is_active ? 'active' : '' %>" data-order-id="<%= $order->id %>">
-      %= include 'partials/room-preparation', order => $order, n => $n
+    <div class="room<%= $is_active ? ' active' : '' %>" data-order-id="<%= $order->id %>">
+      %= include 'partials/room-preparation', order => $order, n => $n;
     </div>
     % } else {
-    %= include 'partials/room-empty', n => $n;
+    <div class="room">
+      %= include 'partials/room-empty', n => $n;
+    </div>
     % }
   </div>
   % }
@@ -20,11 +22,13 @@
   % my $is_active = $room_active->[$n];
   <div class="col-md-2">
     % if (my $order = $rooms->[$n]) {
-    <div class="<%= $is_active ? 'active' : '' %>" data-order-id="<%= $order->id %>">
+    <div class="room<%= $is_active ? ' active' : '' %>" data-order-id="<%= $order->id %>">
       %= include 'partials/room-preparation', order => $order, n => $n
     </div>
     % } else {
-    %= include 'partials/room-empty', n => $n;
+    <div class="room">
+      %= include 'partials/room-empty', n => $n;
+    </div>
     % }
   </div>
   % }

@@ -1,7 +1,7 @@
 - use utf8;
 - use OpenCloset::Monitor::Status;
 - my $prev_order = prev_order($n, $OpenCloset::Monitor::Status::STATUS_SELECT);
-.well.room.empty{:id => "room-#{$n}"}
+.well.empty{:id => "room-#{$n}"}
   %h3= "#$n"
   - if ($prev_order) {
     %p= $prev_order->user->name
