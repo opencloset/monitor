@@ -138,6 +138,7 @@ $ ->
     $.ajax "/active/#{room_no}?key=refresh",
       type: 'DELETE'
       success: (data, textStatus, jqXHR) ->
+        registerContextMenuSelect()
       error: (jqXHR, textStatus, errorThrown) ->
         console.log textStatus
       complete: (jqXHR, textStatus) ->
@@ -288,15 +289,9 @@ $ ->
     timeago.apply(@)
     bestfitToggle.apply(@)
 
-
-  afterLoadedSelect = ->
-    afterLoaded.apply(@)
-
-    $this = $(@)
-    $this.find('[data-toggle="tooltip"]').tooltip()
-
+  registerContextMenuSelect = ->
     reservedRoom = []
-    $this.find('.select[data-order-id]').each (i, el) ->
+    $('#select .select[data-order-id]').each (i, el) ->
       $el   = $(el)
       $prev = $el.find('.previous strong')
       return true unless $prev.length
@@ -315,7 +310,7 @@ $ ->
         items: menu
 
     ## 앞서 한바퀴 돌리면서 reservedRoom 을 채우고 이를 다시 돌면서 활용
-    $this.find('.select[data-order-id]').each (i, el) ->
+    $('#select .select[data-order-id]').each (i, el) ->
       $el   = $(el)
       $prev = $el.find('.previous strong')
       return true if $prev.length
@@ -324,15 +319,18 @@ $ ->
         selector: ".select[data-order-id='#{$el.data('order-id')}']"
         items: selectContextMenuItems(reservedRoom)
 
+  afterLoadedSelect = ->
+    afterLoaded.apply(@)
+    $(@).find('[data-toggle="tooltip"]').tooltip()
+    registerContextMenuSelect()
 
   afterLoadedRoom = ->
     afterLoaded.apply(@)
 
     $(@).find('.room[data-order-id]').each (i, el) ->
       $el = $(el)
-
       $.contextMenu
-        selector: "[data-order-id='#{$el.data('order-id')}']"
+        selector: ".room[data-order-id='#{$el.data('order-id')}']"
         items:
           a:
             name: '의류준비'
@@ -347,7 +345,7 @@ $ ->
             name: '포장'
             callback: (key, opt) ->
               bestfitPopup(18, key, opt)
-
+    registerContextMenuSelect()
 
   afterLoadedRepair = ->
     afterLoaded.apply(@)
@@ -355,7 +353,7 @@ $ ->
     $(@).find('.repair[data-order-id]').each (i, el) ->
       $el = $(el)
       $.contextMenu
-        selector: "[data-order-id='#{$el.data('order-id')}']"
+        selector: ".repair[data-order-id='#{$el.data('order-id')}']"
         items:
           a:
             name: '의류준비'
@@ -373,7 +371,7 @@ $ ->
     $(@).find('.boxing[data-order-id]').each (i, el) ->
       $el = $(el)
       $.contextMenu
-        selector: "[data-order-id='#{$el.data('order-id')}']"
+        selector: ".boxing[data-order-id='#{$el.data('order-id')}']"
         items:
           a:
             name: '의류준비'
