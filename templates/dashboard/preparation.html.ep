@@ -5,7 +5,7 @@
 %   '/assets/components/reconnectingWebsocket/reconnecting-websocket.js',
 %   '/assets/components/jQuery-contextMenu/src/jquery.ui.position.js',
 %   '/assets/components/jQuery-contextMenu/src/jquery.contextMenu.js',
-%   '/assets/dist/js/preparation.min.js'
+%   '/assets/dist/js/t.min.js'
 % ], csses => ['/assets/components/jQuery-contextMenu/src/jquery.contextMenu.css'];
 % title 'Preparation';
 % use OpenCloset::Monitor::Status;
