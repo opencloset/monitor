@@ -231,6 +231,7 @@ $ ->
       complete: (jqXHR, textStatus) ->
         do cb if cb
 
+
   updateUser = (user_id, params, cb) ->
     $.ajax "/api/users/#{user_id}.json",
       type: 'PUT'
@@ -240,6 +241,7 @@ $ ->
         location.reload true
       complete: (jqXHR, textStatus) ->
         do cb if cb
+
 
   bestfitPopup = (status_id, key, opt) ->
     order_id = opt.$trigger.data('order-id')
@@ -257,8 +259,10 @@ $ ->
     else
       $bestfit.find('.btn-warning').addClass('bestfit')
 
+
   timeago = ->
     $(@).find("abbr.timeago").timeago()
+
 
   bestfitToggle = ->
     $(@).find('.name').click (e) ->
@@ -269,9 +273,28 @@ $ ->
       updateOrder(order_id, { bestfit: bestfit })
       $this.toggleClass('bestfit')
 
+
+  selectContextMenuItems = (rooms) ->
+    $('#fitting-room .room[data-order-id]').each (i, el) ->
+      n = parseInt($(el).find('h3').text().trim().substring(1))
+      rooms.push(n)
+
+    menu      = _.clone(items)
+    available = _.difference([1..11], rooms)
+    _.each available, (el, i) ->
+      menu[el] =
+        name: "탈의##{el}"
+        callback: (key, opt) ->
+          order_id = opt.$trigger.data('order-id')
+          updateOrder(order_id, {status_id: parseInt(el) + 19})
+
+    return menu
+
+
   afterLoaded = ->
     timeago.apply(@)
     bestfitToggle.apply(@)
+
 
   afterLoadedSelect = ->
     afterLoaded.apply(@)
@@ -298,19 +321,6 @@ $ ->
         selector: ".select[data-order-id='#{$el.data('order-id')}']"
         items: menu
 
-    $('#fitting-room .room[data-order-id]').each (i, el) ->
-      n = parseInt($(el).find('h3').text().trim().substring(1))
-      reservedRoom.push(n)
-
-    menu      = _.clone(items)
-    available = _.difference([1..11], reservedRoom)
-    _.each available, (el, i) ->
-      menu[el] =
-        name: "탈의##{el}"
-        callback: (key, opt) ->
-          order_id = opt.$trigger.data('order-id')
-          updateOrder(order_id, {status_id: parseInt(el) + 19})
-
     ## 앞서 한바퀴 돌리면서 reservedRoom 을 채우고 이를 다시 돌면서 활용
     $this.find('.select[data-order-id]').each (i, el) ->
       $el   = $(el)
@@ -319,7 +329,8 @@ $ ->
 
       $.contextMenu
         selector: ".select[data-order-id='#{$el.data('order-id')}']"
-        items: menu
+        items: selectContextMenuItems(reservedRoom)
+
 
   afterLoadedRoom = ->
     afterLoaded.apply(@)
@@ -343,6 +354,7 @@ $ ->
             name: '포장'
             callback: (key, opt) ->
               bestfitPopup(18, key, opt)
+
 
   afterLoadedRepair = ->
     afterLoaded.apply(@)
