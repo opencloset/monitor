@@ -32,7 +32,6 @@ $ ->
         if from in boxingRange or to in boxingRange then reloadBoxing()
 
         ## Refresh waiting list
-        ## 이것도 복잡해지면 `$.load` 로 대체해야..
         $.ajax "/repair",
           type: 'GET'
           dataType: 'json'
@@ -231,7 +230,6 @@ $ ->
       complete: (jqXHR, textStatus) ->
         do cb if cb
 
-
   updateUser = (user_id, params, cb) ->
     $.ajax "/api/users/#{user_id}.json",
       type: 'PUT'
@@ -241,7 +239,6 @@ $ ->
         location.reload true
       complete: (jqXHR, textStatus) ->
         do cb if cb
-
 
   bestfitPopup = (status_id, key, opt) ->
     order_id = opt.$trigger.data('order-id')
@@ -259,10 +256,8 @@ $ ->
     else
       $bestfit.find('.btn-warning').addClass('bestfit')
 
-
   timeago = ->
     $(@).find("abbr.timeago").timeago()
-
 
   bestfitToggle = ->
     $(@).find('.name').click (e) ->
@@ -272,7 +267,6 @@ $ ->
       bestfit = if $this.hasClass('bestfit') then 0 else 1
       updateOrder(order_id, { bestfit: bestfit })
       $this.toggleClass('bestfit')
-
 
   selectContextMenuItems = (rooms) ->
     $('#fitting-room .room[data-order-id]').each (i, el) ->
@@ -289,7 +283,6 @@ $ ->
           updateOrder(order_id, {status_id: parseInt(el) + 19})
 
     return menu
-
 
   afterLoaded = ->
     timeago.apply(@)
@@ -374,7 +367,6 @@ $ ->
             callback: (key, opt) ->
               bestfitPopup(18, key, opt)
 
-
   afterLoadedBoxing = ->
     afterLoaded.apply(@)
 
@@ -392,7 +384,6 @@ $ ->
             name: '수선'
             callback: (key, opt) ->
               bestfitPopup(6, key, opt)
-
   ##---------------------
   ## main
   ##---------------------
