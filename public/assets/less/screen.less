@@ -51,7 +51,7 @@
     }
 }
 #fitting-room {
-    .active .room {
+    .active.room .well {
         border-color: purple !important;
         &:hover {
             border-color: purple;
@@ -59,11 +59,13 @@
     }
     .room {
         font-size: 2em;
-        background-color: #000;
-        min-height: 500px;
-        border-width: 0.3em;
-        padding: 0;
         cursor: pointer;
+        .well {
+            background-color: #000;
+            border-width: 0.3em;
+            padding: 0;
+            min-height: 200px;
+        }
         h3 {
             margin-top: 10px;
         }
@@ -100,16 +102,10 @@
             color: darken(#fff, 80%);
         }
     }
-    .room.male {
-        .fa {
-            color: #5555ee;
-        }
+    .room .male {
         border-color: #5555ee;
     }
-    .room.female {
-        .fa {
-            color: #ee3333;
-        }
+    .room .female {
         border-color: #ee3333;
     }
     .purpose, .color {
@@ -138,6 +134,9 @@
         font-size: 0.5em;
         color: darken(#fff, 30%);
     }
+}
+.table-waiting {
+    text-align: left;
 }
 #select {
     text-align: left;

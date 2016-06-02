@@ -1,0 +1,205 @@
+% use OpenCloset::Constants::Category qw/%LABEL_MAP/;
+% my %color_map = (black => '검정', navy => '남색', gray => '회색', brown => '갈색', etc => '기타', staff => '직추', charcoalgray => '차콜', dark => '다크');
+% my %label_map = ('대여가능' => 'label-success', '대여중' => 'label-danger');
+% my $user = $order->user;
+% my $user_info = $user->user_info;
+% my $gender = $user_info->gender;
+% my $details = $order->order_details;
+% my @clothes = split /,/, $user_info->pre_category;
+% my @colors  = split /,/, $user_info->pre_color;
+% my $histories = history({ order_id => $order->id });
+% my $nth = $histories->count;
+% my $_bestfit = $order->bestfit;
+% my $wearon_date = $order->wearon_date ? $order->wearon_date : $user_info->wearon_date;
+
+<div class="row">
+  <div class="col-md-2 profile">
+    <h1 class="name<%= $_bestfit ? ' bestfit' : '' %>">
+      <i class="fa fa-<%= $gender %>"></i>
+      %= $user->name
+    </h1>
+    <h2 class="age"><%= age($user_info->birth) %></h2>
+    <p class="timeago">
+      <abbr class="timeago" title="<%= $order->update_date->ymd %>T<%= $order->update_date->hms %>Z">
+        %= $order->update_date
+      </abbr>
+    </p>
+    <p class="booking-date date">
+      %= substr($order->booking->date->hms, 0, 5)
+      % if ($nth) {
+      <div class="previous">
+        <strong>#<%= $histories->next->room_no %>/<%= $nth %></strong>
+      </div>
+      % }
+    </p>
+  </div>
+
+  <div class="col-md-5 size">
+    <ul>
+      <li>
+        <span class="label label-success" title="중동">
+          윗배
+          %= $user_info->topbelly || 0
+        </span>
+      </li>
+      <li>
+        <span class="label label-default" title="가슴">
+          가슴
+          %= $user_info->bust || 0
+        </span>
+      </li>
+      <li>
+        <span class="label label-default" title="팔">
+          팔
+          %= $user_info->arm || 0
+        </span>
+      </li>
+    </ul>
+
+    <ul>
+      <li>
+        % if ($gender eq 'male') {
+        <span class="label label-success" title="허벅지">
+          허벅지
+          %= $user_info->thigh || 0
+        </span>
+        % } else {
+        <span class="label label-success" title="엉덩이">
+          엉덩이
+          %= $user_info->hip || 0
+        </span>
+        % }
+      </li>
+      <li>
+        <span class="label label-default" title="허리">
+          허리
+          %= $user_info->waist || 0
+        </span>
+      </li>
+      <li>
+        % if ($gender eq 'male') {
+        <span class="label label-default" title="다리">
+          다리
+          %= $user_info->leg || 0
+        </span>
+        % } else {
+        <span class="label label-default" title="무릎">
+          무릎
+          %= $user_info->knee || 0
+        </span>
+        % }
+      </li>
+    </ul>
+
+    <ul>
+      <li>
+        <span class="label label-info" title="목둘레">
+          %= $user_info->neck || 0
+        </span>
+      </li>
+      <li>
+        <span class="label label-info" title="발">
+          %= $user_info->foot || 0
+        </span>
+      </li>
+      <li>
+        <span class="label label-info" title="키/몸무게">
+          %= $user_info->height || 0
+          /
+          %= $user_info->weight || 0
+        </span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="col-md-1">
+    <ul class="color">
+      % for my $color (@colors) {
+      <li>
+        <span class="label <%= $color %>">
+          %= $color_map{$color}
+        </span>
+      </li>
+      % }
+      <li class="wearon-date">
+        %= $wearon_date ? $wearon_date->ymd : ''
+      </li>
+    </ul>
+  </div>
+
+  <div class="col-md-4">
+    <%
+       my @man_category    = qw/jacket pants shirt tie shoes belt/;
+       my @woman_category  = qw/jacket skirt blouse shoes/;
+       my @common_category = qw/jacket shoes/;
+       my ($for_man, $for_woman);
+       for my $clothes (@clothes) {
+         next if grep {/$clothes$/} @common_category;
+         my $bool = grep {/$clothes$/} @man_category;
+         $for_man = 1 if $bool;
+         $bool = grep {/$clothes$/} @woman_category;
+         $for_woman = 1 if $bool;
+         last if $for_man && $for_woman;
+       }
+       if (!$for_man && !$for_woman) {
+         $for_man   = 1 if $gender eq 'male';
+         $for_woman = 1 if $gender eq 'female';
+       }
+    %>
+
+    % if ($for_man) {
+    <table class="table table-bordered table-condensed">
+      <tbody>
+        <tr class="text-center">
+          % for my $category (@man_category) {
+          %   my $has_category = grep {/^$category$/} @clothes;
+          %   my $klass = $has_category ? 'text-info' : 'text-muted';
+          <td class="js-category <%= $klass %>" data-user-id="<%= $user->id %>">
+            %= $LABEL_MAP{$category}
+          </td>
+          % }
+        </tr>
+      </tbody>
+    </table>
+    % }
+
+    % if ($for_woman) {
+    <table class="table table-bordered table-condensed">
+      <tbody>
+        <tr class="text-center">
+          % for my $category (@woman_category) {
+          %   my $has_category = grep {/^$category$/} @clothes;
+          %   my $klass = $has_category ? 'text-info' : 'text-muted';
+          <td class="js-category <%= $klass %>" data-user-id="<%= $user->id %>">
+            %= $LABEL_MAP{$category}
+          </td>
+          % }
+        </tr>
+      </tbody>
+    </table>
+    % }
+    <div class="purpose">
+      <p>
+        %= $user_info->purpose || ''
+      </p>
+      /
+      <p>
+        %= $user_info->purpose2 || ''
+      </p>
+    </div>
+    <p class="comment">
+      %= $user_info->comment || ''
+    </p>
+  </div>
+</div>
+
+% my $recents = recent_orders($order);
+<div class="row">
+  <div class="pre_order">
+    <ul class="list-inline">
+      % while (my $order = $recents->next) {
+        %= include 'partials/recent-clothes', order => $order;
+      % }
+    </ul>
+  </div>
+</div>
