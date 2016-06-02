@@ -1,5 +1,29 @@
 "use strict"
 $ ->
+  ##---------------------
+  ## Constanst & variables
+  ##---------------------
+  recentClick = null
+  PANTS_MIN = 80
+  PANTS_MAX = 120
+
+  SELECT_RANGE = [17]
+  ROOM_RANGE   = [20..30]
+  REPAIR_RANGE = [6]
+  BOXING_RANGE = [18]
+
+  DEFAULT_ITEMS =
+    repair:
+      name: '수선'
+      callback: (key, opt) ->
+        bestfitPopup(6, key, opt)
+    boxing:
+      name: '포장'
+      callback: (key, opt) ->
+        bestfitPopup(18, key, opt)
+  ##---------------------
+  ## Socket handling
+  ##---------------------
   hostname = location.hostname
   port = location.port
   protocol = location.protocol
@@ -19,17 +43,12 @@ $ ->
     from   = parseInt(data.from)
     to     = parseInt(data.to)
 
-    selectRange = [17]
-    roomRange   = [20..30]
-    repairRange = [6]
-    boxingRange = [18]
-
     switch sender
       when 'order'
-        if from in selectRange or to in selectRange then reloadSelect()
-        if from in roomRange   or to in roomRange   then reloadRoom()
-        if from in repairRange or to in repairRange then reloadRepair()
-        if from in boxingRange or to in boxingRange then reloadBoxing()
+        if from in SELECT_RANGE or to in SELECT_RANGE then reloadSelect(from, to)
+        if from in ROOM_RANGE   or to in ROOM_RANGE   then reloadRoom()
+        if from in REPAIR_RANGE or to in REPAIR_RANGE then reloadRepair()
+        if from in BOXING_RANGE or to in BOXING_RANGE then reloadBoxing()
 
         ## Refresh waiting list
         $.ajax "/repair",
@@ -71,23 +90,6 @@ $ ->
       else ''
   sock.onerror = (e) ->
     location.reload()
-
-  ##---------------------
-  ## variables
-  ##---------------------
-  items =
-    repair:
-      name: '수선'
-      callback: (key, opt) ->
-        bestfitPopup(6, key, opt)
-    boxing:
-      name: '포장'
-      callback: (key, opt) ->
-        bestfitPopup(18, key, opt)
-
-  PANTS_MIN = 80
-  PANTS_MAX = 120
-  recentClick = null
   ##---------------------
   ## Bindings
   ##---------------------
@@ -130,6 +132,7 @@ $ ->
 
   $('#fitting-room').on 'click', '.room .empty', (e) ->
     e.preventDefault()
+    e.stopPropagation()
     $this = $(@)
     $p = $this.find('.p-refresh')
     return unless $p.length
@@ -138,7 +141,7 @@ $ ->
     $.ajax "/active/#{room_no}?key=refresh",
       type: 'DELETE'
       success: (data, textStatus, jqXHR) ->
-        registerContextMenuSelect()
+        reloadSelect()
       error: (jqXHR, textStatus, errorThrown) ->
         console.log textStatus
       complete: (jqXHR, textStatus) ->
@@ -274,7 +277,7 @@ $ ->
       n = parseInt($(el).find('h3').text().trim().substring(1))
       rooms.push(n)
 
-    menu      = _.clone(items)
+    menu      = _.clone(DEFAULT_ITEMS)
     available = _.difference([1..11], rooms)
     _.each available, (el, i) ->
       menu[el] =
@@ -284,10 +287,6 @@ $ ->
           updateOrder(order_id, {status_id: parseInt(el) + 19})
 
     return menu
-
-  afterLoaded = ->
-    timeago.apply(@)
-    bestfitToggle.apply(@)
 
   registerContextMenuSelect = ->
     reservedRoom = []
@@ -299,7 +298,7 @@ $ ->
       n = parseInt($prev.text().split('/')[0].substring(1))
       reservedRoom.push(n)
 
-      menu = _.clone(items)
+      menu = _.clone(DEFAULT_ITEMS)
       menu[n] =
         name: "탈의##{n}"
         callback: (key, opt) ->
@@ -319,15 +318,8 @@ $ ->
         selector: ".select[data-order-id='#{$el.data('order-id')}']"
         items: selectContextMenuItems(reservedRoom)
 
-  afterLoadedSelect = ->
-    afterLoaded.apply(@)
-    $(@).find('[data-toggle="tooltip"]').tooltip()
-    registerContextMenuSelect()
-
-  afterLoadedRoom = ->
-    afterLoaded.apply(@)
-
-    $(@).find('.room[data-order-id]').each (i, el) ->
+  registerContextMenuRoom = ->
+    $('#fitting-room .room[data-order-id]').each (i, el) ->
       $el = $(el)
       $.contextMenu
         selector: ".room[data-order-id='#{$el.data('order-id')}']"
@@ -345,12 +337,9 @@ $ ->
             name: '포장'
             callback: (key, opt) ->
               bestfitPopup(18, key, opt)
-    registerContextMenuSelect()
 
-  afterLoadedRepair = ->
-    afterLoaded.apply(@)
-
-    $(@).find('.repair[data-order-id]').each (i, el) ->
+  registerContextMenuRepair = ->
+    $('#repair .repair[data-order-id]').each (i, el) ->
       $el = $(el)
       $.contextMenu
         selector: ".repair[data-order-id='#{$el.data('order-id')}']"
@@ -365,10 +354,8 @@ $ ->
             callback: (key, opt) ->
               bestfitPopup(18, key, opt)
 
-  afterLoadedBoxing = ->
-    afterLoaded.apply(@)
-
-    $(@).find('.boxing[data-order-id]').each (i, el) ->
+  registerContextMenuBoxing = ->
+    $('#boxing .boxing[data-order-id]').each (i, el) ->
       $el = $(el)
       $.contextMenu
         selector: ".boxing[data-order-id='#{$el.data('order-id')}']"
@@ -382,15 +369,58 @@ $ ->
             name: '수선'
             callback: (key, opt) ->
               bestfitPopup(6, key, opt)
+
+  afterLoaded = ->
+    timeago.apply(@)
+    bestfitToggle.apply(@)
+
+  afterLoadedSelect = ->
+    afterLoaded.apply(@)
+    $(@).find('[data-toggle="tooltip"]').tooltip()
+    registerContextMenuSelect()
+
+  afterLoadedSelect = ->
+    afterLoaded.apply(@)
+    $(@).find('[data-toggle="tooltip"]').tooltip()
+    registerContextMenuSelect()
+
+  afterLoadedRoom = ->
+    afterLoaded.apply(@)
+    registerContextMenuSelect()
+    registerContextMenuRoom()
+
+  afterLoadedRepair = ->
+    afterLoaded.apply(@)
+    registerContextMenuRepair()
+
+  afterLoadedBoxing = ->
+    afterLoaded.apply(@)
+    registerContextMenuBoxing()
+
+  reloadSelect = (from, to) ->
+    if from and from in ROOM_RANGE or to and to in ROOM_RANGE
+      ## $.contextMenu 의 로딩 순서때문에 분기함
+      $('#select').load '/region/selects', ->
+        afterLoaded.apply(@)
+        $(@).find('[data-toggle="tooltip"]').tooltip()
+        reloadRoom()
+    else
+      $('#select').load '/region/selects', afterLoadedSelect
+
+  reloadRoom   = ->
+    $('#fitting-room').load '/region/rooms', afterLoadedRoom
+
+  reloadRepair = ->
+    $('#repair').load '/region/status/repair', afterLoadedRepair
+
+  reloadBoxing = ->
+    $('#boxing').load '/region/status/boxing', afterLoadedBoxing
   ##---------------------
   ## main
   ##---------------------
-  reloadSelect = -> $('#select').load '/region/selects', afterLoadedSelect
-  reloadRoom   = -> $('#fitting-room').load '/region/rooms', afterLoadedRoom
-  reloadRepair = -> $('#repair').load '/region/status/repair', afterLoadedRepair
-  reloadBoxing = -> $('#boxing').load '/region/status/boxing', afterLoadedBoxing
-
-  reloadSelect()
-  reloadRoom()
+  $('#select').load '/region/selects', ->
+    afterLoaded.apply(@)
+    $(@).find('[data-toggle="tooltip"]').tooltip()
+    reloadRoom()
   reloadRepair()
   reloadBoxing()
