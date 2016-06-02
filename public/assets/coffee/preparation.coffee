@@ -1,5 +1,29 @@
 "use strict"
 $ ->
+  ##---------------------
+  ## Constanst & variables
+  ##---------------------
+  recentClick = null
+  PANTS_MIN = 80
+  PANTS_MAX = 120
+
+  SELECT_RANGE = [17]
+  ROOM_RANGE   = [20..30]
+  REPAIR_RANGE = [6]
+  BOXING_RANGE = [18]
+
+  DEFAULT_ITEMS =
+    repair:
+      name: '수선'
+      callback: (key, opt) ->
+        bestfitPopup(6, key, opt)
+    boxing:
+      name: '포장'
+      callback: (key, opt) ->
+        bestfitPopup(18, key, opt)
+  ##---------------------
+  ## Socket handling
+  ##---------------------
   hostname = location.hostname
   port = location.port
   protocol = location.protocol
@@ -12,18 +36,21 @@ $ ->
     sock.send '/subscribe active'
     sock.send '/subscribe brain'
   sock.onmessage = (e) ->
-    data = JSON.parse(e.data)
+    data   = JSON.parse(e.data)
     sender = data.sender
-    range = [20..30]
-    range.unshift 17
-    range.unshift 18
-    range.unshift 6
+
+    ## order status
+    from   = parseInt(data.from)
+    to     = parseInt(data.to)
 
     switch sender
       when 'order'
-        if parseInt(data.from) in range or parseInt(data.to) in range
-          return location.reload()
+        if from in SELECT_RANGE or to in SELECT_RANGE then reloadSelect(from, to)
+        if from in ROOM_RANGE   or to in ROOM_RANGE   then reloadRoom(from, to)
+        if from in REPAIR_RANGE or to in REPAIR_RANGE then reloadRepair()
+        if from in BOXING_RANGE or to in BOXING_RANGE then reloadBoxing()
 
+        ## Refresh waiting list
         $.ajax "/repair",
           type: 'GET'
           dataType: 'json'
@@ -49,12 +76,11 @@ $ ->
             console.log textStatus
           complete: (jqXHR, textStatus) ->
       when 'user'
-        location.reload()
+        reloadSelect()
       when 'active.room', 'active.select'
         $("[data-order-id=#{data.order_id}]").toggleClass('active')
       when 'active.refresh'
-        room_no = data.order_id
-        $("#room-#{room_no} .p-refresh").remove()
+        $("#room-#{data.order_id} .p-refresh").remove()
       when 'brain'
         $('#knock audio').trigger('play')
         $('#repair .repair-done').removeClass('text-success')
@@ -64,13 +90,14 @@ $ ->
       else ''
   sock.onerror = (e) ->
     location.reload()
-
-
-  $('#fitting-room').on 'click', '.room:not(.empty)', (e) ->
+  ##---------------------
+  ## Bindings
+  ##---------------------
+  $('#fitting-room').on 'click', '.room', (e) ->
     e.preventDefault()
     $this = $(@)
-    order_id = $this.parent().data('order-id')
-    if $this.parent().hasClass('active')
+    order_id = $this.data('order-id')
+    if $this.hasClass('active')
       path = "/active/#{order_id}?key=room"
       method = 'DELETE'
     else
@@ -103,8 +130,9 @@ $ ->
         console.log textStatus
       complete: (jqXHR, textStatus) ->
 
-  $('#fitting-room').on 'click', '.room.empty', (e) ->
+  $('#fitting-room').on 'click', '.room .empty', (e) ->
     e.preventDefault()
+    e.stopPropagation()
     $this = $(@)
     $p = $this.find('.p-refresh')
     return unless $p.length
@@ -113,111 +141,20 @@ $ ->
     $.ajax "/active/#{room_no}?key=refresh",
       type: 'DELETE'
       success: (data, textStatus, jqXHR) ->
+        reloadSelect()
       error: (jqXHR, textStatus, errorThrown) ->
         console.log textStatus
       complete: (jqXHR, textStatus) ->
 
-  items =
-    repair:
-      name: '수선'
-      callback: (key, opt) ->
-        bestfitPopup(6, key, opt)
-    boxing:
-      name: '포장'
-      callback: (key, opt) ->
-        bestfitPopup(18, key, opt)
-
-  reservedRoom = []
-
-  $('.select[data-order-id]').each (i, el) ->
-    $el = $(el)
-    $prev = $el.find('.previous strong')
-
-    return true unless $prev.length
-
-    n = parseInt($prev.text().split('/')[0].substring(1))
-    reservedRoom.push(n)
-    menu = _.clone(items)
-    menu[n] =
-      name: "탈의##{n}"
-      callback: (key, opt) ->
-        order_id = opt.$trigger.data('order-id')
-        updateOrder(order_id, {status_id: n + 19})
-    $.contextMenu
-      selector: ".select[data-order-id='#{$el.data('order-id')}']"
-      items: menu
-
-  $('[data-order-id]:not(.select)').each (i, el) ->
-    $el = $(el)
-
-    if $el.hasClass('repair')
-      ## 수선목록의 contextMenu
-      $.contextMenu
-        selector: "[data-order-id='#{$el.data('order-id')}']"
-        items:
-          a:
-            name: '의류준비'
-            callback: (key, opt) ->
-              order_id = opt.$trigger.data('order-id')
-              updateOrder(order_id, {status_id: 17})
-          b:
-            name: '포장'
-            callback: (key, opt) ->
-              bestfitPopup(18, key, opt)
-    else if $el.hasClass('boxing')
-      ## 포장목록의 contextMenu
-      $.contextMenu
-        selector: "[data-order-id='#{$el.data('order-id')}']"
-        items:
-          a:
-            name: '의류준비'
-            callback: (key, opt) ->
-              order_id = opt.$trigger.data('order-id')
-              updateOrder(order_id, {status_id: 17})
-          b:
-            name: '수선'
-            callback: (key, opt) ->
-              bestfitPopup(6, key, opt)
-    else
-      ## 탈의목록의 contextMenu
-      n = parseInt($el.find('h3').text().trim().substring(1))
-      reservedRoom.push(n)
-
-      $.contextMenu
-        selector: "[data-order-id='#{$el.data('order-id')}']"
-        items:
-          a:
-            name: '의류준비'
-            callback: (key, opt) ->
-              order_id = opt.$trigger.data('order-id')
-              updateOrder(order_id, {status_id: 17})
-          b:
-            name: '수선'
-            callback: (key, opt) ->
-              bestfitPopup(6, key, opt)
-          c:
-            name: '포장'
-            callback: (key, opt) ->
-              bestfitPopup(18, key, opt)
-
-  available = _.difference([1..11], reservedRoom)
-  _.each available, (el, i) ->
-    items[el] =
-      name: "탈의##{el}"
-      callback: (key, opt) ->
-        order_id = opt.$trigger.data('order-id')
-        updateOrder(order_id, {status_id: parseInt(el) + 19})
-
-  # 앞서 한바퀴 돌리면서 reservedRoom 을 채우고 이를 다시 돌면서 활용
-  $('.select[data-order-id]').each (i, el) ->
-    $el = $(el)
-    $prev = $el.find('.previous strong')
-
-    return true if $prev.length
-
-    $.contextMenu
-      selector: ".select[data-order-id='#{$el.data('order-id')}']"
-      items: items
+  $('#repair').on 'click', '.btn-success', (e) ->
+    e.preventDefault()
+    url = $(@).attr('href')
+    $.ajax url,
+      type: 'PUT'
+      success: (data, textStatus, jqXHR) ->
+      error: (jqXHR, textStatus, errorThrown) ->
+        location.reload true
+      complete: (jqXHR, textStatus) ->
 
   $('#bestfit-alert').on 'click', '.btn-success', (e) ->
     $('#bestfit-alert').data('bestfit', 1).addClass('hidden')
@@ -242,54 +179,17 @@ $ ->
     return unless bestfit?
     updateOrder(order_id, {status_id: status_id, bestfit: bestfit})
 
-  updateOrder = (order_id, params, cb) ->
-    $.ajax "/api/orders/#{order_id}.json",
-      type: 'PUT'
-      data: params
-      success: (data, textStatus, jqXHR) ->
-      error: (jqXHR, textStatus, errorThrown) ->
-        location.reload true
-      complete: (jqXHR, textStatus) ->
-        do cb if cb
-
-  $('#repair .btn-success').click (e) ->
+  $('#bestfit-alert').on 'click', 'span.pants', (e) ->
     e.preventDefault()
-    url = $(@).attr('href')
-    $.ajax url,
-      type: 'PUT'
-      success: (data, textStatus, jqXHR) ->
-      error: (jqXHR, textStatus, errorThrown) ->
-        location.reload true
-      complete: (jqXHR, textStatus) ->
-
-  $('.name').click (e) ->
-    e.stopPropagation()
     $this = $(@)
-    order_id = $this.closest('[data-order-id]').data('order-id')
-    bestfit = if $this.hasClass('bestfit') then 0 else 1
-    updateOrder(order_id, { bestfit: bestfit })
-    $this.toggleClass('bestfit')
+    size = $this.text()
+    order_id = $('#bestfit-alert').data('order-id')
+    $this.parent().parent().find('.pants')
+      .removeClass('label-success').addClass('label-info')
+    $this.removeClass('label-info').addClass('label-success')
+    updateOrder order_id, { pants: size }
 
-  bestfitPopup = (status_id, key, opt) ->
-    order_id = opt.$trigger.data('order-id')
-    $bestfit = $('#bestfit-alert')
-    $bestfit.data('order-id', order_id)
-    $bestfit.data('status-id', status_id)
-    $bestfit.removeClass('hidden')
-
-    $bestfit.find('.btn').removeClass('bestfit')
-    name = opt.$trigger.find('.name').text()
-    $bestfit.find('h4 small').text(name)
-    isBestfit = opt.$trigger.has('.bestfit').length
-    if isBestfit
-      $bestfit.find('.btn-success').addClass('bestfit')
-    else
-      $bestfit.find('.btn-warning').addClass('bestfit')
-
-  PANTS_MIN = 80
-  PANTS_MAX = 120
-  recentClick = null
-  $('a.pants').on 'click', (e) ->
+  $('#repair,#boxing').on 'click', 'a.pants', (e) ->
     e.preventDefault()
     $this = $(@)
     $samp = $this.parent().find('samp')
@@ -313,17 +213,26 @@ $ ->
         , 1000
     , 2000
 
-  $('#bestfit-alert').on 'click', 'span.pants', (e) ->
-    e.preventDefault()
-    $this = $(@)
-    size = $this.text()
-    order_id = $('#bestfit-alert').data('order-id')
-    $this.parent().parent().find('.pants')
-      .removeClass('label-success').addClass('label-info')
-    $this.removeClass('label-info').addClass('label-success')
-    updateOrder order_id, { pants: size }
+  $('#select').on 'click', '.js-category', (e) ->
+    e.stopPropagation()
 
-  $('[data-toggle="tooltip"]').tooltip()
+    $this    = $(@)
+    category = $this.text().trim()
+    user_id  = $this.data('user-id')
+    updateUser user_id, { category: category }, ->
+      $this.toggleClass('text-info text-muted')
+  ##---------------------
+  ## functions
+  ##---------------------
+  updateOrder = (order_id, params, cb) ->
+    $.ajax "/api/orders/#{order_id}.json",
+      type: 'PUT'
+      data: params
+      success: (data, textStatus, jqXHR) ->
+      error: (jqXHR, textStatus, errorThrown) ->
+        location.reload true
+      complete: (jqXHR, textStatus) ->
+        do cb if cb
 
   updateUser = (user_id, params, cb) ->
     $.ajax "/api/users/#{user_id}.json",
@@ -335,20 +244,186 @@ $ ->
       complete: (jqXHR, textStatus) ->
         do cb if cb
 
-  $('#select').on 'click', '.js-category', (e) ->
-    e.stopPropagation()
+  bestfitPopup = (status_id, key, opt) ->
+    order_id = opt.$trigger.data('order-id')
+    $bestfit = $('#bestfit-alert')
+    $bestfit.data('order-id', order_id)
+    $bestfit.data('status-id', status_id)
+    $bestfit.removeClass('hidden')
 
-    $this    = $(@)
-    category = $this.text().trim()
-    user_id  = $this.data('user-id')
-    updateUser user_id, { category: category }, ->
-      $this.toggleClass('text-info text-muted')
+    $bestfit.find('.btn').removeClass('bestfit')
+    name = opt.$trigger.find('.name').text()
+    $bestfit.find('h4 small').text(name)
+    isBestfit = opt.$trigger.has('.bestfit').length
+    if isBestfit
+      $bestfit.find('.btn-success').addClass('bestfit')
+    else
+      $bestfit.find('.btn-warning').addClass('bestfit')
 
+  timeago = ->
+    $(@).find("abbr.timeago").timeago()
+
+  bestfitToggle = ->
+    $(@).find('.name').click (e) ->
+      e.stopPropagation()
+      $this = $(@)
+      order_id = $this.closest('[data-order-id]').data('order-id')
+      bestfit = if $this.hasClass('bestfit') then 0 else 1
+      updateOrder(order_id, { bestfit: bestfit })
+      $this.toggleClass('bestfit')
+
+  selectContextMenuItems = (rooms) ->
+    $('#fitting-room .room[data-order-id]').each (i, el) ->
+      n = parseInt($(el).find('h3').text().trim().substring(1))
+      rooms.push(n)
+
+    menu      = _.clone(DEFAULT_ITEMS)
+    available = _.difference([1..11], rooms)
+    _.each available, (el, i) ->
+      menu[el] =
+        name: "탈의##{el}"
+        callback: (key, opt) ->
+          order_id = opt.$trigger.data('order-id')
+          updateOrder(order_id, {status_id: parseInt(el) + 19})
+
+    return menu
+
+  registerContextMenuSelect = ->
+    reservedRoom = []
+    $('#select .select[data-order-id]').each (i, el) ->
+      $el   = $(el)
+      $prev = $el.find('.previous strong')
+      return true unless $prev.length
+
+      n = parseInt($prev.text().split('/')[0].substring(1))
+      reservedRoom.push(n)
+
+      menu = _.clone(DEFAULT_ITEMS)
+      menu[n] =
+        name: "탈의##{n}"
+        callback: (key, opt) ->
+          order_id = opt.$trigger.data('order-id')
+          updateOrder(order_id, {status_id: n + 19})
+      $.contextMenu
+        selector: ".select[data-order-id='#{$el.data('order-id')}']"
+        items: menu
+
+    ## 앞서 한바퀴 돌리면서 reservedRoom 을 채우고 이를 다시 돌면서 활용
+    $('#select .select[data-order-id]').each (i, el) ->
+      $el   = $(el)
+      $prev = $el.find('.previous strong')
+      return true if $prev.length
+
+      $.contextMenu
+        selector: ".select[data-order-id='#{$el.data('order-id')}']"
+        items: selectContextMenuItems(reservedRoom)
+
+  registerContextMenuRoom = ->
+    $('#fitting-room .room[data-order-id]').each (i, el) ->
+      $el = $(el)
+      $.contextMenu
+        selector: ".room[data-order-id='#{$el.data('order-id')}']"
+        items:
+          a:
+            name: '의류준비'
+            callback: (key, opt) ->
+              order_id = opt.$trigger.data('order-id')
+              updateOrder(order_id, {status_id: 17})
+          b:
+            name: '수선'
+            callback: (key, opt) ->
+              bestfitPopup(6, key, opt)
+          c:
+            name: '포장'
+            callback: (key, opt) ->
+              bestfitPopup(18, key, opt)
+
+  registerContextMenuRepair = ->
+    $('#repair .repair[data-order-id]').each (i, el) ->
+      $el = $(el)
+      $.contextMenu
+        selector: ".repair[data-order-id='#{$el.data('order-id')}']"
+        items:
+          a:
+            name: '의류준비'
+            callback: (key, opt) ->
+              order_id = opt.$trigger.data('order-id')
+              updateOrder(order_id, {status_id: 17})
+          b:
+            name: '포장'
+            callback: (key, opt) ->
+              bestfitPopup(18, key, opt)
+
+  registerContextMenuBoxing = ->
+    $('#boxing .boxing[data-order-id]').each (i, el) ->
+      $el = $(el)
+      $.contextMenu
+        selector: ".boxing[data-order-id='#{$el.data('order-id')}']"
+        items:
+          a:
+            name: '의류준비'
+            callback: (key, opt) ->
+              order_id = opt.$trigger.data('order-id')
+              updateOrder(order_id, {status_id: 17})
+          b:
+            name: '수선'
+            callback: (key, opt) ->
+              bestfitPopup(6, key, opt)
+
+  afterLoaded = ->
+    timeago.apply(@)
+    bestfitToggle.apply(@)
+
+  afterLoadedSelect = ->
+    afterLoaded.apply(@)
+    $(@).find('[data-toggle="tooltip"]').tooltip()
+    registerContextMenuSelect()
+
+  afterLoadedSelect = ->
+    afterLoaded.apply(@)
+    $(@).find('[data-toggle="tooltip"]').tooltip()
+    registerContextMenuSelect()
+
+  afterLoadedRoom = ->
+    afterLoaded.apply(@)
+    registerContextMenuSelect()
+    registerContextMenuRoom()
+
+  afterLoadedRepair = ->
+    afterLoaded.apply(@)
+    registerContextMenuRepair()
+
+  afterLoadedBoxing = ->
+    afterLoaded.apply(@)
+    registerContextMenuBoxing()
+
+  reloadSelect = (from, to) ->
+    if from and from in ROOM_RANGE or to and to in ROOM_RANGE
+      ## $.contextMenu 의 로딩 순서때문에 분기함
+      $('#select').load '/region/selects', ->
+        afterLoaded.apply(@)
+        $(@).find('[data-toggle="tooltip"]').tooltip()
+        reloadRoom()
+    else
+      $('#select').load '/region/selects', afterLoadedSelect
+
+  reloadRoom = (from, to) ->
+    ## 중복되는 binding 과 ajax request 를 하지 않는다
+    ## reloadSelect 에서 from 이나 to 가 탈의이면 이미 reloadRoom 을 처리한다
+    return if from and from in SELECT_RANGE or to and to in SELECT_RANGE
+    $('#fitting-room').load '/region/rooms', afterLoadedRoom
+
+  reloadRepair = ->
+    $('#repair').load '/region/status/repair', afterLoadedRepair
+
+  reloadBoxing = ->
+    $('#boxing').load '/region/status/boxing', afterLoadedBoxing
+  ##---------------------
+  ## main
+  ##---------------------
   $('#select').load '/region/selects', ->
-    $(@).find("abbr.timeago").timeago()
-
-  $('#fitting-room').load '/region/rooms', ->
-    $(@).find("abbr.timeago").timeago()
-
-  $('#repair').load '/region/status/repair'
-  $('#boxing').load '/region/status/boxing'
+    afterLoaded.apply(@)
+    $(@).find('[data-toggle="tooltip"]').tooltip()
+    reloadRoom()
+  reloadRepair()
+  reloadBoxing()
