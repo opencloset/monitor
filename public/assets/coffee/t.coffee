@@ -46,7 +46,7 @@ $ ->
     switch sender
       when 'order'
         if from in SELECT_RANGE or to in SELECT_RANGE then reloadSelect(from, to)
-        if from in ROOM_RANGE   or to in ROOM_RANGE   then reloadRoom()
+        if from in ROOM_RANGE   or to in ROOM_RANGE   then reloadRoom(from, to)
         if from in REPAIR_RANGE or to in REPAIR_RANGE then reloadRepair()
         if from in BOXING_RANGE or to in BOXING_RANGE then reloadBoxing()
 
@@ -407,7 +407,10 @@ $ ->
     else
       $('#select').load '/region/selects', afterLoadedSelect
 
-  reloadRoom   = ->
+  reloadRoom = (from, to) ->
+    ## 중복되는 binding 과 ajax request 를 하지 않는다
+    ## reloadSelect 에서 from 이나 to 가 탈의이면 이미 reloadRoom 을 처리한다
+    return if from and from in SELECT_RANGE or to and to in SELECT_RANGE
     $('#fitting-room').load '/region/rooms', afterLoadedRoom
 
   reloadRepair = ->
