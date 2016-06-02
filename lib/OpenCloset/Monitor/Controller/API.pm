@@ -9,7 +9,7 @@ use Mojo::JSON qw/decode_json j/;
 use Path::Tiny;
 
 use OpenCloset::Constants::Category
-    qw/%REVERSE_MAP $LABEL_JACKET $LABEL_PANTS $LABEL_SHIRT $LABEL_TIE $LABEL_SHOES $LABEL_SKIRT $LABEL_BLOUSE/;
+    qw/%REVERSE_MAP $LABEL_JACKET $LABEL_PANTS $LABEL_SHIRT $LABEL_TIE $LABEL_SHOES $LABEL_SKIRT $LABEL_BLOUSE $LABEL_BELT/;
 
 has DB => sub { shift->app->DB };
 
@@ -113,8 +113,8 @@ sub update_user {
 
     my $v = $self->validation;
     $v->optional('category')->in(
-        $LABEL_JACKET, $LABEL_PANTS, $LABEL_SHIRT, $LABEL_TIE,
-        $LABEL_SHOES,  $LABEL_SKIRT, $LABEL_BLOUSE
+        $LABEL_JACKET, $LABEL_PANTS, $LABEL_SHIRT,  $LABEL_TIE,
+        $LABEL_SHOES,  $LABEL_SKIRT, $LABEL_BLOUSE, $LABEL_BELT,
     );
 
     if ( $v->has_error ) {
