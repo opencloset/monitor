@@ -90,11 +90,8 @@ sub error {
 
     $self->respond_to(
         json => { status => $status, json => { error => $error || q{} } },
-        html => {
-            status => $status,
-            error => $error->{str} || q{},
-            template => $template
-        },
+        html =>
+            { status => $status, error => $error->{str} || q{}, template => $template },
     );
 
     return;
@@ -138,16 +135,13 @@ sub previous_order {
     my ( $self, $room_no, @status_in ) = @_;
     return unless $room_no;
 
-    my $rs
-        = $self->app->SQLite->resultset('History')
-        ->search( { room_no => $room_no },
-        { rows => 1, order_by => { -desc => 'id' } } );
+    my $rs = $self->app->SQLite->resultset('History')
+        ->search( { room_no => $room_no }, { rows => 1, order_by => { -desc => 'id' } } );
 
     my $history = $rs->next;
     return unless $history;
 
-    my $order = $self->app->DB->resultset('Order')
-        ->find( { id => $history->order_id } );
+    my $order = $self->app->DB->resultset('Order')->find( { id => $history->order_id } );
 
     if ( $order && @status_in ) {
         my $bool = grep { $order->status_id == $_ } @status_in;
