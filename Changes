@@ -1,3 +1,5 @@
+  - preparation 리팩토링 (#94)
+
 v0.7.0    Fri, 20 May 2016 18:53:16 +0900
   - rename OpenCloset::Status OpenCloset::Monitor::Status
   - 토글 가능한 대여의류품목 (#109)
