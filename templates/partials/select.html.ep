@@ -197,7 +197,7 @@
 <div class="row">
   <div class="pre_order">
     <ul class="list-inline">
-      % while (my $order = $recents->next) {
+      % for my $order (@$recents) {
         %= include 'partials/recent-clothes', order => $order;
       % }
     </ul>

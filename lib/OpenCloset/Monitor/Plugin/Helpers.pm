@@ -7,6 +7,7 @@ use DateTime;
 use Mojo::Redis2;
 
 use OpenCloset::Brain;
+use OpenCloset::Constants::Status qw/$RENTABLE/;
 
 =pod
 
@@ -181,7 +182,29 @@ sub recent_orders {
     );
 
     $limit = 5 unless $limit;
-    return $rs->slice( 0, $limit - 1 );
+    $rs->slice( 0, $limit - 1 );
+
+    my @orders;
+    while ( my $order = $rs->next ) {
+        my @details = $order->order_details;
+        next unless @details;
+
+        my $rentable;
+        for my $detail (@details) {
+            my $code = $detail->clothes_code;
+            next unless $code;
+            next unless $code =~ /^0?[JPK]/;
+
+            my $clothes = $detail->clothes;
+            next unless $clothes->status_id == $RENTABLE;
+
+            $rentable++;
+        }
+
+        push @orders, $order if $rentable == 2;
+    }
+
+    return \@orders;
 }
 
 =head2 target_date
