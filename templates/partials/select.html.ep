@@ -59,7 +59,7 @@
     <ul>
       <li>
         % if ($gender eq 'male') {
-        <span class="label label-success" title="허벅지">
+        <span class="label label-default" title="허벅지">
           허벅지
           %= $user_info->thigh || 0
         </span>
@@ -71,7 +71,7 @@
         % }
       </li>
       <li>
-        <span class="label label-default" title="허리">
+        <span class="label <%= $gender eq 'male' ? 'label-success' : 'label-default' %>" title="허리">
           허리
           %= $user_info->waist || 0
         </span>
