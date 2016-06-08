@@ -1,5 +1,6 @@
 requires 'DateTime';
 requires 'DateTime::Format::ISO8601';
+requires 'Directory::Queue';
 requires 'Encode';
 requires 'HTTP::CookieJar';
 requires 'HTTP::Tiny';
