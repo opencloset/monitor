@@ -1,6 +1,8 @@
 package OpenCloset::Monitor::Controller::Region;
 use Mojo::Base 'Mojolicious::Controller';
 
+use Directory::Queue;
+
 use OpenCloset::Monitor::Status
     qw/$STATUS_SELECT $STATUS_REPAIR $STATUS_FITTING_ROOM1 $STATUS_BOXING/;
 
@@ -22,11 +24,32 @@ sub selects {
         { order_by => { -asc => 'update_date' }, join => 'booking' } )
         ->search_literal( 'HOUR(`booking`.`date`) != ?', 22 );
 
+    my $key   = 'suggestion';
     my $brain = $self->app->brain;
+    my $dirq  = Directory::Queue->new( path => "/tmp/opencloset" );
+
+    my %suggestion;
+    while ( my $order = $orders->next ) {
+        my $user_id    = $order->user_id;
+        my $suggestion = $brain->{data}{$key}{$user_id};
+        unless ($suggestion) {
+            $dirq->add($user_id);
+            next;
+        }
+
+        $suggestion{$user_id} = $suggestion;
+    }
+
+    $orders->reset;
+
     my @select_active = keys %{ $brain->{data}{select} ||= {} };
     $brain->{data}{select} = {} unless $orders->count;
 
-    $self->render( orders => $orders, select_active => [@select_active] );
+    $self->render(
+        orders        => $orders,
+        select_active => [@select_active],
+        suggestion    => \%suggestion
+    );
 }
 
 =head2 rooms
