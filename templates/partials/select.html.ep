@@ -190,6 +190,13 @@
     <p class="comment">
       %= $user_info->comment || ''
     </p>
+    % if (my $s = $suggestion->{$user->id}) {
+    <p>
+      <small>
+        %= guess2text($s->{guess})
+      </small>
+    </p>
+    % }
   </div>
 </div>
 
@@ -201,7 +208,7 @@
         %= include 'partials/recent-clothes', order => $order;
       % }
       % if (my $s = $suggestion->{$user->id}) {
-        %= include 'partials/suggestion-clothes', suggestion => $s;
+        %= include 'partials/suggestion-clothes', suggestion => $s->{result};
       % }
     </ul>
   </div>

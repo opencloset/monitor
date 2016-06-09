@@ -43,8 +43,7 @@ while (1) {
         $brain->refresh;
         $brain->{data}{clothes}{$user_id} = j( $res->{content} );
         $brain->save;
-        $redis->publish(
-            "$redis_channel:user" => decode_utf8( j( { sender => 'user' } ) ) );
+        $redis->publish( "$redis_channel:user" => j( { sender => 'user' } ) );
         $dirq->remove($name);
     }
 
