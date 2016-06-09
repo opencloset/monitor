@@ -1,0 +1,31 @@
+% my $cnt = 0;
+% for my $s (@$suggestion) {
+  % last if ++$cnt >= 5;
+  % my ($top, $bottom, $count) = @$s;
+  % $top    =~ s/^0//;
+  % $bottom =~ s/^0//;
+  % my $rs_top    = get_clothes($top);
+  % my $rs_bottom = get_clothes($bottom);
+  % return unless $rs_top and $rs_bottom;
+  % my $tooltip_top    = join(' ', $top, $rs_top->color || '', $rs_top->comment || '');
+  % my $tooltip_bottom = join(' ', $bottom, $rs_bottom->color || '', $rs_bottom->comment || '');
+  <li>
+    <ul>
+      <span class="label label-info"><%= $count %></span>
+      <li>
+        <span class="order-status label label-success" data-toggle="tooltip" data-placement="right" title="<%= $tooltip_top %>">
+          자켓
+          %= code2decimal($top)
+          %= $rs_top->topbelly || ''
+        </span>
+      </li>
+      <li>
+        <span class="order-status label label-success" data-toggle="tooltip" data-placement="right" title="<%= $tooltip_bottom %>">
+          팬츠
+          %= code2decimal($bottom)
+          %= $rs_bottom->waist || ''
+        </span>
+      </li>
+    </ul>
+  </li>
+% }
