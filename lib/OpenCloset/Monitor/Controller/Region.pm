@@ -24,14 +24,13 @@ sub selects {
         { order_by => { -asc => 'update_date' }, join => 'booking' } )
         ->search_literal( 'HOUR(`booking`.`date`) != ?', 22 );
 
-    my $key   = 'suggestion';
     my $brain = $self->app->brain;
-    my $dirq  = Directory::Queue->new( path => "/tmp/opencloset" );
+    my $dirq = Directory::Queue->new( path => $self->config->{queue}{path} );
 
     my %suggestion;
     while ( my $order = $orders->next ) {
         my $user_id    = $order->user_id;
-        my $suggestion = $brain->{data}{$key}{$user_id};
+        my $suggestion = $brain->{data}{clothes}{$user_id};
         unless ($suggestion) {
             $dirq->add($user_id);
             next;
@@ -43,7 +42,10 @@ sub selects {
     $orders->reset;
 
     my @select_active = keys %{ $brain->{data}{select} ||= {} };
-    $brain->{data}{select} = {} unless $orders->count;
+    unless ( $orders->count ) {
+        $brain->{data}{select}  = {};
+        $brain->{data}{clothes} = {};
+    }
 
     $self->render(
         orders        => $orders,
