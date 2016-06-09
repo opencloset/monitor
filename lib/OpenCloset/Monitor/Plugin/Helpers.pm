@@ -7,6 +7,7 @@ use DateTime;
 use Mojo::Redis2;
 
 use OpenCloset::Brain;
+use OpenCloset::Constants::Measurement;
 use OpenCloset::Constants::Status qw/$RENTABLE/;
 
 =pod
@@ -40,6 +41,7 @@ sub register {
     $app->helper( recent_orders  => \&recent_orders );
     $app->helper( target_date    => \&target_date );
     $app->helper( get_clothes    => \&get_clothes );
+    $app->helper( guess2text     => \&guess2text );
 }
 
 sub order_flatten {
@@ -241,6 +243,30 @@ sub get_clothes {
 
     $code = '0' . $code if length($code) == 4;
     return $self->app->DB->resultset('Clothes')->find( { code => $code } );
+}
+
+=head2 guess2text
+
+    %= guess2text($guess);
+    # 키: 180cm, 몸무게: 70kg...
+
+=cut
+
+sub guess2text {
+    my ( $self, $guess ) = @_;
+    return '' unless $guess;
+
+    my @sizes;
+    for my $part (@OpenCloset::Constants::Measurement::PRIMARY) {
+        my $size = int( $guess->{$part} || 0 );
+        push @sizes,
+            sprintf( '%s: %s%s',
+            $OpenCloset::Constants::Measurement::LABEL_MAP{$part},
+            $size, $OpenCloset::Constants::Measurement::UNIT_MAP{$part} )
+            if $size;
+    }
+
+    return join( "\n", @sizes );
 }
 
 1;
