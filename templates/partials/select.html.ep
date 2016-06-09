@@ -59,9 +59,9 @@
     <ul>
       <li>
         % if ($gender eq 'male') {
-        <span class="label label-default" title="허벅지">
-          허벅지
-          %= $user_info->thigh || 0
+        <span class="label <%= $gender eq 'male' ? 'label-success' : 'label-default' %>" title="허리">
+          허리
+          %= $user_info->waist || 0
         </span>
         % } else {
         <span class="label label-success" title="엉덩이">
@@ -70,25 +70,33 @@
         </span>
         % }
       </li>
+      % if ($gender eq 'male') {
       <li>
-        <span class="label <%= $gender eq 'male' ? 'label-success' : 'label-default' %>" title="허리">
+        <span class="label label-default" title="허벅지">
+          허벅지
+          %= $user_info->thigh || 0
+        </span>
+      </li>
+      <li>
+        <span class="label label-default" title="다리">
+          다리
+          %= $user_info->leg || 0
+        </span>
+      </li>
+      % } else {
+      <li>
+        <span class="label label-default" title="허리">
           허리
           %= $user_info->waist || 0
         </span>
       </li>
       <li>
-        % if ($gender eq 'male') {
-        <span class="label label-default" title="다리">
-          다리
-          %= $user_info->leg || 0
-        </span>
-        % } else {
         <span class="label label-default" title="무릎">
           무릎
           %= $user_info->knee || 0
         </span>
-        % }
       </li>
+      % }
     </ul>
 
     <ul>
