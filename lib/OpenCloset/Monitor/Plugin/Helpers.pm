@@ -189,7 +189,7 @@ sub recent_orders {
         my @details = $order->order_details;
         next unless @details;
 
-        my $rentable;
+        my $rentable = 0;
         for my $detail (@details) {
             my $code = $detail->clothes_code;
             next unless $code;
