@@ -1,5 +1,4 @@
-% use OpenCloset::Constants::Category qw/$JACKET $PANTS $SKIRT/;
-% my %LABEL_MAP = ('대여가능' => 'label-success', '대여중' => 'label-danger');
+% use OpenCloset::Constants::Category qw/$JACKET $PANTS $SKIRT $LABEL_JACKET %LABEL_MAP/;
 % my $bestfit = $order->bestfit;
 % my @details = $order->order_details(undef, { order_by => 'clothes_code' });
 
@@ -10,10 +9,12 @@
     % for my $detail (@details) {
       % my ($donation, $size, $color) = (undef, '', '');
       % my $name     = $detail->name;
+      % $name = substr $name, 0, 4;
       % my $clothes  = $detail->clothes;
       % next unless $clothes;
       % my $category = $clothes->category;
       % next unless "$JACKET $PANTS $SKIRT" =~ m/\b$category\b/;
+      % my $code     = $clothes->code;
       % my $comment  = $clothes->comment || '';
       % $donation    = $clothes->donation;
       % $color       = $clothes->color;
@@ -21,9 +22,11 @@
       % $size        = $clothes->waist    if $category eq $PANTS;
       % $size        = $clothes->hip      if $category eq $SKIRT;
       <li>
-        % my $tooltip = join(' ', $donation ? $donation->user->name : '', $color, '대여가능', $comment);
+        % my $decimal_code = code2decimal($code);
+        % my $tooltip = join(' ', $name, $donation ? $donation->user->name : '', $color, $comment);
         <span class="order-status label label-success" data-toggle="tooltip" data-placement="right" title="<%= $tooltip %>">
-          %= $name
+          %= $LABEL_MAP{$category}
+          %= $decimal_code
           %= $size
         </span>
       </li>
