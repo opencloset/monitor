@@ -23,9 +23,9 @@
       % $size        = $clothes->hip      if $category eq $SKIRT;
       <li>
         % my $decimal_code = code2decimal($code);
-        % my $tooltip = join(' ', $name, $donation ? $donation->user->name : '', $color, $comment);
+        % my $tooltip = join(' ', $decimal_code, $donation ? $donation->user->name : '', $color, $comment);
         <span class="order-status label <%= $color %>" data-toggle="tooltip" data-placement="right" title="<%= $tooltip %>">
-          %= $decimal_code
+          %= $name
           %= $size
         </span>
       </li>

@@ -9,20 +9,20 @@
   % return unless $rs_top and $rs_bottom;
   % my $color_top    = $rs_top->color || '';
   % my $color_bottom = $rs_bottom->color || '';
-  % my $tooltip_top    = join(' ', $top, $color_top, $rs_top->comment || '');
-  % my $tooltip_bottom = join(' ', $bottom, $color_bottom, $rs_bottom->comment || '');
+  % my $tooltip_top    = join(' ', code2decimal($top), $color_top, $rs_top->comment || '');
+  % my $tooltip_bottom = join(' ', code2decimal($bottom), $color_bottom, $rs_bottom->comment || '');
   <li>
     <ul>
       <span class="label label-info"><%= $count %></span>
       <li>
         <span class="order-status label <%= $color_top %>" data-toggle="tooltip" data-placement="right" title="<%= $tooltip_top %>">
-          %= code2decimal($top)
+          %= $top
           %= $rs_top->topbelly || ''
         </span>
       </li>
       <li>
         <span class="order-status label <%= $color_bottom %>" data-toggle="tooltip" data-placement="right" title="<%= $tooltip_bottom %>">
-          %= code2decimal($bottom)
+          %= $bottom
           %= $rs_bottom->waist || ''
         </span>
       </li>
