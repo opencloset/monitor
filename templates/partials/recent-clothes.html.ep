@@ -1,4 +1,5 @@
 % use OpenCloset::Constants::Category qw/$JACKET $PANTS $SKIRT $LABEL_JACKET %LABEL_MAP/;
+% use OpenCloset::Constants::Status qw/$RENTABLE/;
 % my $bestfit = $order->bestfit;
 % my @details = $order->order_details(undef, { order_by => 'clothes_code' });
 
@@ -14,17 +15,18 @@
       % next unless $clothes;
       % my $category = $clothes->category;
       % next unless "$JACKET $PANTS $SKIRT" =~ m/\b$category\b/;
-      % my $code     = $clothes->code;
-      % my $comment  = $clothes->comment || '';
-      % $donation    = $clothes->donation;
-      % $color       = $clothes->color || '';
-      % $size        = $clothes->topbelly if $category eq $JACKET;
-      % $size        = $clothes->waist    if $category eq $PANTS;
-      % $size        = $clothes->hip      if $category eq $SKIRT;
+      % my $code      = $clothes->code;
+      % my $status_id = $clothes->status_id;
+      % my $comment   = $clothes->comment || '';
+      % $donation     = $clothes->donation;
+      % $color        = $clothes->color || '';
+      % $size         = $clothes->topbelly if $category eq $JACKET;
+      % $size         = $clothes->waist    if $category eq $PANTS;
+      % $size         = $clothes->hip      if $category eq $SKIRT;
       <li>
         % my $decimal_code = code2decimal($code);
         % my $tooltip = join(' ', $decimal_code, $donation ? $donation->user->name : '', $color, $comment);
-        <span class="order-status label <%= $color %>" data-toggle="tooltip" data-placement="right" title="<%= $tooltip %>">
+        <span class="order-status label <%= $status_id != $RENTABLE ? 'label-danger' : $color %>" data-toggle="tooltip" data-placement="right" title="<%= $tooltip %>">
           %= $name
           %= $size
         </span>
