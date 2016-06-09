@@ -39,6 +39,7 @@ sub register {
     $app->helper( history        => \&history );
     $app->helper( recent_orders  => \&recent_orders );
     $app->helper( target_date    => \&target_date );
+    $app->helper( get_clothes    => \&get_clothes );
 }
 
 sub order_flatten {
@@ -226,6 +227,20 @@ sub target_date {
     }
 
     return $target_date;
+}
+
+=head2 get_clothes
+
+    my $clothes = $self->get_clothes('J001');
+
+=cut
+
+sub get_clothes {
+    my ( $self, $code ) = @_;
+    return unless $code;
+
+    $code = '0' . $code if length($code) == 4;
+    return $self->app->DB->resultset('Clothes')->find( { code => $code } );
 }
 
 1;
