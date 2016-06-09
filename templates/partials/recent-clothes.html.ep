@@ -17,15 +17,14 @@
       % my $code     = $clothes->code;
       % my $comment  = $clothes->comment || '';
       % $donation    = $clothes->donation;
-      % $color       = $clothes->color;
+      % $color       = $clothes->color || '';
       % $size        = $clothes->topbelly if $category eq $JACKET;
       % $size        = $clothes->waist    if $category eq $PANTS;
       % $size        = $clothes->hip      if $category eq $SKIRT;
       <li>
         % my $decimal_code = code2decimal($code);
         % my $tooltip = join(' ', $name, $donation ? $donation->user->name : '', $color, $comment);
-        <span class="order-status label label-success" data-toggle="tooltip" data-placement="right" title="<%= $tooltip %>">
-          %= $LABEL_MAP{$category}
+        <span class="order-status label <%= $color %>" data-toggle="tooltip" data-placement="right" title="<%= $tooltip %>">
           %= $decimal_code
           %= $size
         </span>
