@@ -201,19 +201,7 @@
         %= include 'partials/recent-clothes', order => $order;
       % }
       % if (my $s = $suggestion->{$user->id}) {
-        % for my $arr (@$s) {
-          % my ($top, $bottom, $count) = @$arr;
-      <li>
-        <ul>
-          <li>
-            <span class="order-status label label-success"><%= $top %></span>
-          </li>
-          <li>
-            <span class="order-status label label-success"><%= $bottom %></span>
-          </li>
-        </ul>
-      </li>
-        % }
+        %= include 'partials/suggestion-clothes', suggestion => $s;
       % }
     </ul>
   </div>
