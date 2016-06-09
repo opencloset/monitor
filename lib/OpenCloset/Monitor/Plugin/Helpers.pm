@@ -192,19 +192,15 @@ sub recent_orders {
         my @details = $order->order_details;
         next unless @details;
 
-        my $rentable = 0;
         for my $detail (@details) {
             my $code = $detail->clothes_code;
             next unless $code;
             next unless $code =~ /^0?[JPK]/;
 
             my $clothes = $detail->clothes;
-            next unless $clothes->status_id == $RENTABLE;
-
-            $rentable++;
         }
 
-        push @orders, $order if $rentable == 2;
+        push @orders, $order;
     }
 
     return \@orders;
