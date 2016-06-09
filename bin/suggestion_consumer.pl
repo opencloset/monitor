@@ -21,33 +21,36 @@ my $redis = Mojo::Redis2->new;
 $redis->on( error => sub { print STDERR "[REDIS ERROR]: $_[1]" } );
 
 my $redis_channel = 'opencloset:monitor';
-my $key           = 'suggestion';
 my $brain         = OpenCloset::Brain->new( redis => $redis );
-my $dirq          = Directory::Queue->new( path => '/tmp/opencloset' );
+my $dirq          = Directory::Queue->new( path => $config->{queue}{path} );
 my $cookie        = _auth_opencloset($config);
 my $http          = HTTP::Tiny->new( timeout => 10, cookie_jar => $cookie );
 
-for ( my $name = $dirq->first(); $name; $name = $dirq->next() ) {
-    next unless $dirq->lock($name);
-    printf( "# reading element %s\n", $name );
-    my $user_id = $dirq->get($name);
-    printf( "# user_id: %s\n", $user_id );
+while (1) {
+    for ( my $name = $dirq->first(); $name; $name = $dirq->next() ) {
+        next unless $dirq->lock($name);
 
-    my $opencloset = $config->{opencloset};
-    my $url        = $opencloset->{uri} . "/api/user/$user_id/search/clothes.json";
-    my $res        = $http->request( 'GET', $url );
-    unless ( $res->{success} ) {
-        print STDERR "Failed to get $url: $res->{reason}\n";
+        my $user_id    = $dirq->get($name);
+        my $opencloset = $config->{opencloset};
+        my $url        = $opencloset->{uri} . "/api/user/$user_id/search/clothes.json";
+        my $res        = $http->request( 'GET', $url );
+        unless ( $res->{success} ) {
+            print STDERR "Failed to get $url: $res->{reason}\n";
+            $dirq->remove($name);
+            next;
+        }
+
+        $brain->refresh;
+        $brain->{data}{clothes}{$user_id} = j( $res->{content} );
+        $brain->save;
+        $redis->publish(
+            "$redis_channel:user" => decode_utf8( j( { sender => 'user' } ) ) );
         $dirq->remove($name);
-        next;
     }
 
-    $brain->refresh;
-    $brain->{data}{$key}{$user_id} = j( $res->{content} );
-    $brain->save;
-    $dirq->remove($name);
-    $redis->publish( "$redis_channel:user" => decode_utf8( j( { sender => 'user' } ) ) );
+    sleep(1);
 }
+
 
 sub _auth_opencloset {
     my $config     = shift;
