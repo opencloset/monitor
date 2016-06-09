@@ -10,11 +10,7 @@ my $SMS_FROM = '07075837521';
 my $db_opts
     = $ENV{OPENCLOSET_DATABASE_OPTS}
     ? Mojo::JSON::decode_json( $ENV{OPENCLOSET_DATABASE_OPTS} )
-    : +{
-    quote_char        => q{`},
-    mysql_enable_utf8 => 1,
-    on_connect_do     => 'SET NAMES utf8',
-    };
+    : +{ quote_char => q{`}, mysql_enable_utf8 => 1, on_connect_do => 'SET NAMES utf8', };
 
 my @WHITELIST = split /,/, $ENV{OPENCLOSET_WHITELIST} || '';
 push @WHITELIST, '127.0.0.1', '192.168.0.0/24';
@@ -29,18 +25,14 @@ $db_opts->{AutoCommit} //= 1;
     #
     # for Mojolicious hypnotoad server
     #
-    hypnotoad => {
-        listen   => ["http://*:$PORT"],
-        workers  => 3,
-        pid_file => 'hypnotoad.pid',
-    },
+    hypnotoad =>
+        { listen => ["http://*:$PORT"], workers => 3, pid_file => 'hypnotoad.pid', },
 
     #
     # 기본 데이터베이스 설정은 mysql 기준입니다.
     #
     database => {
-        dsn => $ENV{OPENCLOSET_DATABASE_DSN}
-            || "dbi:mysql:opencloset:127.0.0.1",
+        dsn  => $ENV{OPENCLOSET_DATABASE_DSN}  || "dbi:mysql:opencloset:127.0.0.1",
         name => $ENV{OPENCLOSET_DATABASE_NAME} || 'opencloset',
         user => $ENV{OPENCLOSET_DATABASE_USER} || 'opencloset',
         pass => $ENV{OPENCLOSET_DATABASE_PASS} // 'opencloset',
@@ -49,8 +41,8 @@ $db_opts->{AutoCommit} //= 1;
     },
     whitelist  => [@WHITELIST],
     opencloset => {
-        uri   => 'http://localhost:5001',
-        email => $ENV{OPENCLOSET_MONITOR_EMAIL} || 'monitor@theopencloset.net',
+        uri      => 'http://localhost:5001',
+        email    => $ENV{OPENCLOSET_MONITOR_EMAIL} || 'monitor@theopencloset.net',
         password => $ENV{OPENCLOSET_MONITOR_PASSWORD} || 's3cr3t',
         cookie   => '.cookie.txt'
     },
