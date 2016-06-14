@@ -46,7 +46,9 @@ while (1) {
 
         my $res = $http->request( 'GET', $url );
         unless ( $res->{success} ) {
-            print STDERR "Failed: $res->{reason}\n";
+            print STDERR "Failed\n";
+            print STDERR "! $res->{reason}\n";
+            print STDERR "! Skip $user_id\n";
             $dirq->remove($name);
             next;
         }
