@@ -25,8 +25,7 @@ sub create {
     # 주문서가 변경
     $validator->when('sender')->regexp(qw/order/)->then(
         sub {
-            shift->field( [qw/order_id from to/] )
-                ->each( sub { shift->required(1) } );
+            shift->field( [qw/order_id from to/] )->each( sub { shift->required(1) } );
         }
     );
 
@@ -56,8 +55,8 @@ sub create {
     my $sender  = $self->param('sender');
     my $channel = $self->app->redis_channel;
     if ( $sender eq 'order' ) {
-        my $order = $self->DB->resultset('Order')
-            ->find( { id => $self->param('order_id') } );
+        my $order
+            = $self->DB->resultset('Order')->find( { id => $self->param('order_id') } );
 
         my $from = $self->param('from');
         my $to   = $self->param('to');
@@ -113,8 +112,8 @@ sub create {
         );
     }
     elsif ( $sender eq 'user' ) {
-        my $user = $self->DB->resultset('User')
-            ->find( { id => $self->param('user_id') } );
+        my $user
+            = $self->DB->resultset('User')->find( { id => $self->param('user_id') } );
         $self->redis->publish(
             "$channel:user" => decode_utf8(
                 j( { sender => $sender, user => $self->user_flatten($user) } )
