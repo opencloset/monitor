@@ -7,10 +7,11 @@
   % my $rs_top    = get_clothes($top);
   % my $rs_bottom = get_clothes($bottom);
   % return unless $rs_top and $rs_bottom;
-  % my $color_top    = $rs_top->color || '';
-  % my $color_bottom = $rs_bottom->color || '';
-  % my $tooltip_top    = join(' ', code2decimal($top), $color_top, $rs_top->comment || '');
-  % my $tooltip_bottom = join(' ', code2decimal($bottom), $color_bottom, $rs_bottom->comment || '');
+  % my $donation_name = $rs_top->donation->user->name;
+  % my $color_top     = $rs_top->color || '';
+  % my $color_bottom  = $rs_bottom->color || '';
+  % my $tooltip_top    = join(' ', code2decimal($top), $donation_name, $color_top, $rs_top->comment || '');
+  % my $tooltip_bottom = join(' ', code2decimal($bottom), $donation_name, $color_bottom, $rs_bottom->comment || '');
   <li>
     <ul>
       <span class="label label-info"><%= $count %></span>
