@@ -32,6 +32,8 @@ while (1) {
         next unless $dirq->lock($name);
 
         my $user_id = $dirq->get($name);
+        $brain->refresh;
+
         if ( $brain->{data}{clothes}{$user_id} ) {
             $dirq->remove($name);
             next;
@@ -51,7 +53,6 @@ while (1) {
 
         print "OK\n";
 
-        $brain->refresh;
         $brain->{data}{clothes}{$user_id} = j( $res->{content} );
         $brain->save;
         $redis->publish( "$redis_channel:user" => j( { sender => 'user' } ) );
