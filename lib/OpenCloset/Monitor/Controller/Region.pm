@@ -1,6 +1,7 @@
 package OpenCloset::Monitor::Controller::Region;
 use Mojo::Base 'Mojolicious::Controller';
 
+use Mojo::JSON qw/j/;
 use Directory::Queue;
 
 use OpenCloset::Monitor::Status
@@ -38,7 +39,7 @@ sub selects {
             next;
         }
 
-        $suggestion{$user_id} = $suggestion;
+        $suggestion{$user_id} = j($suggestion);
     }
 
     $orders->reset;
