@@ -8,7 +8,7 @@
 - my @clothes = split /,/, $user_info->pre_category;
 - my @colors  = split /,/, $user_info->pre_color;
 - my $bf = $order->bestfit;
-.well.room{:class => $gender, :id => "room-$n"}
+.well{:class => $gender, :id => '#{"room-$n"}'}
   %h3
     %i.fa{:class => "fa-#{$gender}"}
     = "#$n"

@@ -1,0 +1,87 @@
+% use utf8;
+% layout 'default', jses => [
+%   '/assets/components/jquery-timeago/jquery.timeago.js',
+%   '/assets/components/jquery-timeago/locales/jquery.timeago.ko.js',
+%   '/assets/components/reconnectingWebsocket/reconnecting-websocket.js',
+%   '/assets/components/jQuery-contextMenu/src/jquery.ui.position.js',
+%   '/assets/components/jQuery-contextMenu/src/jquery.contextMenu.js',
+%   '/assets/dist/js/preparation.min.js'
+% ], csses => ['/assets/components/jQuery-contextMenu/src/jquery.contextMenu.css'];
+% title 'Preparation';
+% use OpenCloset::Monitor::Status;
+
+<div id="knock">
+  <audio src="/assets/audio/knock.ogg">
+    <p>
+      Your browser does not support the audio element.
+    </p>
+  </audio>
+</div>
+
+<nav class="navbar navbar-default navbar-fixed-bottom">
+  <div class="container">
+    <div class="navbar-header">
+      <p class="navbar-text">
+        today
+        <i class="fa fa-male male"></i>
+        <samp><%= $bestfit->{today}{male} || 0 %></samp>
+        <i class="fa fa-female female"></i>
+        <samp><%= $bestfit->{today}{female} || 0 %></samp>
+      </p>
+      <p class="navbar-text">
+        week
+        <i class="fa fa-male male"></i>
+        <samp><%= $bestfit->{week}{male} || 0 %></samp>
+        <i class="fa fa-female female"></i>
+        <samp><%= $bestfit->{week}{female} || 0 %></samp>
+      </p>
+    </div>
+  </div>
+</nav>
+
+<div id="preparation" class="row">
+  <div class="col-md-8">
+    <div id="waiting">
+      %= include 'partials/waiting', waiting => $waiting;
+    </div>
+    <div id="select"></div>
+  </div>
+
+  <div class="col-md-4">
+    <div id="bestfit-alert" class="alert alert-success alert-dismissible fade in hidden" role="alert">
+      <button class="close" aria-label="Close" type="button">
+        <span aria-hidden="true"> x</span>
+      </button>
+      <h4>
+        잘 어울린다고 생각하십니까?
+        <small></small>
+      </h4>
+      <p>
+        <button class="btn btn-success" type="button">Best-Fit</button>
+        <button class="btn btn-warning" type="button">보통</button>
+      </p>
+      <ul class="list-inline">
+        <%
+           my @size = (90 .. 120);
+           my $cnt  = 0;
+           for my $size (@size) {
+             $cnt++;
+             if ($cnt > (@size / 4)) {
+             $cnt = 0;
+        %>
+        <br>
+        <%   } # endif %>
+        <li><span class="pants label label-info"><%= $size %></span></li>
+        <% } # endfor %>
+      </ul>
+    </div>
+
+    <div id="fitting-room" class="row">
+    </div>
+
+    <div class="row">
+      <div id="repair" class="col-md-6"></div>
+      <div id="boxing" class="col-md-6"></div>
+    </div>
+  </div>
+</div>

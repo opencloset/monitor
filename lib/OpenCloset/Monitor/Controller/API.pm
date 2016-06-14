@@ -9,7 +9,9 @@ use Mojo::JSON qw/decode_json j/;
 use Path::Tiny;
 
 use OpenCloset::Constants::Category
-    qw/%REVERSE_MAP $LABEL_JACKET $LABEL_PANTS $LABEL_SHIRT $LABEL_TIE $LABEL_SHOES $LABEL_SKIRT $LABEL_BLOUSE/;
+    qw/%REVERSE_MAP $LABEL_JACKET $LABEL_PANTS $LABEL_SHIRT $LABEL_TIE $LABEL_SHOES $LABEL_SKIRT $LABEL_BLOUSE $LABEL_BELT/;
+
+our $PREFIX = 'opencloset:storage';
 
 has DB => sub { shift->app->DB };
 
@@ -49,9 +51,9 @@ sub update_order {
     $queries->{bestfit}   = $bestfit   if defined $bestfit;
     $queries->{pants}     = $pants     if defined $pants;
 
-    my $brain = $self->app->brain;
-    delete $brain->{data}{room}{$order_id};
-    delete $brain->{data}{select}{$order_id};
+    my $redis = $self->redis;
+    $redis->hdel( "$PREFIX:room",   $order_id );
+    $redis->hdel( "$PREFIX:select", $order_id );
 
     my $opencloset = $self->app->config->{opencloset};
     my $cookie     = $self->_auth_opencloset;
@@ -76,16 +78,15 @@ sub update_order {
 
     ## pants 는 주문서뿐만 아니라 실제 사용자정보도 업데이트 해야 한다
     if ( my $pants = $queries->{pants} ) {
-        my $order = $self->DB->resultset('Order')->find( { id => $order_id } );
-        my $user = $order->user;
+        my $order   = $self->DB->resultset('Order')->find( { id => $order_id } );
+        my $user    = $order->user;
         my $user_id = $user->id;
         my $url     = $opencloset->{uri} . "/api/user/$user_id.json";
         my $res     = $http->request(
             'PUT', $url,
             {
                 content => $http->www_form_urlencode( { pants => $pants } ),
-                headers =>
-                    { 'content-type' => 'application/x-www-form-urlencoded' }
+                headers => { 'content-type' => 'application/x-www-form-urlencoded' }
             }
         );
         $self->log->error( 'Failed to patch user pants: ' . $res->{reason} )
@@ -113,8 +114,8 @@ sub update_user {
 
     my $v = $self->validation;
     $v->optional('category')->in(
-        $LABEL_JACKET, $LABEL_PANTS, $LABEL_SHIRT, $LABEL_TIE,
-        $LABEL_SHOES,  $LABEL_SKIRT, $LABEL_BLOUSE
+        $LABEL_JACKET, $LABEL_PANTS, $LABEL_SHIRT,  $LABEL_TIE,
+        $LABEL_SHOES,  $LABEL_SKIRT, $LABEL_BLOUSE, $LABEL_BELT,
     );
 
     if ( $v->has_error ) {
@@ -124,14 +125,12 @@ sub update_user {
     }
 
     my $user = $self->DB->resultset('User')->find( { id => $user_id } );
-    return $self->error( 400, { str => "Not found user: $user_id" } )
-        unless $user;
+    return $self->error( 400, { str => "Not found user: $user_id" } ) unless $user;
 
     my $user_info = $user->user_info;
     my $category = $REVERSE_MAP{ $v->param('category') } || '';
 
-    return $self->render( json => { $user_info->get_columns } )
-        unless $category;
+    return $self->render( json => { $user_info->get_columns } ) unless $category;
 
     my $pre_category = $user_info->pre_category;
     my %categories;
@@ -155,13 +154,11 @@ sub update_user {
         'PUT', $url,
         {
             content => $http->www_form_urlencode( {%params} ),
-            headers =>
-                { 'content-type' => 'application/x-www-form-urlencoded' }
+            headers => { 'content-type'           => 'application/x-www-form-urlencoded' }
         }
     );
 
-    return $self->error( 500, { str => 'Failed to update user' } )
-        unless $res->{success};
+    return $self->error( 500, { str => 'Failed to update user' } ) unless $res->{success};
 
     $self->render( text => decode_utf8( $res->{content} ) );
 }
@@ -267,13 +264,10 @@ sub create_sms {
 
     my $to   = $v->param('to');
     my $text = $v->param('text');
-    my $sms
-        = $self->DB->resultset('SMS')
-        ->create(
-        { from => $self->app->config->{sms_from}, to => $to, text => $text } );
+    my $sms  = $self->DB->resultset('SMS')
+        ->create( { from => $self->app->config->{sms_from}, to => $to, text => $text } );
 
-    return $self->error( 500, { str => 'Failed to create a new sms' } )
-        unless $sms;
+    return $self->error( 500, { str => 'Failed to create a new sms' } ) unless $sms;
 
     $self->render( json => { $sms->get_columns } );
 }
@@ -309,9 +303,8 @@ sub update_brain {
     my $key   = $v->param('k');
     my $value = $v->param('v');
 
-    my $brain = $self->app->brain;
-    $brain->{data}{$key} = $value;
-
+    my $redis = $self->redis;
+    $redis->hset( "$PREFIX", $key, $value );
     $self->render( json => { data => { $key => $value } } );
 }
 
@@ -329,8 +322,7 @@ sub target_dt {
     $self->res->headers->header( 'Access-Control-Allow-Origin' => $origin );
 
     my $target_date = $self->target_date;
-    $self->render(
-        json => { ymd => $target_date->ymd, epoch => $target_date->epoch } );
+    $self->render( json => { ymd => $target_date->ymd, epoch => $target_date->epoch } );
 }
 
 =head2 cors

@@ -51,7 +51,7 @@
     }
 }
 #fitting-room {
-    .active .room {
+    .active.room .well {
         border-color: purple !important;
         &:hover {
             border-color: purple;
@@ -59,11 +59,13 @@
     }
     .room {
         font-size: 2em;
-        background-color: #000;
-        min-height: 500px;
-        border-width: 0.3em;
-        padding: 0;
         cursor: pointer;
+        .well {
+            background-color: #000;
+            border-width: 0.3em;
+            padding: 0;
+            min-height: 200px;
+        }
         h3 {
             margin-top: 10px;
         }
@@ -100,16 +102,10 @@
             color: darken(#fff, 80%);
         }
     }
-    .room.male {
-        .fa {
-            color: #5555ee;
-        }
+    .room .male {
         border-color: #5555ee;
     }
-    .room.female {
-        .fa {
-            color: #ee3333;
-        }
+    .room .female {
         border-color: #ee3333;
     }
     .purpose, .color {
@@ -139,9 +135,13 @@
         color: darken(#fff, 30%);
     }
 }
+.table-waiting {
+    text-align: left;
+}
 #select {
     text-align: left;
     .select {
+        font-size: 0.7em;
         border: 1px solid darken(#fff, 50%);
         padding: 0.5em 0.5em 0 0.5em;
         margin: 0.5em;
@@ -157,12 +157,10 @@
             }
         }
         .profile {
-            h1 { font-size: 2em }
-            h2 { font-size: 1.8em }
             text-align: center;
         }
         .size {
-            font-size: 2em;
+            font-size: 1.5em;
             list-style-type: none;
             li {
                 display: inline;
@@ -173,7 +171,6 @@
             }
         }
         .color {
-            font-size: 2em;
             list-style-type: none;
             padding-left: 0;
             width: 100%;
@@ -194,7 +191,6 @@
             .label.charcoalgray { background-color: #666 }
         }
         .purpose {
-            font-size: 1.5em;
             p {
                 display: inline;
             }
@@ -206,6 +202,12 @@
             .label {
                 font-family: monospace;
             }
+            ul {
+                list-style-type: none;
+                ul {
+                    padding-left: 15px;
+                }
+            }
         }
         .previous {
             text-align: left;
@@ -215,7 +217,6 @@
         }
         table {
             td {
-                font-size: 1.5em;
                 background-color: #333;
                 &.text-muted {
                     color: #444;
@@ -230,6 +231,14 @@
             width: 36px;
         }
     }
+    .label.black { background-color: #000 }
+    .label.navy  { background-color: navy }
+    .label.gray  { background-color: gray }
+    .label.brown { background-color: #8b4513 }
+    .label.etc   { background-color: darken(yellow, 20%) }
+    .label.staff { background-color: orange }
+    .label.dark  { background-color: lighten(#000, 15%) }
+    .label.charcoalgray { background-color: #666 }
 }
 #preparation {
     margin-bottom: 50px;
@@ -370,4 +379,7 @@
     p {
         font-size: 2.8em;
     }
+}
+.text-darken {
+    color: #333;
 }

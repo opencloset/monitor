@@ -5,6 +5,8 @@ use Path::Tiny;
 
 use OpenCloset::Monitor::Status;
 
+our $PREFIX = 'opencloset:storage';
+
 has DB => sub { shift->app->DB };
 
 =head1 METHODS
@@ -29,8 +31,7 @@ sub elapsed_ymd {
     my $ymd  = $self->param('ymd');
     my ( $year, $month ) = split /-/, $ymd;
     my $tsv = path("statistics/elapsed/$year/$month/$ymd.tsv");
-    return $self->error( 404, { str => "Not found data: $tsv" } )
-        unless $tsv->exists;
+    return $self->error( 404, { str => "Not found data: $tsv" } ) unless $tsv->exists;
 
     my %gdata;
     for my $line ( $tsv->lines( { chomp => 1 } ) ) {
@@ -43,9 +44,7 @@ sub elapsed_ymd {
     my %color = ( male => '#4d4dff', female => '#ff4d4d' );
     for my $gender (qw/male female/) {
         my @values;
-        for my $data (
-            sort status_reverse_order @{ $gdata{daily}{$gender} ||= [] } )
-        {
+        for my $data ( sort status_reverse_order @{ $gdata{daily}{$gender} ||= [] } ) {
             push @values,
                 {
                 x => $OpenCloset::Monitor::Status::REVERSE_ORDER_MAP{ $data->{label} },
@@ -53,15 +52,10 @@ sub elapsed_ymd {
                 };
         }
         push @{ $gdata{bars} ||= [] },
-            {
-            key    => "$ymd-$gender",
-            values => [@values],
-            color  => $color{$gender}
-            };
+            { key => "$ymd-$gender", values => [@values], color => $color{$gender} };
     }
 
-    my $brain   = $self->app->brain;
-    my $average = $brain->{data}{statistics}{elapsed_time};
+    my $average = $self->redis->hgetall("$PREFIX:statistics:elapsed_time");
 
     $color{male}   = '#0000ff';
     $color{female} = '#ff0000';
@@ -75,11 +69,7 @@ sub elapsed_ymd {
                 };
         }
         push @{ $gdata{bars} ||= [] },
-            {
-            key    => "average-$gender",
-            values => [@values],
-            color  => $color{$gender}
-            };
+            { key => "average-$gender", values => [@values], color => $color{$gender} };
     }
 
     my $rs = $self->DB->resultset('Order')->search(
@@ -94,8 +84,7 @@ sub elapsed_ymd {
 
     my %visitor;
     while ( my $row = $rs->next ) {
-        my ( $gender, $cnt )
-            = ( $row->get_column('gender'), $row->get_column('cnt') );
+        my ( $gender, $cnt ) = ( $row->get_column('gender'), $row->get_column('cnt') );
         if ( $gender eq 'male' ) {
             $visitor{male} = $cnt;
         }
@@ -104,8 +93,7 @@ sub elapsed_ymd {
         }
     }
 
-    $self->respond_to(
-        json => { json => { gdata => {%gdata}, visitor => {%visitor} } } );
+    $self->respond_to( json => { json => { gdata => {%gdata}, visitor => {%visitor} } } );
 }
 
 ###
@@ -118,7 +106,8 @@ sub status_reverse_order {
 }
 
 sub status_order {
-    $OpenCloset::Monitor::Status::ORDER_MAP{$a} <=> $OpenCloset::Monitor::Status::ORDER_MAP{$b};
+    $OpenCloset::Monitor::Status::ORDER_MAP{$a}
+        <=> $OpenCloset::Monitor::Status::ORDER_MAP{$b};
 }
 
 1;

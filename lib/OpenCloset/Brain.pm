@@ -16,7 +16,7 @@ sub BUILD {
         'save',
         sub {
             my ( $me, $data ) = @_;    # me is self
-            my $json = encode_json($data);
+            my $json = encode_json( $data || {} );
             $me->redis->set( 'opencloset:storage', encode_utf8($json) );
         }
     );

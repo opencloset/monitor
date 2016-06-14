@@ -7,6 +7,10 @@ use DateTime;
 use Mojo::Redis2;
 
 use OpenCloset::Brain;
+use OpenCloset::Constants::Measurement;
+use OpenCloset::Constants::Status qw/$RENTABLE/;
+
+our $PREFIX = 'opencloset:storage';
 
 =pod
 
@@ -38,6 +42,8 @@ sub register {
     $app->helper( history        => \&history );
     $app->helper( recent_orders  => \&recent_orders );
     $app->helper( target_date    => \&target_date );
+    $app->helper( get_clothes    => \&get_clothes );
+    $app->helper( guess2text     => \&guess2text );
 }
 
 sub order_flatten {
@@ -90,11 +96,8 @@ sub error {
 
     $self->respond_to(
         json => { status => $status, json => { error => $error || q{} } },
-        html => {
-            status => $status,
-            error => $error->{str} || q{},
-            template => $template
-        },
+        html =>
+            { status => $status, error => $error->{str} || q{}, template => $template },
     );
 
     return;
@@ -138,16 +141,13 @@ sub previous_order {
     my ( $self, $room_no, @status_in ) = @_;
     return unless $room_no;
 
-    my $rs
-        = $self->app->SQLite->resultset('History')
-        ->search( { room_no => $room_no },
-        { rows => 1, order_by => { -desc => 'id' } } );
+    my $rs = $self->app->SQLite->resultset('History')
+        ->search( { room_no => $room_no }, { rows => 1, order_by => { -desc => 'id' } } );
 
     my $history = $rs->next;
     return unless $history;
 
-    my $order = $self->app->DB->resultset('Order')
-        ->find( { id => $history->order_id } );
+    my $order = $self->app->DB->resultset('Order')->find( { id => $history->order_id } );
 
     if ( $order && @status_in ) {
         my $bool = grep { $order->status_id == $_ } @status_in;
@@ -187,7 +187,25 @@ sub recent_orders {
     );
 
     $limit = 5 unless $limit;
-    return $rs->slice( 0, $limit - 1 );
+    $rs->slice( 0, $limit - 1 );
+
+    my @orders;
+    while ( my $order = $rs->next ) {
+        my @details = $order->order_details;
+        next unless @details;
+
+        for my $detail (@details) {
+            my $code = $detail->clothes_code;
+            next unless $code;
+            next unless $code =~ /^0?[JPK]/;
+
+            my $clothes = $detail->clothes;
+        }
+
+        push @orders, $order;
+    }
+
+    return \@orders;
 }
 
 =head2 target_date
@@ -199,16 +217,54 @@ return target_date
 sub target_date {
     my $self = shift;
 
-    my $brain = $self->app->brain;
+    my $redis = $self->redis;
     my $target_date = DateTime->now->add( days => 3 );
     $target_date->set_time_zone('Asia/Seoul');
-    if ( my $ymd = $brain->{data}{expiration} ) {
+    if ( my $ymd = $redis->hget( "$PREFIX", 'expiration' ) ) {
         my $dt = DateTime::Format::ISO8601->parse_datetime($ymd);
         $dt->set_time_zone('Asia/Seoul');
         $target_date = $dt if DateTime->compare( $target_date, $dt ) == -1;
     }
 
     return $target_date;
+}
+
+=head2 get_clothes
+
+    my $clothes = $self->get_clothes('J001');
+
+=cut
+
+sub get_clothes {
+    my ( $self, $code ) = @_;
+    return unless $code;
+
+    $code = '0' . $code if length($code) == 4;
+    return $self->app->DB->resultset('Clothes')->find( { code => $code } );
+}
+
+=head2 guess2text
+
+    %= guess2text($guess);
+    # 키: 180cm, 몸무게: 70kg...
+
+=cut
+
+sub guess2text {
+    my ( $self, $guess ) = @_;
+    return '' unless $guess;
+
+    my @sizes;
+    for my $part (@OpenCloset::Constants::Measurement::PRIMARY) {
+        my $size = int( $guess->{$part} || 0 );
+        push @sizes,
+            sprintf( '%s: %s%s',
+            $OpenCloset::Constants::Measurement::LABEL_MAP{$part},
+            $size, $OpenCloset::Constants::Measurement::UNIT_MAP{$part} )
+            if $size;
+    }
+
+    return join( "\n", @sizes );
 }
 
 1;

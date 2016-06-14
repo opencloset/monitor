@@ -3,12 +3,11 @@ use Mojo::Base 'Mojolicious';
 
 use Net::IP::AddrRanges;
 
-use OpenCloset::Brain;
 use OpenCloset::Monitor::Schema;
 use OpenCloset::Schema;
 use OpenCloset::Monitor::Status;
 
-use version; our $VERSION = qv("v0.7.0");
+use version; our $VERSION = qv("v0.8.0");
 
 has ranges => sub { Net::IP::AddrRanges->new };
 has DB => sub {
@@ -34,12 +33,11 @@ has SQLite        => sub {
     );
 };
 
-has brain => sub { OpenCloset::Brain->new( redis => shift->redis ) };
-
 sub startup {
     my $self = shift;
 
     $self->plugin('Config');
+    $self->plugin('OpenCloset::Plugin::Helpers');
     $self->plugin('OpenCloset::Monitor::Plugin::Helpers');
     $self->plugin('haml_renderer');
     $self->plugin('validator');
@@ -51,7 +49,6 @@ sub startup {
     $self->_whitelist;
     $self->_public_routes;
     $self->_private_routes;
-    $self->_hooks;
 }
 
 sub _assets {
@@ -69,19 +66,22 @@ sub _whitelist {
 sub _public_routes { }
 
 sub _private_routes {
-    my $self = shift;
-    my $r    = $self->routes->under('/')->to('user#auth');
+    my $self   = shift;
+    my $r      = $self->routes->under('/')->to('user#auth');
+    my $region = $r->under('/region');
+
     $r->get('/')->to('dashboard#index')->name('index');
     $r->get('/statistics/elapsed')->to('statistics#elapsed')->name('elapsed');
     $r->get('/statistics/elapsed/:ymd')->to('statistics#elapsed_ymd');
 
     $r->get('/room')->to('dashboard#room')->name('rooms');
     $r->get('/select')->to('dashboard#select')->name('select');
+    $r->get('/preparation')->to('dashboard#preparation')->name('preparation');
+    $r->get('/repair')->to('dashboard#repair')->name('repair');
+    $r->get('/online')->to('dashboard#online')->name('online');
 
     $r->post('/active')->to('dashboard#create_active');
     $r->delete('/active/:order_id')->to('dashboard#delete_active');
-
-    $r->get('/preparation')->to('dashboard#preparation')->name('preparation');
 
     $r->post('/events')->to('event#create');
 
@@ -90,37 +90,16 @@ sub _private_routes {
     $r->put('/api/orders/:order_id')->to('API#update_order');
     $r->put('/api/users/:user_id')->to('API#update_user');
 
-    $r->get('/repair')->to('dashboard#repair')->name('repair');
-    $r->get('/online')->to('dashboard#online')->name('online');
     $r->get('/address')->to('API#address')->name('address');
     $r->post('/sms')->to('API#create_sms')->name('sms.create');
     $r->put('/brain')->to('API#update_brain')->name('brain.update');
     $r->get('/target_date')->to('API#target_dt')->name('api.target_date');
     $r->options('/target_date')->to('API#cors');
-}
 
-sub _hooks {
-    my $self = shift;
-
-    $self->hook(
-        before_routes => sub {
-            my $c = shift;
-
-            my $route = $c->req->url->path->to_route;
-            return if $route =~ m/\.\w+$/;
-            $c->app->brain->refresh;
-        },
-    );
-
-    $self->hook(
-        after_dispatch => sub {
-            my $c = shift;
-
-            my $route = $c->req->url->path->to_route;
-            return if $route =~ m/\.\w+$/;
-            $c->app->brain->save;
-        },
-    );
+    $region->get('/selects')->to('region#selects')->name('region.selects');
+    $region->get('/rooms')->to('region#rooms')->name('region.rooms');
+    $region->get('/status/repair')->to('region#status_repair');
+    $region->get('/status/boxing')->to('region#status_boxing');
 }
 
 =head2 _waiting_list
@@ -139,13 +118,9 @@ sub _waiting_list {
     ## 각 상태별 주문서의 갯수 를 남녀별로
     ## 22:00 주문서는 온라인 주문서이기 때문에 제외
     my $rs = $self->DB->resultset('Order')->search(
+        { status_id => { -in => [@OpenCloset::Monitor::Status::ACTIVE_STATUS] }, },
         {
-            status_id =>
-                { -in => [@OpenCloset::Monitor::Status::ACTIVE_STATUS] },
-        },
-        {
-            select =>
-                ['status_id', 'user_info.gender', { count => 'status_id' }],
+            select => ['status_id', 'user_info.gender', { count => 'status_id' }],
             as       => [qw/status_id gender cnt/],
             group_by => ['status_id', 'user_info.gender'],
             join     => ['booking', { user => 'user_info' }]
@@ -160,16 +135,13 @@ sub _waiting_list {
 
         ## 탈의를 key 한개로 묶는다
         if (   $status_id >= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1
-            && $status_id
-            <= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM11 )
+            && $status_id <= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM11 )
         {
-            $waiting{$gender}
-                {$OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1} += $cnt;
+            $waiting{$gender}{$OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1} += $cnt;
         }
         elsif ( $status_id == $OpenCloset::Monitor::Status::STATUS_BOXED ) {
             ## 18: 포장, 44: 포장완료 는 같은 상태로 본다
-            $waiting{$gender}{$OpenCloset::Monitor::Status::STATUS_BOXING}
-                += $cnt;
+            $waiting{$gender}{$OpenCloset::Monitor::Status::STATUS_BOXING} += $cnt;
         }
         else {
             $waiting{$gender}{$status_id} = $cnt;

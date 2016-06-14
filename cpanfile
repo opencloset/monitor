@@ -1,5 +1,6 @@
 requires 'DateTime';
 requires 'DateTime::Format::ISO8601';
+requires 'Directory::Queue';
 requires 'Encode';
 requires 'HTTP::CookieJar';
 requires 'HTTP::Tiny';
@@ -15,4 +16,5 @@ requires 'experimental';
 
 # cpan.theopencloset.net
 requires 'OpenCloset::Common', 'v0.0.6';
+requires 'OpenCloset::Plugin::Helpers', 'v0.0.6';
 requires 'OpenCloset::Schema';

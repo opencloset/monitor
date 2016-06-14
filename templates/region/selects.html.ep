@@ -1,0 +1,7 @@
+<div id="empty-rooms" data-empty-rooms="[<%= join(',', @$emptyRooms) %>]"></div>
+% while (my $order = $orders->next) {
+%   my $is_active = grep { $order->id == $_ } @$select_active;
+<div class="row select<%= $is_active ? ' active' : '' %>" data-order-id="<%= $order->id %>">
+  %= include 'partials/select', order => $order;
+</div>
+% }

@@ -6,6 +6,8 @@ use Mojo::JSON 'j';
 
 use OpenCloset::Monitor::Status;
 
+our $PREFIX = 'opencloset:storage';
+
 has DB => sub { shift->app->DB };
 
 =head1 METHODS
@@ -25,8 +27,7 @@ sub create {
     # 주문서가 변경
     $validator->when('sender')->regexp(qw/order/)->then(
         sub {
-            shift->field( [qw/order_id from to/] )
-                ->each( sub { shift->required(1) } );
+            shift->field( [qw/order_id from to/] )->each( sub { shift->required(1) } );
         }
     );
 
@@ -56,8 +57,8 @@ sub create {
     my $sender  = $self->param('sender');
     my $channel = $self->app->redis_channel;
     if ( $sender eq 'order' ) {
-        my $order = $self->DB->resultset('Order')
-            ->find( { id => $self->param('order_id') } );
+        my $order
+            = $self->DB->resultset('Order')->find( { id => $self->param('order_id') } );
 
         my $from = $self->param('from');
         my $to   = $self->param('to');
@@ -78,7 +79,7 @@ sub create {
         ###
         ### `의류준비|탈의` -> `대여안함|포장|수선` 으로 이동했을때에 탈의실의 정리가 필요해서
         ### 이를 강조해주기 위한 데이터 추가
-        my $brain = $self->app->brain;
+        my $redis = $self->redis;
         if (   $to == $OpenCloset::Monitor::Status::STATUS_DO_NOT_RENTAL
             || $to == $OpenCloset::Monitor::Status::STATUS_BOXING
             || $to == $OpenCloset::Monitor::Status::STATUS_REPAIR )
@@ -88,17 +89,16 @@ sub create {
                     = $self->app->SQLite->resultset('History')
                     ->search( { order_id => $order->id },
                     { rows => 1, order_by => { -desc => 'id' } } )->next;
-
-                $brain->{data}{refresh}{ $history->room_no } = 1 if $history;
+                $redis->hset( "$PREFIX:refresh", $history->room_no, 1 ) if $history;
             }
             elsif ($from >= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1
                 && $from <= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM11 )
             {
-                $brain->{data}{refresh}{ $from - 19 } = 1;
+                $redis->hset( "$PREFIX:refresh", $from - 19, 1 );
             }
         }
 
-        $self->redis->publish(
+        $redis->publish(
             "$channel:order" => decode_utf8(
                 j(
                     {
@@ -113,8 +113,8 @@ sub create {
         );
     }
     elsif ( $sender eq 'user' ) {
-        my $user = $self->DB->resultset('User')
-            ->find( { id => $self->param('user_id') } );
+        my $user
+            = $self->DB->resultset('User')->find( { id => $self->param('user_id') } );
         $self->redis->publish(
             "$channel:user" => decode_utf8(
                 j( { sender => $sender, user => $self->user_flatten($user) } )
@@ -125,22 +125,27 @@ sub create {
         my $ns  = $self->param('ns');
         my $key = $self->param('key');
 
-        my $brain = $self->app->brain;
-        if ( $brain->{data}{$ns}{$key} ) {
-            delete $brain->{data}{$ns}{$key};
+        my $redis = $self->redis;
+        if ( $redis->hget( "$PREFIX:$ns", $key ) ) {
+            $redis->hdel( "$PREFIX:$ns", $key );
         }
         else {
-            $brain->{data}{$ns}{$key} = 1;
+            $redis->hset( "$PREFIX:$ns", $key, 1 );
         }
 
         $self->redis->publish(
             "$channel:brain" => decode_utf8(
-                j( { sender => $sender, brain => $brain->{data}{$ns} } )
+                j(
+                    {
+                        sender => $sender,
+                        brain  => { @{ $redis->hgetall("$PREFIX:$ns") } }
+                    }
+                )
             )
         );
     }
     else {
-        $self->app->log->warn("Unknown sender: $sender");
+        $self->log->warn("Unknown sender: $sender");
     }
 
     $self->render( text => 'Successfully posted event', status => 201 );
