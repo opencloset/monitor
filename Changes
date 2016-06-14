@@ -1,3 +1,4 @@
+v0.8.0    Tue, 14 Jun 2016 18:33:15 +0900
   - preparation 리팩토링 (#94)
   - 제안의류(의류추천) 기능 추가 (#94)
   - redis 의 on/off 저장방식 대신에 직접 command(hset, hget..)를 사용
