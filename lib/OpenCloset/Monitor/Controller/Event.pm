@@ -98,7 +98,7 @@ sub create {
             }
         }
 
-        $self->redis->publish(
+        $redis->publish(
             "$channel:order" => decode_utf8(
                 j(
                     {
