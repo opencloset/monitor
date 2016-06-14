@@ -13,15 +13,14 @@ use Path::Tiny;
 use FindBin qw($Bin);
 use lib "$Bin/../lib";
 
-my $config = require "$Bin/../monitor.conf";
+our $PREFIX = 'opencloset:storage';
 
-use OpenCloset::Brain;
+my $config = require "$Bin/../monitor.conf";
 
 my $redis = Mojo::Redis2->new;
 $redis->on( error => sub { print STDERR "[REDIS ERROR]: $_[1]" } );
 
 my $redis_channel = 'opencloset:monitor';
-my $brain         = OpenCloset::Brain->new( redis => $redis );
 my $dirq          = Directory::Queue->new( path => $config->{queue}{path} );
 my $cookie        = _auth_opencloset($config);
 my $http          = HTTP::Tiny->new( timeout => 10, cookie_jar => $cookie );
@@ -32,9 +31,10 @@ while (1) {
         next unless $dirq->lock($name);
 
         my $user_id = $dirq->get($name);
-        $brain->refresh;
 
-        if ( $brain->{data}{clothes}{$user_id} ) {
+        my $data = $redis->hget( "$PREFIX:clothes", $user_id );
+
+        if ($data) {
             $dirq->remove($name);
             next;
         }
@@ -55,8 +55,7 @@ while (1) {
 
         print "OK\n";
 
-        $brain->{data}{clothes}{$user_id} = j( $res->{content} );
-        $brain->save;
+        $redis->hset( "$PREFIX:clothes", $user_id, $res->{content} );
         $redis->publish( "$redis_channel:user" => j( { sender => 'user' } ) );
         $dirq->remove($name);
 
