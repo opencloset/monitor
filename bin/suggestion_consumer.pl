@@ -6,7 +6,7 @@ use Directory::Queue;
 use Encode qw/decode_utf8/;
 use HTTP::CookieJar;
 use HTTP::Tiny;
-use Mojo::JSON qw/decode_json j/;
+use Mojo::JSON qw/j/;
 use Mojo::Redis2;
 use Path::Tiny;
 
@@ -25,26 +25,39 @@ my $brain         = OpenCloset::Brain->new( redis => $redis );
 my $dirq          = Directory::Queue->new( path => $config->{queue}{path} );
 my $cookie        = _auth_opencloset($config);
 my $http          = HTTP::Tiny->new( timeout => 10, cookie_jar => $cookie );
+my $opencloset    = $config->{opencloset};
 
 while (1) {
     for ( my $name = $dirq->first(); $name; $name = $dirq->next() ) {
         next unless $dirq->lock($name);
 
-        my $user_id    = $dirq->get($name);
-        my $opencloset = $config->{opencloset};
-        my $url        = $opencloset->{uri} . "/api/user/$user_id/search/clothes.json";
-        my $res        = $http->request( 'GET', $url );
-        unless ( $res->{success} ) {
-            print STDERR "Failed to get $url: $res->{reason}\n";
+        my $user_id = $dirq->get($name);
+        if ( $brain->{data}{clothes}{$user_id} ) {
             $dirq->remove($name);
             next;
         }
+
+        my $url = $opencloset->{uri} . "/api/user/$user_id/search/clothes.json";
+
+        print "--> Working on $user_id\n";
+        print "Fetching $url ... ";
+
+        my $res = $http->request( 'GET', $url );
+        unless ( $res->{success} ) {
+            print STDERR "Failed: $res->{reason}\n";
+            $dirq->remove($name);
+            next;
+        }
+
+        print "OK\n";
 
         $brain->refresh;
         $brain->{data}{clothes}{$user_id} = j( $res->{content} );
         $brain->save;
         $redis->publish( "$redis_channel:user" => j( { sender => 'user' } ) );
         $dirq->remove($name);
+
+        print "Successfully published $user_id\n";
     }
 
     sleep(1);
