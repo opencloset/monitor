@@ -3,7 +3,6 @@ use Mojo::Base 'Mojolicious';
 
 use Net::IP::AddrRanges;
 
-use OpenCloset::Brain;
 use OpenCloset::Monitor::Schema;
 use OpenCloset::Schema;
 use OpenCloset::Monitor::Status;
@@ -34,12 +33,11 @@ has SQLite        => sub {
     );
 };
 
-has brain => sub { OpenCloset::Brain->new( redis => shift->redis ) };
-
 sub startup {
     my $self = shift;
 
     $self->plugin('Config');
+    $self->plugin('OpenCloset::Plugin::Helpers');
     $self->plugin('OpenCloset::Monitor::Plugin::Helpers');
     $self->plugin('haml_renderer');
     $self->plugin('validator');
@@ -51,7 +49,6 @@ sub startup {
     $self->_whitelist;
     $self->_public_routes;
     $self->_private_routes;
-    $self->_hooks;
 }
 
 sub _assets {
@@ -103,30 +100,6 @@ sub _private_routes {
     $region->get('/rooms')->to('region#rooms')->name('region.rooms');
     $region->get('/status/repair')->to('region#status_repair');
     $region->get('/status/boxing')->to('region#status_boxing');
-}
-
-sub _hooks {
-    my $self = shift;
-
-    $self->hook(
-        before_routes => sub {
-            my $c = shift;
-
-            my $route = $c->req->url->path->to_route;
-            return if $route =~ m/\.\w+$/;
-            $c->app->brain->refresh;
-        },
-    );
-
-    $self->hook(
-        after_dispatch => sub {
-            my $c = shift;
-
-            my $route = $c->req->url->path->to_route;
-            return if $route =~ m/\.\w+$/;
-            $c->app->brain->save;
-        },
-    );
 }
 
 =head2 _waiting_list

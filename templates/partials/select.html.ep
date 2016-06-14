@@ -11,6 +11,7 @@
 % my $nth = $histories->count;
 % my $_bestfit = $order->bestfit;
 % my $wearon_date = $order->wearon_date ? $order->wearon_date : $user_info->wearon_date;
+% my $s = $suggestion->{$user->id};
 
 <div class="row">
   <div class="col-md-2 profile">
@@ -40,18 +41,21 @@
         <span class="label label-success" title="중동">
           윗배
           %= $user_info->topbelly || 0
+          <small class="text-darken"><%= int($s->{guess}{topbelly} || 0) if $s %></small>
         </span>
       </li>
       <li>
         <span class="label label-default" title="가슴">
           가슴
           %= $user_info->bust || 0
+          <small class="text-darken"><%= int($s->{guess}{bust} || 0) if $s %></small>
         </span>
       </li>
       <li>
         <span class="label label-default" title="팔">
           팔
           %= $user_info->arm || 0
+          <small class="text-darken"><%= int($s->{guess}{arm} || 0) if $s %></small>
         </span>
       </li>
     </ul>
@@ -59,36 +63,48 @@
     <ul>
       <li>
         % if ($gender eq 'male') {
-        <span class="label label-success" title="허벅지">
-          허벅지
-          %= $user_info->thigh || 0
+        <span class="label <%= $gender eq 'male' ? 'label-success' : 'label-default' %>" title="허리">
+          허리
+          %= $user_info->waist || 0
+          <small class="text-darken"><%= int($s->{guess}{waist} || 0) if $s %></small>
         </span>
         % } else {
         <span class="label label-success" title="엉덩이">
           엉덩이
           %= $user_info->hip || 0
+          <small class="text-darken"><%= int($s->{guess}{hip} || 0) if $s %></small>
         </span>
         % }
       </li>
+      % if ($gender eq 'male') {
       <li>
-        <span class="label label-default" title="허리">
-          허리
-          %= $user_info->waist || 0
+        <span class="label label-default" title="허벅지">
+          허벅지
+          %= $user_info->thigh || 0
+          <small class="text-darken"><%= int($s->{guess}{thigh} || 0) if $s %></small>
         </span>
       </li>
       <li>
-        % if ($gender eq 'male') {
         <span class="label label-default" title="다리">
           다리
           %= $user_info->leg || 0
         </span>
-        % } else {
+      </li>
+      % } else {
+      <li>
+        <span class="label label-default" title="허리">
+          허리
+          %= $user_info->waist || 0
+          <small class="text-darken"><%= int($s->{guess}{waist} || 0) if $s %></small>
+        </span>
+      </li>
+      <li>
         <span class="label label-default" title="무릎">
           무릎
           %= $user_info->knee || 0
         </span>
-        % }
       </li>
+      % }
     </ul>
 
     <ul>
@@ -197,8 +213,11 @@
 <div class="row">
   <div class="pre_order">
     <ul class="list-inline">
-      % while (my $order = $recents->next) {
+      % for my $order (@$recents) {
         %= include 'partials/recent-clothes', order => $order;
+      % }
+      % if ($s) {
+        %= include 'partials/suggestion-clothes', suggestion => $s->{result};
       % }
     </ul>
   </div>

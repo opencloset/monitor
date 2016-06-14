@@ -45,8 +45,8 @@ $ ->
 
     switch sender
       when 'order'
-        if from in SELECT_RANGE or to in SELECT_RANGE then reloadSelect(from, to)
-        if from in ROOM_RANGE   or to in ROOM_RANGE   then reloadRoom(from, to)
+        if from in SELECT_RANGE or to in SELECT_RANGE then reloadSelect()
+        if from in ROOM_RANGE   or to in ROOM_RANGE   then reloadRoom()
         if from in REPAIR_RANGE or to in REPAIR_RANGE then reloadRepair()
         if from in BOXING_RANGE or to in BOXING_RANGE then reloadBoxing()
 
@@ -141,7 +141,6 @@ $ ->
     $.ajax "/active/#{room_no}?key=refresh",
       type: 'DELETE'
       success: (data, textStatus, jqXHR) ->
-        reloadSelect()
       error: (jqXHR, textStatus, errorThrown) ->
         console.log textStatus
       complete: (jqXHR, textStatus) ->
@@ -272,14 +271,10 @@ $ ->
       updateOrder(order_id, { bestfit: bestfit })
       $this.toggleClass('bestfit')
 
-  selectContextMenuItems = (rooms) ->
-    $('#fitting-room .room[data-order-id]').each (i, el) ->
-      n = parseInt($(el).find('h3').text().trim().substring(1))
-      rooms.push(n)
-
+  selectContextMenuItems = ->
+    rooms     = $('#empty-rooms').data('empty-rooms')
     menu      = _.clone(DEFAULT_ITEMS)
-    available = _.difference([1..11], rooms)
-    _.each available, (el, i) ->
+    _.each rooms, (el, i) ->
       menu[el] =
         name: "탈의##{el}"
         callback: (key, opt) ->
@@ -289,14 +284,13 @@ $ ->
     return menu
 
   registerContextMenuSelect = ->
-    reservedRoom = []
+    ## 의류준비 -> 탈의실 -> 의류준비
     $('#select .select[data-order-id]').each (i, el) ->
       $el   = $(el)
       $prev = $el.find('.previous strong')
       return true unless $prev.length
 
       n = parseInt($prev.text().split('/')[0].substring(1))
-      reservedRoom.push(n)
 
       menu = _.clone(DEFAULT_ITEMS)
       menu[n] =
@@ -304,19 +298,21 @@ $ ->
         callback: (key, opt) ->
           order_id = opt.$trigger.data('order-id')
           updateOrder(order_id, {status_id: n + 19})
+      $.contextMenu('destroy', ".select[data-order-id='#{$el.data('order-id')}']")
       $.contextMenu
         selector: ".select[data-order-id='#{$el.data('order-id')}']"
         items: menu
 
-    ## 앞서 한바퀴 돌리면서 reservedRoom 을 채우고 이를 다시 돌면서 활용
+    ## 치수측정 -> 의류준비
     $('#select .select[data-order-id]').each (i, el) ->
       $el   = $(el)
       $prev = $el.find('.previous strong')
       return true if $prev.length
 
+      $.contextMenu('destroy', ".select[data-order-id='#{$el.data('order-id')}']")
       $.contextMenu
         selector: ".select[data-order-id='#{$el.data('order-id')}']"
-        items: selectContextMenuItems(reservedRoom)
+        items: selectContextMenuItems()
 
   registerContextMenuRoom = ->
     $('#fitting-room .room[data-order-id]').each (i, el) ->
@@ -379,14 +375,8 @@ $ ->
     $(@).find('[data-toggle="tooltip"]').tooltip()
     registerContextMenuSelect()
 
-  afterLoadedSelect = ->
-    afterLoaded.apply(@)
-    $(@).find('[data-toggle="tooltip"]').tooltip()
-    registerContextMenuSelect()
-
   afterLoadedRoom = ->
     afterLoaded.apply(@)
-    registerContextMenuSelect()
     registerContextMenuRoom()
 
   afterLoadedRepair = ->
@@ -397,20 +387,10 @@ $ ->
     afterLoaded.apply(@)
     registerContextMenuBoxing()
 
-  reloadSelect = (from, to) ->
-    if from and from in ROOM_RANGE or to and to in ROOM_RANGE
-      ## $.contextMenu 의 로딩 순서때문에 분기함
-      $('#select').load '/region/selects', ->
-        afterLoaded.apply(@)
-        $(@).find('[data-toggle="tooltip"]').tooltip()
-        reloadRoom()
-    else
-      $('#select').load '/region/selects', afterLoadedSelect
+  reloadSelect = ->
+    $('#select').load '/region/selects', afterLoadedSelect
 
-  reloadRoom = (from, to) ->
-    ## 중복되는 binding 과 ajax request 를 하지 않는다
-    ## reloadSelect 에서 from 이나 to 가 탈의이면 이미 reloadRoom 을 처리한다
-    return if from and from in SELECT_RANGE or to and to in SELECT_RANGE
+  reloadRoom = ->
     $('#fitting-room').load '/region/rooms', afterLoadedRoom
 
   reloadRepair = ->
@@ -421,9 +401,7 @@ $ ->
   ##---------------------
   ## main
   ##---------------------
-  $('#select').load '/region/selects', ->
-    afterLoaded.apply(@)
-    $(@).find('[data-toggle="tooltip"]').tooltip()
-    reloadRoom()
+  reloadRoom()
+  reloadSelect()
   reloadRepair()
   reloadBoxing()

@@ -1,3 +1,7 @@
+  - preparation 리팩토링 (#94)
+  - 제안의류(의류추천) 기능 추가 (#94)
+  - redis 의 on/off 저장방식 대신에 직접 command(hset, hget..)를 사용
+
 v0.7.0    Fri, 20 May 2016 18:53:16 +0900
   - rename OpenCloset::Status OpenCloset::Monitor::Status
   - 토글 가능한 대여의류품목 (#109)

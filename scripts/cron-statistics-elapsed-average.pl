@@ -1,12 +1,16 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
+use Mojo::Redis2;
+use Mojo::JSON 'j';
 
 use lib 'lib';
 
 use OpenCloset::Brain;
 use OpenCloset::Schema;
-use OpenCloset::Status;
+use OpenCloset::Monitor::Status;
+
+our $PREFIX = 'opencloset:storage';
 
 my $schema = OpenCloset::Schema->connect(
     {
@@ -25,12 +29,11 @@ my %stat;
 my $status_log = $schema->resultset('OrderStatusLog');
 
 my $where = 'TIMESTAMPDIFF(MONTH, `timestamp`, NOW()) < ?';
-$where
-    .= ' AND status_id IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+$where .= ' AND status_id IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
 my $logs = $status_log->search_literal(
     $where, 1,
-    @OpenCloset::Status::ACTIVE_STATUS,
+    @OpenCloset::Monitor::Status::ACTIVE_STATUS,
     { order_by => [qw/order_id timestamp/] }
 );
 my ( $o0, $o1, $s0, $s1, $t0, $t1, $elapsed );
@@ -57,14 +60,13 @@ while ( my $log = $logs->next ) {
 
     next if $s0 == $s1;
 
-    printf "%6s order(%s) status(%d) elapsed(%d)\n", $user_info->gender, $o1,
-        $s0, $elapsed
+    printf "%6s order(%s) status(%d) elapsed(%d)\n", $user_info->gender, $o1, $s0,
+        $elapsed
         if $ENV{DEBUG};
 
     ## elapsed 가 너무크면 잘못된 데이터일 가능성이 있으므로 skip
     if ( $elapsed > ( 60 * 60 ) ) {
-        print STDERR
-            "Too long elapsed time: $elapsed order($o1) status_id($s0)\n";
+        print STDERR "Too long elapsed time: $elapsed order($o1) status_id($s0)\n";
         next;
     }
 
@@ -93,6 +95,5 @@ for my $g (qw/male female/) {
     }
 }
 
-
-my $brain = OpenCloset::Brain->new;
-$brain->{data}{statistics}{elapsed_time} = {%stat};
+my $redis = Mojo::Redis2->new;
+$redis->hset( "$PREFIX:statistics", 'elapsed_time', j( {%stat} ) );

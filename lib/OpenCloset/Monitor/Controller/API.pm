@@ -11,6 +11,8 @@ use Path::Tiny;
 use OpenCloset::Constants::Category
     qw/%REVERSE_MAP $LABEL_JACKET $LABEL_PANTS $LABEL_SHIRT $LABEL_TIE $LABEL_SHOES $LABEL_SKIRT $LABEL_BLOUSE $LABEL_BELT/;
 
+our $PREFIX = 'opencloset:storage';
+
 has DB => sub { shift->app->DB };
 
 =head1 METHODS
@@ -49,9 +51,9 @@ sub update_order {
     $queries->{bestfit}   = $bestfit   if defined $bestfit;
     $queries->{pants}     = $pants     if defined $pants;
 
-    my $brain = $self->app->brain;
-    delete $brain->{data}{room}{$order_id};
-    delete $brain->{data}{select}{$order_id};
+    my $redis = $self->redis;
+    $redis->hdel( "$PREFIX:room",   $order_id );
+    $redis->hdel( "$PREFIX:select", $order_id );
 
     my $opencloset = $self->app->config->{opencloset};
     my $cookie     = $self->_auth_opencloset;
@@ -301,9 +303,8 @@ sub update_brain {
     my $key   = $v->param('k');
     my $value = $v->param('v');
 
-    my $brain = $self->app->brain;
-    $brain->{data}{$key} = $value;
-
+    my $redis = $self->redis;
+    $redis->hset( "$PREFIX", $key, $value );
     $self->render( json => { data => { $key => $value } } );
 }
 
