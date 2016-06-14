@@ -1,12 +1,16 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
+use Mojo::Redis2;
+use Mojo::JSON 'j';
 
 use lib 'lib';
 
 use OpenCloset::Brain;
 use OpenCloset::Schema;
-use OpenCloset::Status;
+use OpenCloset::Monitor::Status;
+
+our $PREFIX = 'opencloset:storage';
 
 my $schema = OpenCloset::Schema->connect(
     {
@@ -29,7 +33,7 @@ $where .= ' AND status_id IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 
 my $logs = $status_log->search_literal(
     $where, 1,
-    @OpenCloset::Status::ACTIVE_STATUS,
+    @OpenCloset::Monitor::Status::ACTIVE_STATUS,
     { order_by => [qw/order_id timestamp/] }
 );
 my ( $o0, $o1, $s0, $s1, $t0, $t1, $elapsed );
@@ -91,6 +95,5 @@ for my $g (qw/male female/) {
     }
 }
 
-
-my $brain = OpenCloset::Brain->new;
-$brain->{data}{statistics}{elapsed_time} = {%stat};
+my $redis = Mojo::Redis2->new;
+$redis->hset( "$PREFIX:statistics", 'elapsed_time', j( {%stat} ) );

@@ -5,6 +5,8 @@ use Path::Tiny;
 
 use OpenCloset::Monitor::Status;
 
+our $PREFIX = 'opencloset:storage';
+
 has DB => sub { shift->app->DB };
 
 =head1 METHODS
@@ -53,8 +55,7 @@ sub elapsed_ymd {
             { key => "$ymd-$gender", values => [@values], color => $color{$gender} };
     }
 
-    my $brain   = $self->app->brain;
-    my $average = $brain->{data}{statistics}{elapsed_time};
+    my $average = $self->redis->hgetall("$PREFIX:statistics:elapsed_time");
 
     $color{male}   = '#0000ff';
     $color{female} = '#ff0000';

@@ -8,6 +8,8 @@ use DateTime::Format::ISO8601;
 use Encode 'decode_utf8';
 use Mojo::JSON 'j';
 
+our $PREFIX = 'opencloset:storage';
+
 has DB => sub { shift->app->DB };
 
 =head1 METHODS
@@ -124,7 +126,7 @@ sub create_active {
     my $key      = $v->param('key');
     my $order_id = $v->param('order_id');
 
-    $self->app->brain->{data}{$key}{$order_id} = 1;
+    $self->redis->hset( "$PREFIX:$key", $order_id, 1 );
 
     my $channel = $self->app->redis_channel;
     $self->redis->publish( "$channel:active" =>
@@ -154,8 +156,7 @@ sub delete_active {
     }
 
     my $key = $v->param('key');
-
-    delete $self->app->brain->{data}{$key}{$order_id};
+    $self->redis->hdel( "$PREFIX:$key", $order_id );
 
     my $channel = $self->app->redis_channel;
     $self->redis->publish( "$channel:active" =>
@@ -172,7 +173,7 @@ sub delete_active {
 
 sub room {
     my $self  = shift;
-    my $brain = $self->app->brain;
+    my $redis = $self->redis;
 
     my ( @active, @room );
     for my $n ( 1 .. 11 ) {
@@ -182,11 +183,11 @@ sub room {
             ->search(
             { status_id => $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1 + $n - 1 } )
             ->next;
-        $active[$n] = $brain->{data}{room}{ $order->id } if $order;
+        $active[$n] = $redis->hget( "$PREFIX:room", $order->id ) if $order;
         $room[$n] = $order;
     }
 
-    $brain->{data}{room} = {} unless @active;
+    $redis->del("$PREFIX:room") unless @active;
     $self->stash( rooms => [@room], active => [@active] );
 }
 
@@ -199,16 +200,16 @@ sub room {
 
 sub select {
     my $self  = shift;
-    my $brain = $self->app->brain;
+    my $redis = $self->redis;
 
     my $rs
         = $self->DB->resultset('Order')
         ->search( { status_id => $OpenCloset::Monitor::Status::STATUS_SELECT },
         { order_by => { -asc => 'update_date' } } );
 
-    $brain->{data}{select} = {} unless $rs->count;
-    my @active = keys %{ $brain->{data}{select} ||= {} };
-    $self->stash( orders => $rs, active => [@active] );
+    $redis->del("$PREFIX:select") unless $rs->count;
+    my $active = $redis->hkeys("$PREFIX:select");
+    $self->stash( orders => $rs, active => $active );
 }
 
 =head2 preparation
@@ -282,19 +283,17 @@ sub repair {
     my $self = shift;
 
     my $waiting = $self->app->_waiting_list;
-    my $brain   = $self->app->brain;
+    my $redis   = $self->redis;
     my $rs
         = $self->DB->resultset('Order')
         ->search( { status_id => $OpenCloset::Monitor::Status::STATUS_REPAIR },
         { order_by => { -asc => 'update_date' } } );
 
-    my %done;
-    map { $done{$_} = $brain->{data}{repair}{$_} } keys %{ $brain->{data}{repair} };
-
+    my $done = $redis->hgetall("$PREFIX:repair");
     $self->respond_to(
         json => { json => { waiting => $waiting } },
         html => sub {
-            $self->render( orders => $rs, waiting => $waiting, done => {%done} );
+            $self->render( orders => $rs, waiting => $waiting, done => {@$done} );
         }
     );
 }
