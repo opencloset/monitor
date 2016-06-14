@@ -50,10 +50,29 @@ sub selects {
         $redis->del("$PREFIX:clothes");
     }
 
+    my %emptyRoom;
+    for my $n ( 1 .. 11 ) {
+        my $order
+            = $self->DB->resultset('Order')
+            ->search( { status_id => $STATUS_FITTING_ROOM1 + $n - 1 }, { rows => 1 } )
+            ->single;
+        $emptyRoom{$n} = 1 unless $order;
+    }
+
+    while ( my $order = $orders->next ) {
+        my $history = $self->history( { order_id => $order->id } )->next;
+        next unless $history;
+
+        delete $emptyRoom{ $history->room_no };
+    }
+
+    $orders->reset;
+
     $self->render(
         orders        => $orders,
         select_active => $select_active,
-        suggestion    => \%suggestion
+        suggestion    => \%suggestion,
+        emptyRooms    => [keys %emptyRoom],
     );
 }
 
