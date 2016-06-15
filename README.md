@@ -23,9 +23,10 @@ v0.8.0
 
     $ grunt
 
-    $ ln -s app.conf.sample monitor.conf
+    $ ln -s monitor.conf.sample monitor.conf
     $ MOJO_CONFIG=monitor.conf morbo -l 'http://*:5000' scripts/monitor    # http://localhost:5000
 
+    $ OPENCLOSET_MONITOR_EMAIL=xx OPENCLOSET_MONITOR_PASSWORD=xx perl bin/suggestion_consumer.pl &
 ## 환경변수 ##
 
 - `OPENCLOSET_WHITELIST`
