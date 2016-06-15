@@ -48,5 +48,4 @@ $db_opts->{AutoCommit} //= 1;
     },
     sms_from => $SMS_FROM,
     queue    => { path => '/tmp/opencloset/monitor' },
-    select_display_max => 10,
 };

@@ -210,8 +210,7 @@
 </div>
 
 % my $recents = recent_orders($order);
-% my $hard_limit = app->config->{select_display_max};
-% my $limit      = $hard_limit ? $hard_limit - scalar(@$order) : 5;
+% my $limit   = 10 - scalar @$recents;
 <div class="row">
   <div class="pre_order">
     <ul class="list-inline">
