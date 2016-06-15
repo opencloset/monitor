@@ -210,6 +210,7 @@
 </div>
 
 % my $recents = recent_orders($order);
+% my $limit   = 10 - scalar @$recents;
 <div class="row">
   <div class="pre_order">
     <ul class="list-inline">
@@ -217,7 +218,7 @@
         %= include 'partials/recent-clothes', order => $order;
       % }
       % if ($s) {
-        %= include 'partials/suggestion-clothes', suggestion => $s->{result};
+        %= include 'partials/suggestion-clothes', suggestion => $s->{result}, limit => $limit;
       % }
     </ul>
   </div>
