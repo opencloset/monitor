@@ -22,7 +22,7 @@
       % $color        = $clothes->color || '';
       % $size         = $clothes->topbelly if $category eq $JACKET;
       % $size         = $clothes->waist    if $category eq $PANTS;
-      % $size         = $clothes->hip      if $category eq $SKIRT;
+      % $size         = $clothes->hip . ' ' . $clothes->waist if $category eq $SKIRT;
       <li>
         % my $decimal_code = code2decimal($code);
         % my $tooltip = join(' ', $decimal_code, $donation ? $donation->user->name : '', $color, $comment);
