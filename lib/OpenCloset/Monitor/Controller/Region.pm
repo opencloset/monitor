@@ -119,7 +119,13 @@ sub status_repair {
     my @repair = $self->DB->resultset('Order')->search( { status_id => $STATUS_REPAIR },
         { order_by => { -asc => 'update_date' } } );
 
-    $redis->del("$PREFIX:repair") unless @repair;
+    my $boxing = $self->DB->resultset('Order')->search_literal(
+        'status_id = ? AND HOUR(booking.date) != ?',
+        ( $STATUS_BOXING, 22 ),
+        { join => 'booking', order_by => { -asc => 'update_date' } }
+    )->count;
+
+    $redis->del("$PREFIX:repair") unless @repair or $boxing;
 
     my $done = $redis->hgetall("$PREFIX:repair");
     $self->render( repair => [@repair], done => {@$done} );
