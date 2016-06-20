@@ -15,14 +15,14 @@
     <div id="selected" class="text-muted"></div>
   </div>
   <div class="form-group">
-    <textarea name="text" class="form-control" rows="3" placeholder="전송할 문자메세지"></textarea>
+    <textarea name="text" class="form-control" rows="10" placeholder="전송할 문자메세지"></textarea>
   </div>
   <ul class="list-inline">
     <li>
-      <span class="sms-macro label label-default" title="[열린옷장] CJ대한통운/1234-1234-1234 반납 시, 설문지와 함께 받은 상자에 담아 보내주세요^^">온라인 배송 후 안내 (첫대여)</span>
+      <span class="sms-macro label label-default">온라인 배송 후 안내 (첫대여)</span>
     </li>
     <li>
-      <span class="sms-macro label label-default" title="[열린옷장] CJ대한통운/2021-4884-2021, 택배 반납 시, 12/24에 받은 상자에 담아 보내주세요^^">온라인 배송 후 안내 (재대여)</span>
+      <span class="sms-macro label label-default">온라인 배송 후 안내 (재대여)</span>
     </li>
     <li>
       <span class="sms-macro label label-default" title="[열린옷장] 대여 금액 xxxxx원,금일 오후 1시까지 입금해주세요. 국민은행 205737-04-003013 열린옷장/시간내 미확인시 자동 취소됩니다.">온라인 입금 안내</span>
