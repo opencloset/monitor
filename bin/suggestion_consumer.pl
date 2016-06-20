@@ -22,8 +22,6 @@ $redis->on( error => sub { print STDERR "[REDIS ERROR]: $_[1]" } );
 
 my $redis_channel = 'opencloset:monitor';
 my $dirq          = Directory::Queue->new( path => $config->{queue}{path} );
-my $cookie        = _auth_opencloset($config);
-my $http          = HTTP::Tiny->new( timeout => 10, cookie_jar => $cookie );
 my $opencloset    = $config->{opencloset};
 
 while (1) {
@@ -39,7 +37,9 @@ while (1) {
             next;
         }
 
-        my $url = $opencloset->{uri} . "/api/user/$user_id/search/clothes.json";
+        my $cookie = _auth_opencloset($config);
+        my $http   = HTTP::Tiny->new( timeout => 10, cookie_jar => $cookie );
+        my $url    = $opencloset->{uri} . "/api/user/$user_id/search/clothes.json";
 
         print "--> Working on $user_id\n";
         print "Fetching $url ... ";
