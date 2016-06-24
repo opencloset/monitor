@@ -13,6 +13,8 @@ use Path::Tiny;
 use FindBin qw($Bin);
 use lib "$Bin/../lib";
 
+STDOUT->autoflush(1);
+
 our $PREFIX = 'opencloset:storage';
 
 my $config = require "$Bin/../monitor.conf";
