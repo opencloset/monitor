@@ -1,3 +1,4 @@
+% use OpenCloset::Constants::Category qw/$SKIRT/;
 % my $cnt = 0;
 % for my $s (@$suggestion) {
   % last if ++$cnt > $limit;
@@ -12,6 +13,7 @@
   % my $color_bottom  = $rs_bottom->color || '';
   % my $tooltip_top    = join(' ', code2decimal($top), $donation_name, $color_top, $rs_top->comment || '');
   % my $tooltip_bottom = join(' ', code2decimal($bottom), $donation_name, $color_bottom, $rs_bottom->comment || '');
+  % my $category_bottom = $rs_bottom->category;
   <li>
     <ul>
       <span class="label label-info"><%= $count %></span>
@@ -24,7 +26,11 @@
       <li>
         <span class="order-status label <%= $color_bottom %>" data-toggle="tooltip" data-placement="right" title="<%= $tooltip_bottom %>">
           %= $bottom
-          %= $rs_bottom->waist || ''
+          % if ($category_bottom eq $SKIRT) {
+            %= $rs_bottom->hip . ' ' . $rs_bottom->waist
+          % } else {
+            %= $rs_bottom->waist || ''
+          % }
         </span>
       </li>
     </ul>
