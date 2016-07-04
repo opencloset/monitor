@@ -93,7 +93,7 @@ sub rooms {
         my $room;
         my $order = $self->DB->resultset('Order')
             ->search( { status_id => $STATUS_FITTING_ROOM1 + $n - 1 } )->next;
-        $active[$n] = $redis->hget( "$PREFIX:room", $order->id ) if $order;
+        $active[$n] = $redis->hget( "$PREFIX:room", $n );
         $room[$n] = $order;
     }
 

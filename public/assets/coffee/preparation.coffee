@@ -77,10 +77,12 @@ $ ->
           complete: (jqXHR, textStatus) ->
       when 'user'
         reloadSelect()
-      when 'active.room', 'active.select'
+      when 'active.select'
         $("[data-order-id=#{data.order_id}]").toggleClass('active')
+      when 'active.room'
+        $("[data-room-no=#{data.room_no}]").toggleClass('active')
       when 'active.refresh'
-        $("#room-#{data.order_id} .p-refresh").remove()
+        $("#room-#{data.room_no} .p-refresh").remove()
       when 'brain'
         $('#knock audio').trigger('play')
         $('#repair .repair-done').removeClass('text-success')
@@ -95,15 +97,15 @@ $ ->
   ##---------------------
   $('#fitting-room').on 'click', '.room', (e) ->
     e.preventDefault()
-    $this = $(@)
-    order_id = $this.data('order-id')
+    $this   = $(@)
+    room_no = $this.data('room-no')
     if $this.hasClass('active')
-      path = "/active/#{order_id}?key=room"
+      path = "/active/#{room_no}?key=room"
       method = 'DELETE'
     else
       path = "/active?key=room"
       method = 'POST'
-      data = { order_id: order_id }
+      data = { room_no: room_no }
     $.ajax path,
       type: method
       data: data
@@ -130,14 +132,12 @@ $ ->
         console.log textStatus
       complete: (jqXHR, textStatus) ->
 
-  $('#fitting-room').on 'click', '.room .empty', (e) ->
+  $('#fitting-room').on 'click', '.room .p-refresh', (e) ->
     e.preventDefault()
     e.stopPropagation()
     $this = $(@)
-    $p = $this.find('.p-refresh')
-    return unless $p.length
 
-    room_no = $this.find('h3').text().trim().substring(1)
+    room_no = $this.closest('.room').data('room-no')
     $.ajax "/active/#{room_no}?key=refresh",
       type: 'DELETE'
       success: (data, textStatus, jqXHR) ->

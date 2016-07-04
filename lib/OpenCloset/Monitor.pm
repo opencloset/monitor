@@ -81,7 +81,7 @@ sub _private_routes {
     $r->get('/online')->to('dashboard#online')->name('online');
 
     $r->post('/active')->to('dashboard#create_active');
-    $r->delete('/active/:order_id')->to('dashboard#delete_active');
+    $r->delete('/active/:value')->to('dashboard#delete_active');
 
     $r->post('/events')->to('event#create');
 
