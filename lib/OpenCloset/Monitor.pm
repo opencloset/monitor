@@ -7,7 +7,7 @@ use OpenCloset::Monitor::Schema;
 use OpenCloset::Schema;
 use OpenCloset::Monitor::Status;
 
-use version; our $VERSION = qv("v0.8.5");
+use version; our $VERSION = qv("v0.8.6");
 
 has ranges => sub { Net::IP::AddrRanges->new };
 has DB => sub {
@@ -81,7 +81,7 @@ sub _private_routes {
     $r->get('/online')->to('dashboard#online')->name('online');
 
     $r->post('/active')->to('dashboard#create_active');
-    $r->delete('/active/:order_id')->to('dashboard#delete_active');
+    $r->delete('/active/:value')->to('dashboard#delete_active');
 
     $r->post('/events')->to('event#create');
 
