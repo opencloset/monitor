@@ -106,6 +106,8 @@ sub index {
 
 =item order_id
 
+=item room_no
+
 =back
 
 =cut
@@ -115,7 +117,8 @@ sub create_active {
 
     my $v = $self->validation;
     $v->required('key');
-    $v->required('order_id');
+    $v->optional('order_id');
+    $v->optional('room_no');
 
     if ( $v->has_error ) {
         my $failed = $v->failed;
@@ -125,26 +128,31 @@ sub create_active {
 
     my $key      = $v->param('key');
     my $order_id = $v->param('order_id');
+    my $room_no  = $v->param('room_no');
+    my $value    = $order_id || $room_no;
 
-    $self->redis->hset( "$PREFIX:$key", $order_id, 1 );
+    $self->redis->hset( "$PREFIX:$key", $value, 1 );
 
     my $channel = $self->app->redis_channel;
-    $self->redis->publish( "$channel:active" =>
-            decode_utf8( j( { sender => "active.$key", order_id => $order_id } ) ) );
+    $self->redis->publish(
+        "$channel:active" => decode_utf8(
+            j( { sender => "active.$key", order_id => $order_id, room_no => $room_no } )
+        )
+    );
 
-    $self->render( text => "Successfully posted order_id($order_id)", status => 201 );
+    $self->render( text => "Successfully posted $key($value)", status => 201 );
 }
 
 
 =head2 delete_active
 
-    DELETE /active/:order_id
+    DELETE /active/:value
 
 =cut
 
 sub delete_active {
-    my $self     = shift;
-    my $order_id = $self->param('order_id');
+    my $self  = shift;
+    my $value = $self->param('value');
 
     my $v = $self->validation;
     $v->required('key');
@@ -156,12 +164,25 @@ sub delete_active {
     }
 
     my $key = $v->param('key');
-    $self->redis->hdel( "$PREFIX:$key", $order_id );
+    $self->redis->hdel( "$PREFIX:$key", $value );
+
+    my ( $order_id, $room_no );
+    if ( $key eq 'select' ) {
+        $order_id = $value;
+    }
+    else {
+        ## 'room' or 'refresh'
+        $room_no = $value;
+    }
 
     my $channel = $self->app->redis_channel;
-    $self->redis->publish( "$channel:active" =>
-            decode_utf8( j( { sender => "active.$key", order_id => $order_id } ) ) );
-    $self->render( text => "Successfully deleted order_id($order_id)", status => 201 );
+    $self->redis->publish(
+        "$channel:active" => decode_utf8(
+            j( { sender => "active.$key", order_id => $order_id, room_no => $room_no } )
+        )
+    );
+
+    $self->render( text => "Successfully deleted $key($value)", status => 201 );
 }
 
 =head2 room
