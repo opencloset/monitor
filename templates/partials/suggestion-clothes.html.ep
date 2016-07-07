@@ -2,7 +2,7 @@
 % my $cnt = 0;
 % for my $s (@$suggestion) {
   % last if ++$cnt > $limit;
-  % my ($top, $bottom, $count) = @$s;
+  % my ($top, $bottom, $rss, $count) = @$s;
   % $top    =~ s/^0//;
   % $bottom =~ s/^0//;
   % my $rs_top    = get_clothes($top);
@@ -16,7 +16,7 @@
   % my $category_bottom = $rs_bottom->category;
   <li>
     <ul>
-      <span class="label label-info"><%= $count %></span>
+      <span class="label label-info"><%= sprintf "%.2f", $rss %></span>
       <li>
         <span class="order-status label <%= $color_top %>" data-toggle="tooltip" data-placement="right" title="<%= $tooltip_top %>">
           %= $top
