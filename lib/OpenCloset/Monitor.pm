@@ -7,7 +7,7 @@ use OpenCloset::Monitor::Schema;
 use OpenCloset::Schema;
 use OpenCloset::Monitor::Status;
 
-use version; our $VERSION = qv("v0.8.8");
+use version; our $VERSION = qv("v0.8.9");
 
 has ranges => sub { Net::IP::AddrRanges->new };
 has DB => sub {
@@ -63,7 +63,13 @@ sub _whitelist {
     $self->ranges->add( @{ $self->config->{whitelist} ||= [] } );
 }
 
-sub _public_routes { }
+sub _public_routes {
+    my $self = shift;
+    my $r    = $self->routes;
+
+    $r->get('/target_date')->to('API#target_dt')->name('api.target_date');
+    $r->options('/target_date')->to('API#cors');
+}
 
 sub _private_routes {
     my $self   = shift;
@@ -93,8 +99,6 @@ sub _private_routes {
     $r->get('/address')->to('API#address')->name('address');
     $r->post('/sms')->to('API#create_sms')->name('sms.create');
     $r->put('/brain')->to('API#update_brain')->name('brain.update');
-    $r->get('/target_date')->to('API#target_dt')->name('api.target_date');
-    $r->options('/target_date')->to('API#cors');
 
     $region->get('/selects')->to('region#selects')->name('region.selects');
     $region->get('/rooms')->to('region#rooms')->name('region.rooms');
