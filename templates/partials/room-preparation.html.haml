@@ -20,3 +20,6 @@
   %p.timeago
     %small
       %abbr.timeago{:title => '#{$order->update_date->ymd}T#{$order->update_date->hms}Z'}= $order->update_date
+  %p
+    %small
+      = $user_info->purpose || ''
