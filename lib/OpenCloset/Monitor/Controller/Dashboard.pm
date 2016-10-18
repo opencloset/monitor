@@ -34,10 +34,7 @@ sub index {
         ## 임시로 skip
         next unless $order->booking;
         next unless $order->booking->date;
-        
-        ## 임시로 skip, 22:00 는 온라인 대여자
-        my $booking_date = $order->booking->date;
-        next if $booking_date->hour == '22';
+        next if $order->online;
 
         my $status_id = $order->status_id;
         use experimental qw/ smartmatch /;
@@ -333,12 +330,14 @@ sub repair {
 sub online {
     my $self = shift;
 
-    ## 22:00 주문서는 온라인 주문서
     ## 각 상태별 주문서를 남녀별로
     my $rs = $self->DB->resultset('Order')->search(
-        { status_id => { -in  => [@OpenCloset::Monitor::Status::ACTIVE_STATUS] } },
-        { order_by  => { -asc => 'update_date' }, join => 'booking' }
-    )->search_literal( 'HOUR(`booking`.`date`) = ?', 22 );
+        {
+            status_id => { -in => [@OpenCloset::Monitor::Status::ACTIVE_STATUS] },
+            online    => 1,
+        },
+        { order_by => { -asc => 'update_date' }, join => 'booking' }
+    );
 
     my ( @visit, @measure, @select, @undress, @repair, @boxing, @payment );
     while ( my $order = $rs->next ) {

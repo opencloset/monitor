@@ -23,9 +23,10 @@ has DB => sub { shift->app->DB };
 sub selects {
     my $self = shift;
 
-    my $orders = $self->DB->resultset('Order')->search( { status_id => $STATUS_SELECT },
-        { order_by => { -asc => 'update_date' }, join => 'booking' } )
-        ->search_literal( 'HOUR(`booking`.`date`) != ?', 22 );
+    my $orders
+        = $self->DB->resultset('Order')
+        ->search( { status_id => $STATUS_SELECT, online => 0, },
+        { order_by => { -asc => 'update_date' }, join => 'booking' } );
 
     my $redis = $self->redis;
     my $dirq = Directory::Queue->new( path => $self->config->{queue}{path} );
@@ -119,10 +120,9 @@ sub status_repair {
     my @repair = $self->DB->resultset('Order')->search( { status_id => $STATUS_REPAIR },
         { order_by => { -asc => 'update_date' } } );
 
-    my $boxing = $self->DB->resultset('Order')->search_literal(
-        'status_id = ? AND HOUR(booking.date) != ?',
-        ( $STATUS_BOXING, 22 ),
-        { join => 'booking', order_by => { -asc => 'update_date' } }
+    my $boxing = $self->DB->resultset('Order')->search(
+        { status_id => $STATUS_BOXING, online => 0, },
+        { order_by => { -asc => 'update_date' } }
     )->count;
 
     $redis->del("$PREFIX:repair") unless @repair or $boxing;
@@ -140,10 +140,9 @@ sub status_repair {
 sub status_boxing {
     my $self = shift;
 
-    my @boxing = $self->DB->resultset('Order')->search_literal(
-        'status_id = ? AND HOUR(booking.date) != ?',
-        ( $STATUS_BOXING, 22 ),
-        { join => 'booking', order_by => { -asc => 'update_date' } }
+    my @boxing = $self->DB->resultset('Order')->search(
+        { status_id => $STATUS_BOXING, online => 0, },
+        { order_by => { -asc => 'update_date' } }
     );
 
     $self->render( boxing => [@boxing] );

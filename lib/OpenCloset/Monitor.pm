@@ -120,16 +120,18 @@ sub _waiting_list {
     my $self = shift;
 
     ## 각 상태별 주문서의 갯수 를 남녀별로
-    ## 22:00 주문서는 온라인 주문서이기 때문에 제외
     my $rs = $self->DB->resultset('Order')->search(
-        { status_id => { -in => [@OpenCloset::Monitor::Status::ACTIVE_STATUS] }, },
+        {
+            status_id => { -in => [@OpenCloset::Monitor::Status::ACTIVE_STATUS] },
+            online    => 0,
+        },
         {
             select => ['status_id', 'user_info.gender', { count => 'status_id' }],
             as       => [qw/status_id gender cnt/],
             group_by => ['status_id', 'user_info.gender'],
             join     => ['booking', { user => 'user_info' }]
         }
-    )->search_literal('HOUR(`booking`.`date`) != 22');
+    );
 
     my %waiting;
     while ( my $row = $rs->next ) {
