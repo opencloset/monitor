@@ -109,9 +109,15 @@
 
     <ul>
       <li>
+        % if ($gender eq 'male') {
         <span class="label label-info" title="목둘레">
           %= $user_info->neck || 0
         </span>
+        % } else {
+        <span class="label label-info" title="허벅지">
+          %= $user_info->thigh || 0
+        </span>
+        % }
       </li>
       <li>
         <span class="label label-info" title="발">
