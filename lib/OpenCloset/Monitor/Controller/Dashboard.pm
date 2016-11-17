@@ -31,6 +31,10 @@ sub index {
 
     my ( @visit, @measure, @select, @undress, @repair, @boxing, @payment );
     while ( my $order = $rs->next ) {
+        ## 임시로 skip
+        next unless $order->booking;
+        next unless $order->booking->date;
+        
         ## 임시로 skip, 22:00 는 온라인 대여자
         my $booking_date = $order->booking->date;
         next if $booking_date->hour == '22';
