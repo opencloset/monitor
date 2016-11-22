@@ -220,6 +220,9 @@ $ ->
     user_id  = $this.data('user-id')
     updateUser user_id, { category: category }, ->
       $this.toggleClass('text-info text-muted')
+
+  $('#select').on 'click', '.external-link', (e) ->
+    e.stopPropagation()
   ##---------------------
   ## functions
   ##---------------------
