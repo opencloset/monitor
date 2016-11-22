@@ -19,7 +19,14 @@
       <i class="fa fa-<%= $gender %>"></i>
       %= $user->name
     </h1>
-    <h2 class="age"><%= age($user_info->birth) %></h2>
+    <h2 class="age">
+      <%= age($user_info->birth) %>
+      <small>
+        <a href="<%= $config->{opencloset}{uri} %>/user/<%= $user->id %>" target="_blank" class="external-link" title="사용자정보">
+          <i class="fa fa-external-link" aria-hidden="true"></i>
+        </a>
+      </small>
+    </h2>
     <p class="timeago">
       <abbr class="timeago" title="<%= $order->update_date->ymd %>T<%= $order->update_date->hms %>Z">
         %= $order->update_date
