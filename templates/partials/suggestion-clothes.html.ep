@@ -11,20 +11,22 @@
   % my $donation_name = $rs_top->donation->user->name;
   % my $color_top     = $rs_top->color || '';
   % my $color_bottom  = $rs_bottom->color || '';
-  % my $tooltip_top    = join(' ', code2decimal($top), $donation_name, $color_top, $rs_top->comment || '');
-  % my $tooltip_bottom = join(' ', code2decimal($bottom), $donation_name, $color_bottom, $rs_bottom->comment || '');
+  % my @top_tags      = map { $_->name } $rs_top->tags;
+  % my @bottom_tags   = map { $_->name } $rs_top->tags;
+  % my $title_top    = join(' ', code2decimal($top), $donation_name, $color_top, $rs_top->comment || '');
+  % my $title_bottom = join(' ', code2decimal($bottom), $donation_name, $color_bottom, $rs_bottom->comment || '');
   % my $category_bottom = $rs_bottom->category;
   <li>
     <ul>
       <span class="label label-info"><%= sprintf "%.2f", $rss %></span>
       <li>
-        <span class="order-status label <%= $color_top %>" data-toggle="tooltip" data-placement="right" title="<%= $tooltip_top %>">
+        <span class="order-status label <%= $color_top %>" data-toggle="popover" data-placement="right" title="<%= $title_top %>" data-content="<%= join(', ', @top_tags) %>">
           %= $top
           %= $rs_top->topbelly || ''
         </span>
       </li>
       <li>
-        <span class="order-status label <%= $color_bottom %>" data-toggle="tooltip" data-placement="right" title="<%= $tooltip_bottom %>">
+        <span class="order-status label <%= $color_bottom %>" data-toggle="popover" data-placement="right" title="<%= $title_bottom %>" data-content="<%= join(', ', @bottom_tags) %>">
           %= $bottom
           % if ($category_bottom eq $SKIRT) {
             %= $rs_bottom->hip . ' ' . $rs_bottom->waist
