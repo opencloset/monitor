@@ -375,7 +375,7 @@ $ ->
 
   afterLoadedSelect = ->
     afterLoaded.apply(@)
-    $(@).find('[data-toggle="tooltip"]').tooltip()
+    $(@).find('[data-toggle="popover"]').popover({ trigger: 'hover' })
     registerContextMenuSelect()
 
   afterLoadedRoom = ->
