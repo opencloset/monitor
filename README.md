@@ -27,6 +27,7 @@ v0.9.1
     $ MOJO_CONFIG=monitor.conf morbo -l 'http://*:5000' scripts/monitor    # http://localhost:5000
 
     $ OPENCLOSET_MONITOR_EMAIL=xx OPENCLOSET_MONITOR_PASSWORD=xx perl bin/suggestion_consumer.pl &
+
 ## 환경변수 ##
 
 - `OPENCLOSET_WHITELIST`
@@ -50,3 +51,27 @@ defaults to `8002`
 defaults to `monitor@theopencloset.net`
 
 - `OPENCLOSET_MONITOR_PASSWORD`
+
+## FAQ ##
+
+### WRONGTYPE Operation against a key holding the wrong kind of value 오류 발생
+
+실행 시 다음과 같은 오류가 발생할 수 있습니다.
+
+```
+[HGET opencloset:storage expiration] WRONGTYPE Operation against a key holding the wrong kind of value
+```
+
+이 경우 예전 버전의 `opencloset:storage` 키 유형 때문에 발생합니다.
+다음 명령을 이용해서 해당 키를 제거한 다음 구동하면 정상 동작합니다.
+
+```
+$ redis-cli
+127.0.0.1:6379> hget opencloset:storage expiration
+(error) WRONGTYPE Operation against a key holding the wrong kind of value
+127.0.0.1:6379> del opencloset:storage
+(integer) 1
+127.0.0.1:6379> hkeys opencloset:storage
+(empty list or set)
+$
+```
