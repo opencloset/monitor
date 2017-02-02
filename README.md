@@ -4,7 +4,7 @@ Dashboard in waiting room
 
 ## Version ##
 
-v0.9.1
+v0.9.2
 
 ## 요구사항 ##
 
