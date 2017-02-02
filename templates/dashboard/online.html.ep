@@ -106,7 +106,9 @@ http://goo.gl/l1hGQo
       <td>
         <ul>
           % for my $order (@$group) {
-            % my $booking_date = $order->booking->date;
+            % my $booking = $order->booking;
+            % next unless $booking;
+            % my $booking_date = $booking->date;
             % my $ymd = $booking_date->ymd;
             % my $hms = $booking_date->hms;
             % my $hhmm = sprintf "%02d%02d", $booking_date->hour, $booking_date->minute;
