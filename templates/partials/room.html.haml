@@ -21,7 +21,7 @@
     = substr $order->booking->date->hms, 0, 5
   %p.timeago
     %small
-      %abbr.timeago{:title => '#{$order->update_date->ymd}T#{$order->update_date->hms}Z'}= $order->update_date
+      %abbr.timeago{:title => '#{$order->update_date->ymd}T#{$order->update_date->hms}'}= $order->update_date
   %ul
     %li
       %span.label.label-success{:title => '윗배'}= $user_info->topbelly || 0
