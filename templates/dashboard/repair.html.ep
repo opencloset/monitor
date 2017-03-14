@@ -26,7 +26,7 @@
           <i class="fa fa-<%= $gender%> <%= $gender %>"></i> <%= $user->name %>
           <small>
             <abbr class="timeago" 
-                  title="<%= $order->update_date->ymd %>T<%= $order->update_date->hms %>Z">
+                  title="<%= $order->update_date->ymd %>T<%= $order->update_date->hms %>">
               <%= $order->update_date %>
             </abbr>
           </small>

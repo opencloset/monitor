@@ -14,7 +14,7 @@
     <strong class="name<%= $bestfit ? ' bestfit' : ''%>"><%= $user->name %></strong>
     <span class="timeago">
       <small>
-        <abbr class="timeago" title="<%= $order->update_date->ymd %>T<%= $order->update_date->hms %>Z">
+        <abbr class="timeago" title="<%= $order->update_date->ymd %>T<%= $order->update_date->hms %>">
           %= $order->update_date
         </abbr>
       </small>

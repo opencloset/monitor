@@ -28,7 +28,7 @@
       </small>
     </h2>
     <p class="timeago">
-      <abbr class="timeago" title="<%= $order->update_date->ymd %>T<%= $order->update_date->hms %>Z">
+      <abbr class="timeago" title="<%= $order->update_date->ymd %>T<%= $order->update_date->hms %>">
         %= $order->update_date
       </abbr>
     </p>

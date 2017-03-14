@@ -118,7 +118,7 @@ http://goo.gl/l1hGQo
                 <span class="label label-info">
                   %= $order->user->name
                   <span class="date"><%= $hms %></span>
-                  <abbr class="timeago" title="<%= $order->create_date%>Z"><%= $order->create_date . 'Z' %></abbr>
+                  <abbr class="timeago" title="<%= $order->create_date %>"><%= $order->create_date %></abbr>
                 </span>
               </a>
             </li>

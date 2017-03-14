@@ -19,7 +19,7 @@
     = substr $order->booking->date->hms, 0, 5
   %p.timeago
     %small
-      %abbr.timeago{:title => '#{$order->update_date->ymd}T#{$order->update_date->hms}Z'}= $order->update_date
+      %abbr.timeago{:title => '#{$order->update_date->ymd}T#{$order->update_date->hms}'}= $order->update_date
   %p
     %small
       = $user_info->purpose || ''
