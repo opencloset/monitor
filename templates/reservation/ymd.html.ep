@@ -1,0 +1,31 @@
+% layout 'reservation';
+% title '예약확인', jses => [
+%   '/assets/components/typeahead.js/dist/typeahead.bundle.min.js',
+%   '/assets/components/handlebars/handlebars.runtime.min.js',
+%   '/assets/dist/js/templates.min.js',
+%   '/assets/dist/js/reservation.min.js'
+% ];
+
+<div class="row">
+  <div class="col-sm-6 col-sm-offset-3">
+    <div id="imaginary_container">
+      <div class="text-center">
+        <h2>
+          열린옷장 예약확인
+        </h2>
+        <p class="help-block">
+          Email 혹은 전화번호로 검색할 수 있습니다.<br>
+        </p>
+      </div>
+      <div class="input-group stylish-input-group">
+        <input name="q" type="text" id="query" class="form-control input-lg typeahead" placeholder="Search">
+        <span class="input-group-addon">
+          <button type="submit">
+            <span class="glyphicon glyphicon-search"></span>
+          </button>
+        </span>
+      </div>
+      <div id="selected" class="text-muted"></div>
+    </div>
+  </div>
+</div>
