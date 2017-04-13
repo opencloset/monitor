@@ -100,6 +100,10 @@ sub _private_routes {
     $r->post('/sms')->to('API#create_sms')->name('sms.create');
     $r->put('/brain')->to('API#update_brain')->name('brain.update');
 
+    $r->get('/reservation')->to('reservation#index');
+    $r->get('/reservation/:ymd')->to('reservation#ymd');
+    $r->get('/reservation/:ymd/search')->to('reservation#search');
+
     $region->get('/selects')->to('region#selects')->name('region.selects');
     $region->get('/rooms')->to('region#rooms')->name('region.rooms');
     $region->get('/status/repair')->to('region#status_repair');
