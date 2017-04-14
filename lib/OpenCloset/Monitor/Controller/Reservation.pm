@@ -5,7 +5,7 @@ use DateTime;
 use DateTime::Format::ISO8601;
 use Try::Tiny;
 
-use OpenCloset::Constants::Status qw/$RESERVATED $RETURNED/;
+use OpenCloset::Constants::Status qw/$RESERVATED $RETURNED $VISITED/;
 
 has DB => sub { shift->app->DB };
 
@@ -24,6 +24,37 @@ sub index {
     my $tz = $self->config->{timezone};
     my $today = DateTime->today( time_zone => $tz );
     $self->redirect_to( '/reservation/' . $today->ymd );
+}
+
+=head2 visit
+
+    GET /reservation/visit?order_id=xxx
+
+=cut
+
+sub visit {
+    my $self     = shift;
+    my $order_id = $self->param('order_id');
+
+    my $order = $self->DB->resultset('Order')->find( { id => $order_id } );
+    return $self->error( 404, { str => "Not found order: $order_id" } ) unless $order;
+
+    my $opencloset = $self->config->{opencloset};
+    my $cookie     = $self->app->_auth_opencloset;
+    my $http       = HTTP::Tiny->new( timeout => 3, cookie_jar => $cookie );
+    my $url        = $opencloset->{uri} . "/api/order/$order_id.json";
+    my $res        = $http->request(
+        'PUT', $url,
+        {
+            content => $http->www_form_urlencode( { status_id => $VISITED } ),
+            headers => { 'content-type' => 'application/x-www-form-urlencoded' }
+        }
+    );
+
+    return $self->error( 500, { str => 'Failed to update order' } )
+        unless $res->{success};
+
+    return $self->redirect_to('/reservation');
 }
 
 =head2 ymd
@@ -125,32 +156,8 @@ sub search {
         my $coupon_desc = $coupon ? $coupon->desc : '';
         my $event_seoul = $coupon_desc =~ m/^seoul/;
 
-        #
-        # GH 1142: 대여 화면에서 예약자의 이전 방문 기록 확인
-        #
-        my $visited = 0;
-        my $ago     = 0;
-        {
-            my $visited_order_rs = $user->orders(
-                { status_id => $RETURNED, parent_id => undef, },
-                { order_by => { -desc => 'return_date' } },
-            );
-
-            $visited = $visited_order_rs->count;
-            my $last_order = $visited_order_rs->first;
-            if ($last_order) {
-                my $booking            = $order->booking;
-                my $last_order_booking = $last_order->booking;
-                if ( $booking && $last_order_booking ) {
-                    my $dur = $booking->date->delta_days( $last_order_booking->date );
-                    $ago = $dur->delta_days;
-                }
-            }
-        }
-
         push @orders,
             {
-            ago          => $ago,
             booking      => substr( $order->booking->date, 11, 5 ),
             email        => $user->email,
             event_seoul  => $event_seoul,
@@ -160,7 +167,6 @@ sub search {
             phone        => $user_info->phone,
             pre_category => $user_info->pre_category,
             user_id      => $user->id,
-            visited      => $visited,
             return_memo  => $order->return_memo,
             };
     }
