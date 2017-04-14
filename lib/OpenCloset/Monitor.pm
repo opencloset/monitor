@@ -1,7 +1,10 @@
 package OpenCloset::Monitor;
 use Mojo::Base 'Mojolicious';
 
+use HTTP::CookieJar;
+use HTTP::Tiny;
 use Net::IP::AddrRanges;
+use Path::Tiny;
 
 use OpenCloset::Monitor::Schema;
 use OpenCloset::Schema;
@@ -101,6 +104,7 @@ sub _private_routes {
     $r->put('/brain')->to('API#update_brain')->name('brain.update');
 
     $r->get('/reservation')->to('reservation#index');
+    $r->get('/reservation/visit')->to('reservation#visit');
     $r->get('/reservation/:ymd')->to('reservation#ymd');
     $r->get('/reservation/:ymd/search')->to('reservation#search');
 
@@ -159,6 +163,41 @@ sub _waiting_list {
     }
 
     return \%waiting;
+}
+
+=head2 _auth_opencloset
+
+=cut
+
+sub _auth_opencloset {
+    my $self = shift;
+
+    my $opencloset = $self->config->{opencloset};
+    my $cookie     = path( $opencloset->{cookie} )->touch;
+    my $cookiejar  = HTTP::CookieJar->new->load_cookies( $cookie->lines );
+    my $http       = HTTP::Tiny->new( timeout => 3, cookie_jar => $cookiejar );
+
+    my ($cookies) = $cookiejar->cookies_for( $opencloset->{uri} );
+    my $expires   = $cookies->{expires};
+    my $now       = DateTime->now->epoch;
+    if ( !$expires || $expires < $now ) {
+        my $email    = $opencloset->{email};
+        my $password = $opencloset->{password};
+        my $url      = $opencloset->{uri} . "/login";
+        my $res      = $http->post_form( $url,
+            { email => $email, password => $password, remember => 1 } );
+
+        ## 성공일때 응답코드가 302 인데, 이는 실패했을때와 마찬가지이다.
+        if ( $res->{status} == 302 && $res->{headers}{location} eq '/' ) {
+            $cookie->spew( join "\n", $cookiejar->dump_cookies );
+        }
+        else {
+            $self->app->log->error("Failed Authentication to Opencloset");
+            $self->app->log->error("$res->{status} $res->{reason}");
+        }
+    }
+
+    return $cookiejar;
 }
 
 1;
