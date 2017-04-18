@@ -12,6 +12,7 @@ requires 'Mojolicious::Plugin::Validator';
 requires 'Net::IP::AddrRanges';
 requires 'Path::Tiny';
 requires 'Time::HiRes';
+requires 'Try::Tiny';
 requires 'experimental';
 
 # cpan.theopencloset.net
