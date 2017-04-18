@@ -1,13 +1,20 @@
 package OpenCloset::Monitor;
 use Mojo::Base 'Mojolicious';
 
+use HTTP::CookieJar;
+use HTTP::Tiny;
+use Mojo::JSON qw/j/;
 use Net::IP::AddrRanges;
+use Path::Tiny;
 
 use OpenCloset::Monitor::Schema;
 use OpenCloset::Schema;
 use OpenCloset::Monitor::Status;
 
-use version; our $VERSION = qv("v0.9.4");
+use version; our $VERSION = qv("v0.9.5");
+
+our $PREFIX        = 'opencloset:storage';
+our $REDIS_CHANNEL = 'opencloset:monitor';
 
 has ranges => sub { Net::IP::AddrRanges->new };
 has DB => sub {
@@ -42,6 +49,7 @@ sub startup {
     $self->plugin('haml_renderer');
     $self->plugin('validator');
     $self->plugin('RemoteAddr');
+    $self->plugin( Minion => { SQLite => $self->config->{minion}{SQLite} } );
     $self->secrets( [time] );
     $self->sessions->default_expiration(86400);
 
@@ -49,6 +57,7 @@ sub startup {
     $self->_whitelist;
     $self->_public_routes;
     $self->_private_routes;
+    $self->_add_task;
 }
 
 sub _assets {
@@ -99,6 +108,11 @@ sub _private_routes {
     $r->get('/address')->to('API#address')->name('address');
     $r->post('/sms')->to('API#create_sms')->name('sms.create');
     $r->put('/brain')->to('API#update_brain')->name('brain.update');
+
+    $r->get('/reservation')->to('reservation#index');
+    $r->get('/reservation/visit')->to('reservation#visit');
+    $r->get('/reservation/:ymd')->to('reservation#ymd');
+    $r->get('/reservation/:ymd/search')->to('reservation#search');
 
     $region->get('/selects')->to('region#selects')->name('region.selects');
     $region->get('/rooms')->to('region#rooms')->name('region.rooms');
@@ -155,6 +169,78 @@ sub _waiting_list {
     }
 
     return \%waiting;
+}
+
+=head2 _auth_opencloset
+
+=cut
+
+sub _auth_opencloset {
+    my $self = shift;
+
+    my $opencloset = $self->config->{opencloset};
+    my $cookie     = path( $opencloset->{cookie} )->touch;
+    my $cookiejar  = HTTP::CookieJar->new->load_cookies( $cookie->lines );
+    my $http       = HTTP::Tiny->new( timeout => 3, cookie_jar => $cookiejar );
+
+    my ($cookies) = $cookiejar->cookies_for( $opencloset->{uri} );
+    my $expires   = $cookies->{expires};
+    my $now       = DateTime->now->epoch;
+    if ( !$expires || $expires < $now ) {
+        my $email    = $opencloset->{email};
+        my $password = $opencloset->{password};
+        my $url      = $opencloset->{uri} . "/login";
+        my $res      = $http->post_form( $url,
+            { email => $email, password => $password, remember => 1 } );
+
+        ## 성공일때 응답코드가 302 인데, 이는 실패했을때와 마찬가지이다.
+        if ( $res->{status} == 302 && $res->{headers}{location} eq '/' ) {
+            $cookie->spew( join "\n", $cookiejar->dump_cookies );
+        }
+        else {
+            $self->app->log->error("Failed Authentication to Opencloset");
+            $self->app->log->error("$res->{status} $res->{reason}");
+        }
+    }
+
+    return $cookiejar;
+}
+
+sub _add_task {
+    my $self   = shift;
+    my $minion = $self->minion;
+    $minion->add_task(
+        suggestion => sub {
+            my ( $job, $user_id ) = @_;
+            return unless $user_id;
+
+            my $app = $job->app;
+            my $data = $self->redis->hget( "$PREFIX:clothes", $user_id );
+            return if $data;
+
+            my $opencloset = $self->config->{opencloset};
+            my $cookie     = $self->_auth_opencloset;
+            my $http       = HTTP::Tiny->new( timeout => 10, cookie_jar => $cookie );
+            my $url = $opencloset->{uri} . "/api/user/$user_id/search/clothes.json";
+
+            $self->log->debug("[suggestion] --> Working on $user_id");
+            $self->log->debug("[suggestion] Fetching $url ... ");
+
+            my $res = $http->request( 'GET', $url );
+            unless ( $res->{success} ) {
+                $self->log->error("[suggestion] Failed to GET $url");
+                $self->log->error("[suggestion] ! $res->{reason}");
+                $self->log->error("[suggestion] ! Skip $user_id");
+                return;
+            }
+
+            $self->redis->hset( "$PREFIX:clothes", $user_id, $res->{content} );
+            $self->redis->publish( "$REDIS_CHANNEL:user" => j( { sender => 'user' } ) );
+
+            $self->log->debug("[suggestion] OK");
+            $self->log->debug("[suggestion] Successfully published $user_id");
+        }
+    );
 }
 
 1;

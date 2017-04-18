@@ -1,3 +1,8 @@
+v0.9.5    Tue, 18 Apr 2017 19:03:32 +0900
+  - 방문자 스스로 예약확인 할 수 있는 화면을 추가 (#148)
+  - Queue 시스템 변경 (#151)
+    Directory::Queue -> Minion
+
 v0.9.4    Tue, 14 Mar 2017 12:58:40 +0900
   - jquery.timeago 형식을 UTC 에서 localtime 으로 변경
 
