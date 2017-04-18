@@ -101,24 +101,12 @@ sub search {
 
     my $q = $self->param('q');
     return $self->error( 400, { str => 'Parameter "q" is required' } ) unless $q;
-    return $self->error( 400, { str => 'Query is too short' } ) if length $q < 2;
+    return $self->error( 400, { str => 'Query is too short' } ) if length $q < 10;
 
     my @or;
     if ( $q =~ /^[0-9\-]+$/ ) {
         $q =~ s/-//g;
         push @or, { 'user_info.phone' => { like => "%$q%" } };
-    }
-    elsif ( $q =~ /^[a-zA-Z0-9_\-]+/ ) {
-        if ( $q =~ /\@/ ) {
-            push @or, { email => { like => "%$q%" } };
-        }
-        else {
-            push @or, { email => { like => "%$q%" } };
-            push @or, { name  => { like => "%$q%" } };
-        }
-    }
-    elsif ( $q =~ m/^[ㄱ-힣]+$/ ) {
-        push @or, { name => { like => "%$q%" } };
     }
 
     my ( $yyyy, $mm, $dd ) = $ymd =~ m/^(\d{4})-(\d{2})-(\d{2})$/;
@@ -143,7 +131,7 @@ sub search {
         },
         {
             join => ['booking', { user => 'user_info' }],
-            rows => 10,
+            rows => 1,
             order_by => { -asc => 'booking.date' },
         }
     );
