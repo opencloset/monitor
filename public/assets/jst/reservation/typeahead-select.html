@@ -1,14 +1,25 @@
-<div class="pull-right">
+<div class="text-right">
   <h3>
     {{name}}님 <small>반갑습니다!</small>
-    <a href="/reservation/visit?order_id={{order_id}}" class="btn btn-success btn-update-status">
-      방문확인 버튼을 누르고 입장해주세요
-    </a>
   </h3>
   {{#if event_seoul}}
   <p class="help-block text-right">
-    <i class="fa fa-tag" aria-hidden="true"></i>
+    <i class="fa fa-tag fa-fw" aria-hidden="true"></i>
     취업날개 쿠폰으로 예약하셨습니다.
   </p>
   {{/if}}
 </div>
+
+<hr>
+
+<ul class="help-block">
+  <li>실내화로 갈아신고 대기실에서 기다려 주세요.</li>
+  <li>대기실 정면에 있는 모니터에서 자신의 순서를 확인해 주세요.</li>
+  <li>모든 문의사항은 치수 측정시 옷장지기에게 말해 주세요.</li>
+</ul>
+
+<p>
+  <a href="/reservation/visit?order_id={{order_id}}" class="btn btn-lg btn-success btn-block btn-update-status">
+    방문확인 버튼을 누르고 입장해주세요
+  </a>
+</p>
