@@ -3,6 +3,7 @@
 %   '/assets/components/typeahead.js/dist/typeahead.bundle.min.js',
 %   '/assets/components/handlebars/handlebars.runtime.min.js',
 %   '/assets/dist/js/templates.min.js',
+%   '/assets/components/jquery-mask-plugin/dist/jquery.mask.min.js',
 %   '/assets/dist/js/reservation.min.js'
 % ];
 

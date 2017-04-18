@@ -1,4 +1,6 @@
 $ ->
+  $('#query').mask('000-0000-0000')
+
   suggestion = new Bloodhound
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('phone')
     queryTokenizer: Bloodhound.tokenizers.whitespace
