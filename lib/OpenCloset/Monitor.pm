@@ -3,6 +3,7 @@ use Mojo::Base 'Mojolicious';
 
 use HTTP::CookieJar;
 use HTTP::Tiny;
+use Mojo::JSON qw/j/;
 use Net::IP::AddrRanges;
 use Path::Tiny;
 
@@ -11,6 +12,9 @@ use OpenCloset::Schema;
 use OpenCloset::Monitor::Status;
 
 use version; our $VERSION = qv("v0.9.4");
+
+our $PREFIX        = 'opencloset:storage';
+our $REDIS_CHANNEL = 'opencloset:monitor';
 
 has ranges => sub { Net::IP::AddrRanges->new };
 has DB => sub {
@@ -45,6 +49,7 @@ sub startup {
     $self->plugin('haml_renderer');
     $self->plugin('validator');
     $self->plugin('RemoteAddr');
+    $self->plugin( Minion => { SQLite => $self->config->{minion}{SQLite} } );
     $self->secrets( [time] );
     $self->sessions->default_expiration(86400);
 
@@ -52,6 +57,7 @@ sub startup {
     $self->_whitelist;
     $self->_public_routes;
     $self->_private_routes;
+    $self->_add_task;
 }
 
 sub _assets {
@@ -198,6 +204,43 @@ sub _auth_opencloset {
     }
 
     return $cookiejar;
+}
+
+sub _add_task {
+    my $self   = shift;
+    my $minion = $self->minion;
+    $minion->add_task(
+        suggestion => sub {
+            my ( $job, $user_id ) = @_;
+            return unless $user_id;
+
+            my $app = $job->app;
+            my $data = $self->redis->hget( "$PREFIX:clothes", $user_id );
+            return if $data;
+
+            my $opencloset = $self->config->{opencloset};
+            my $cookie     = $self->_auth_opencloset;
+            my $http       = HTTP::Tiny->new( timeout => 10, cookie_jar => $cookie );
+            my $url = $opencloset->{uri} . "/api/user/$user_id/search/clothes.json";
+
+            $self->log->debug("[suggestion] --> Working on $user_id");
+            $self->log->debug("[suggestion] Fetching $url ... ");
+
+            my $res = $http->request( 'GET', $url );
+            unless ( $res->{success} ) {
+                $self->log->error("[suggestion] Failed to GET $url");
+                $self->log->error("[suggestion] ! $res->{reason}");
+                $self->log->error("[suggestion] ! Skip $user_id");
+                return;
+            }
+
+            $self->redis->hset( "$PREFIX:clothes", $user_id, $res->{content} );
+            $self->redis->publish( "$REDIS_CHANNEL:user" => j( { sender => 'user' } ) );
+
+            $self->log->debug("[suggestion] OK");
+            $self->log->debug("[suggestion] Successfully published $user_id");
+        }
+    );
 }
 
 1;

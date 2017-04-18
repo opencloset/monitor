@@ -47,6 +47,6 @@ $db_opts->{AutoCommit} //= 1;
         cookie   => '.cookie.txt'
     },
     sms_from => $SMS_FROM,
-    queue    => { path => '/tmp/opencloset/monitor' },
+    minion   => { SQLite => 'sqlite:minion.db', },
     timezone => 'Asia/Seoul',
 };
