@@ -2,7 +2,6 @@ package OpenCloset::Monitor::Controller::Region;
 use Mojo::Base 'Mojolicious::Controller';
 
 use Mojo::JSON qw/j/;
-use Directory::Queue;
 
 use OpenCloset::Monitor::Status
     qw/$STATUS_SELECT $STATUS_REPAIR $STATUS_FITTING_ROOM1 $STATUS_BOXING/;
@@ -29,14 +28,13 @@ sub selects {
         { order_by => { -asc => 'update_date' }, join => 'booking' } );
 
     my $redis = $self->redis;
-    my $dirq = Directory::Queue->new( path => $self->config->{queue}{path} );
 
     my %suggestion;
     while ( my $order = $orders->next ) {
         my $user_id = $order->user_id;
         my $suggestion = $redis->hget( "$PREFIX:clothes", $user_id );
         unless ($suggestion) {
-            $dirq->add($user_id);
+            $self->minion->enqueue( suggestion => [$user_id] );
             next;
         }
 

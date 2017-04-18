@@ -18,3 +18,6 @@ log/
 
 # statistics directory
 statistics/
+
+# minion db
+minion.*
