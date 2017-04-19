@@ -232,7 +232,7 @@ sub _add_task {
 
             my $opencloset = $app->config->{opencloset};
             my $cookie     = $app->_auth_opencloset;
-            my $http       = HTTP::Tiny->new( timeout => 15, cookie_jar => $cookie );
+            my $http       = HTTP::Tiny->new( timeout => 20, cookie_jar => $cookie );
             my $url = $opencloset->{uri} . "/api/user/$user_id/search/clothes.json";
 
             $app->log->debug("[suggestion] --> Working on $user_id");
