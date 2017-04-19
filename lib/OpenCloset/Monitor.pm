@@ -214,31 +214,35 @@ sub _add_task {
             my ( $job, $user_id ) = @_;
             return unless $user_id;
 
-            my $app = $job->app;
-            my $data = $self->redis->hget( "$PREFIX:clothes", $user_id );
+            my $app   = $job->app;
+            my $redis = $app->redis;
+            my $data  = $redis->hget( "$PREFIX:clothes", $user_id );
             return if $data;
 
-            my $opencloset = $self->config->{opencloset};
-            my $cookie     = $self->_auth_opencloset;
+            my $opencloset = $app->config->{opencloset};
+            my $cookie     = $app->_auth_opencloset;
             my $http       = HTTP::Tiny->new( timeout => 10, cookie_jar => $cookie );
             my $url = $opencloset->{uri} . "/api/user/$user_id/search/clothes.json";
 
-            $self->log->debug("[suggestion] --> Working on $user_id");
-            $self->log->debug("[suggestion] Fetching $url ... ");
+            $app->log->debug("[suggestion] --> Working on $user_id");
+            $app->log->debug("[suggestion] Fetching $url ... ");
 
             my $res = $http->request( 'GET', $url );
             unless ( $res->{success} ) {
-                $self->log->error("[suggestion] Failed to GET $url");
-                $self->log->error("[suggestion] ! $res->{reason}");
-                $self->log->error("[suggestion] ! Skip $user_id");
+                $app->log->error("[suggestion] Failed to GET $url");
+                $app->log->error("[suggestion] ! $res->{reason}");
+                $app->log->error("[suggestion] ! Skip $user_id");
                 return;
             }
 
-            $self->redis->hset( "$PREFIX:clothes", $user_id, $res->{content} );
-            $self->redis->publish( "$REDIS_CHANNEL:user" => j( { sender => 'user' } ) );
+            $redis->hset( "$PREFIX:clothes", $user_id, $res->{content} );
 
-            $self->log->debug("[suggestion] OK");
-            $self->log->debug("[suggestion] Successfully published $user_id");
+            ## 매번 요청에 성공할때마다 $PREFIX:clothes 의 expires 를 +1h 로 재설정
+            $redis->expire( "$PREFIX:clothes", 60 * 60 * 1 );
+            $redis->publish( "$REDIS_CHANNEL:user" => j( { sender => 'user' } ) );
+
+            $app->log->debug("[suggestion] OK");
+            $app->log->debug("[suggestion] Successfully published $user_id");
         }
     );
 }
