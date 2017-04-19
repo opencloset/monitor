@@ -34,7 +34,11 @@ sub selects {
         my $user_id = $order->user_id;
         my $suggestion = $redis->hget( "$PREFIX:clothes", $user_id );
         unless ($suggestion) {
+            my $active = $redis->get("$PREFIX:workers:$user_id");
+            next if $active;
+
             $self->minion->enqueue( suggestion => [$user_id] );
+            $redis->set( "$PREFIX:workers:$user_id", 1 );
             next;
         }
 

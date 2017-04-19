@@ -216,8 +216,17 @@ sub _add_task {
 
             my $app   = $job->app;
             my $redis = $app->redis;
-            my $data  = $redis->hget( "$PREFIX:clothes", $user_id );
+            $redis->del("$PREFIX:workers:$user_id");
+
+            my $data = $redis->hget( "$PREFIX:clothes", $user_id );
             return if $data;
+
+            my $user_info
+                = $app->DB->resultset('UserInfo')->find( { user_id => $user_id } );
+            return unless $user_info;
+            return unless $user_info->height;
+            return unless $user_info->weight;
+            return unless $user_info->waist;
 
             my $opencloset = $app->config->{opencloset};
             my $cookie     = $app->_auth_opencloset;
