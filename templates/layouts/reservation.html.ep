@@ -15,6 +15,9 @@
     <div class="container">
       %= content
     </div>
+    <div class="text-center">
+      <img alt="열린옷장" src="/assets/img/opencloset_CI.png" class="img-rounded" width="150">
+    </div>
   </body>
   <script src="/assets/components/jquery/dist/jquery.min.js"></script>
   <script src="/assets/components/bootstrap/dist/js/bootstrap.min.js"></script>
