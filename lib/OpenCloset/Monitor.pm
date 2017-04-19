@@ -11,7 +11,7 @@ use OpenCloset::Monitor::Schema;
 use OpenCloset::Schema;
 use OpenCloset::Monitor::Status;
 
-use version; our $VERSION = qv("v0.9.7");
+use version; our $VERSION = qv("v0.9.8");
 
 our $PREFIX        = 'opencloset:storage';
 our $REDIS_CHANNEL = 'opencloset:monitor';
@@ -209,6 +209,8 @@ sub _auth_opencloset {
 sub _add_task {
     my $self   = shift;
     my $minion = $self->minion;
+    $minion->reset;
+
     $minion->add_task(
         suggestion => sub {
             my ( $job, $user_id ) = @_;
@@ -230,7 +232,7 @@ sub _add_task {
 
             my $opencloset = $app->config->{opencloset};
             my $cookie     = $app->_auth_opencloset;
-            my $http       = HTTP::Tiny->new( timeout => 10, cookie_jar => $cookie );
+            my $http       = HTTP::Tiny->new( timeout => 20, cookie_jar => $cookie );
             my $url = $opencloset->{uri} . "/api/user/$user_id/search/clothes.json";
 
             $app->log->debug("[suggestion] --> Working on $user_id");
