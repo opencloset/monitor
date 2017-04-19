@@ -46,7 +46,6 @@ sub selects {
     my $select_active = $redis->hkeys("$PREFIX:select");
     unless ( $orders->count ) {
         $redis->del("$PREFIX:select");
-        $redis->del("$PREFIX:clothes");
     }
 
     my %emptyRoom;
