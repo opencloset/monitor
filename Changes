@@ -1,3 +1,5 @@
+  - 매 실행마다 job queue reset
+
 v0.9.7    Wed, 19 Apr 2017 12:48:35 +0900
   - 의류추천의 중복된 enqueue 를 예방
 

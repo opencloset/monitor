@@ -209,6 +209,8 @@ sub _auth_opencloset {
 sub _add_task {
     my $self   = shift;
     my $minion = $self->minion;
+    $minion->reset;
+
     $minion->add_task(
         suggestion => sub {
             my ( $job, $user_id ) = @_;
