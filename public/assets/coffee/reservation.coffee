@@ -24,7 +24,16 @@ $ ->
         html     = template(data)
         return html
 
+  $('#keypad').keypad
+    submitButtonText: '검색'
+    deleteButtonText: '지우기'
   $('#query.typeahead').on 'typeahead:select', (e, data) ->
     template = JST['reservation/typeahead-select']
     html     = template(data)
     $('#selected').html(html)
+    $('#keypad').hide()
+
+  $('button.submit').click (e) ->
+    e.preventDefault()
+    $('#query').typeahead('val', $('#query').val())
+    $('#query').typeahead('open')
