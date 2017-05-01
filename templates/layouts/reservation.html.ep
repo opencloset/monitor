@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="/assets/components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/assets/components/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="/assets/components/opencloset.css/dist/css/opencloset.min.css">
+    % for my $css (@$csses) {
+      <link rel="stylesheet" href="<%= $css %>">
+    % }
     <link rel="stylesheet" href="/assets/dist/css/reservation.min.css">
   </head>
 
@@ -15,7 +18,7 @@
     <div class="container">
       %= content
     </div>
-    <div class="text-center">
+    <div class="text-center opencloset-logo">
       <img alt="열린옷장" src="/assets/img/opencloset_CI.png" class="img-rounded" width="150">
     </div>
   </body>
