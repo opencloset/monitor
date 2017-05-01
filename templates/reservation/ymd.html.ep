@@ -4,7 +4,10 @@
 %   '/assets/components/handlebars/handlebars.runtime.min.js',
 %   '/assets/dist/js/templates.min.js',
 %   '/assets/components/jquery-mask-plugin/dist/jquery.mask.min.js',
+%   '/assets/extlib/keypad/jquery.keypad.js',
 %   '/assets/dist/js/reservation.min.js'
+% ], csses => [
+%   '/assets/extlib/keypad/jquery.keypad.css'
 % ];
 
 <div class="row">
@@ -14,18 +17,19 @@
         <h2>
           열린옷장 예약확인
         </h2>
-        <p class="help-block">
+        <p class="help-block help-strong">
           예약시 사용했던 전화번호를 입력해 주세요.
         </p>
       </div>
       <div class="input-group stylish-input-group">
-        <input name="q" type="text" id="query" class="form-control input-lg typeahead" placeholder="전화번호를 입력하세요" autofocus>
+        <input name="q" type="text" id="query" class="form-control input-lg keypad typeahead" placeholder="전화번호를 입력하세요" autofocus>
         <span class="input-group-addon">
           <button type="submit">
             <span class="glyphicon glyphicon-search"></span>
           </button>
         </span>
       </div>
+      <div id="keypad"></div>
       <div id="selected" class="text-muted"></div>
     </div>
   </div>

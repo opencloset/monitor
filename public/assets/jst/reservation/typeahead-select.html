@@ -8,18 +8,22 @@
     취업날개 쿠폰으로 예약하셨습니다.
   </p>
   {{/if}}
+  <p>
+    <strong>{{booking}}</strong> 에 신청하신 예약이 확인되었습니다.
+  </p>
 </div>
 
 <hr>
 
 <ul class="help-block">
-  <li>실내화로 갈아신고 대기실에서 기다려 주세요.</li>
-  <li>대기실 정면에 있는 모니터에서 자신의 순서를 확인해 주세요.</li>
-  <li>모든 문의사항은 치수 측정시 옷장지기에게 말해 주세요.</li>
+  <li>실내화로 갈아신고 대기실에서 기다려주세요.</li>
+  <li>대기실 모니터를 통해 다음 순서를 안내드립니다.</li>
+  <li>문의사항이 있으시면 치수측정시 말씀해주세요.</li>
 </ul>
 
 <p>
   <a href="/reservation/visit?order_id={{order_id}}" class="btn btn-lg btn-success btn-block btn-update-status">
     방문확인 버튼을 누르고 입장해주세요
   </a>
+  <a href="/reservation" class="btn btn-default btn-block">취소</a>
 </p>
