@@ -1,6 +1,6 @@
 requires 'DateTime';
 requires 'DateTime::Format::ISO8601';
-requires 'Directory::Queue';
+requires 'Digest::SHA1';
 requires 'Encode';
 requires 'HTTP::CookieJar';
 requires 'HTTP::Tiny';
@@ -15,6 +15,7 @@ requires 'Net::IP::AddrRanges';
 requires 'Path::Tiny';
 requires 'Time::HiRes';
 requires 'Try::Tiny';
+requires 'WebService::Naver::TTS';
 requires 'experimental';
 
 # cpan.theopencloset.net
