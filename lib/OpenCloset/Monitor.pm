@@ -1,11 +1,15 @@
 package OpenCloset::Monitor;
 use Mojo::Base 'Mojolicious';
 
+use Digest::SHA1 qw/sha1_hex/;
+use Encode qw/encode_utf8/;
 use HTTP::CookieJar;
 use HTTP::Tiny;
 use Mojo::JSON qw/j/;
 use Net::IP::AddrRanges;
 use Path::Tiny;
+use Try::Tiny;
+use WebService::Naver::TTS;
 
 use OpenCloset::Monitor::Schema;
 use OpenCloset::Schema;
@@ -37,6 +41,15 @@ has SQLite        => sub {
             quote_char     => q{`},
             sqlite_unicode => 1,
         }
+    );
+};
+
+has tts => sub {
+    my $self   = shift;
+    my $config = $self->config->{tts}{naver};
+    WebService::Naver::TTS->new(
+        id     => $config->{client_id},
+        secret => $config->{client_secret}
     );
 };
 
@@ -254,6 +267,52 @@ sub _add_task {
 
             $app->log->debug("[suggestion] OK");
             $app->log->debug("[suggestion] Successfully published $user_id");
+        }
+    );
+
+    our $TTS_EXT = '.mp3';
+    $minion->add_task(
+        tts => sub {
+            my ( $job, $text ) = @_;
+            return unless $text;
+
+            my $app   = $job->app;
+            my $redis = $app->redis;
+            my $hex   = sha1_hex( encode_utf8($text) );
+
+            my ( $dir, $file ) = $hex =~ m/^(..)(.+)$/;
+            my $path = $app->home->child( 'public', 'tts', $dir, $file . $TTS_EXT );
+            my $cache = path($path);
+            $self->log->debug("$text");
+            if ( $cache->exists ) {
+                $self->log->debug("Cache hit \"$cache\"");
+            }
+            else {
+                my $tts = $app->tts;
+                my $mp3 = try {
+                    $tts->tts($text);
+                }
+                catch {
+                    chomp $_;
+                    $self->log->error("Failed to convert \"$text\" to speech");
+                    $self->log->error("$_");
+                    return;
+                };
+
+                return unless $mp3;
+
+                my $cache_dir = $cache->parent;
+                $cache_dir->mkpath;
+                $mp3->move("$cache");
+            }
+
+            my $data = j(
+                {
+                    sender => 'tts',
+                    path   => $self->url_for( "/tts/$dir/$file" . $TTS_EXT )->to_abs
+                }
+            );
+            $redis->publish( "$REDIS_CHANNEL:tts" => $data );
         }
     );
 }

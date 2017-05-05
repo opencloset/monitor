@@ -1,5 +1,6 @@
 public/assets/components/
 public/assets/dist/
+public/tts/
 monitor.conf
 node_modules/
 .opencloset.json

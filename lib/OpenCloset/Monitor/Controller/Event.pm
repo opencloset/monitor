@@ -68,6 +68,23 @@ sub create {
         {
             $self->app->SQLite->resultset('History')
                 ->create( { room_no => $to - 19, order_id => $order->id } );
+
+            my $count = $self->app->SQLite->resultset('History')
+                ->search( { order_id => $order->id } )->count;
+
+            if ( $count == 1 ) {
+                my $user = $order->user;
+                my $name = $user->name;
+                $name = join( '.', split //, $name );
+                $self->minion->enqueue(
+                    tts => [
+                        sprintf(
+                            '%s.님. %d번 탈의실로 입장해주세요',
+                            $name, $to - 19
+                        )
+                    ]
+                );
+            }
         }
 
         # history
