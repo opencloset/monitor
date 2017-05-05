@@ -49,4 +49,10 @@ $db_opts->{AutoCommit} //= 1;
     sms_from => $SMS_FROM,
     minion   => { SQLite => 'sqlite:minion.db', },
     timezone => 'Asia/Seoul',
+    tts      => {
+        naver => {
+            client_id     => $ENV{OPENCLOSET_NAVER_TTS_CLIENT_ID}     || '',
+            client_secret => $ENV{OPENCLOSET_NAVER_TTS_CLIENT_SECRET} || '',
+        }
+    }
 };
