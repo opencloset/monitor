@@ -33,6 +33,7 @@ class EventStream
     @socket = new ReconnectingWebSocket url, null, { debug: false }
     @socket.onopen = (e) =>
       @socket.send '/subscribe order'
+      @socket.send '/subscribe tts'
     @socket.onmessage = (e) =>
       new NotificationRow
         model: new NotificationModel { stream: @, count: @count++ }
@@ -49,6 +50,12 @@ class NotificationModel extends Backbone.Model
     @stream.on 'receiveMessage', (e) =>
       data = JSON.parse(e.data)
       return if @get 'order_id'
+
+      if data.sender is 'tts'
+        audio = new Audio(data.path)
+        audio.play()
+        return
+
       @set
         count: opts.count
         order_id: data.order.id
@@ -105,6 +112,8 @@ class NotificationRow extends Backbone.View
     else if found and @model.get('extra').nth is 1 and _from is 20
       console.log '탈의 -> 의류준비'
       return @
+    else if _to is 20
+      # 탈의실입장은 TTS 가 대신함
     else
       $('#event audio').trigger('play')
 
