@@ -1,5 +1,5 @@
 <div class="row">
-  % for my $n (qw/7 8 9 10 11/) {
+  % for my $n (qw/6 5 4 3 2 1/) {
   % my $is_active = $room_active->[$n];
   <div class="col-md-2">
     % if (my $order = $rooms->[$n]) {
@@ -18,7 +18,7 @@
 <hr>
 
 <div class="row">
-  % for my $n (qw/6 5 4 3 2 1/) {
+  % for my $n (qw/7 8 9 10 11/) {
   % my $is_active = $room_active->[$n];
   <div class="col-md-2">
     % if (my $order = $rooms->[$n]) {
