@@ -1,3 +1,13 @@
+# Change Log
+
+The format is based on [Keep a Changelog](http://keepachangelog.com/).
+
+## [Unreleased]
+
+## [v1.0.1] - Thu, 11 May 2017 14:50:13 +0900
+### Changed
+- 의류준비탭의 탈의실 위치 변경 (#156)
+
 v1.0.0   Fri, 05 May 2017 16:53:39 +0900
   - Naver TTS 를 사용해서 탈의실 입장을 안내함 (#154)
 
