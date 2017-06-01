@@ -3,6 +3,8 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [v1.0.2] - Thu, 01 Jun 2017 15:31:38 +0900
 ### Changed
 - 예약확인 탭의 자동완성 기능 변경
 
