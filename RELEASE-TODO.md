@@ -1,3 +1,5 @@
+    $ grunt
+
 v1.0.0
 
     # monitor.conf
