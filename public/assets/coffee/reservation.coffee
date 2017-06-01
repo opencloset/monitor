@@ -1,39 +1,26 @@
 $ ->
   $('#query').mask('000-0000-0000')
 
-  suggestion = new Bloodhound
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('phone')
-    queryTokenizer: Bloodhound.tokenizers.whitespace
-    remote:
-      url: "#{location.pathname}/search?q=%QUERY"
-      wildcard: '%QUERY'
-
-  $('#query.typeahead').typeahead null,
-    name: 'q'
-    display: 'phone'
-    source: suggestion
-    limit: 10
-    templates:
-      empty: [
-        '<div class="empty-message">',
-          '검색결과가 없습니다',
-        '</div>'
-      ].join('\n')
-      suggestion: (data) ->
-        template = JST['reservation/typeahead-query']
-        html     = template(data)
-        return html
-
   $('#keypad').keypad
     submitButtonText: '검색'
     deleteButtonText: '지우기'
-  $('#query.typeahead').on 'typeahead:select', (e, data) ->
-    template = JST['reservation/typeahead-select']
-    html     = template(data)
-    $('#selected').html(html)
-    $('#keypad').hide()
 
-  $('button.submit').click (e) ->
+  $('#keypad').submit (e) ->
     e.preventDefault()
-    $('#query').typeahead('val', $('#query').val())
-    $('#query').typeahead('open')
+    query = $('#query').val()
+    $.ajax "#{location.pathname}/search?q=#{query}",
+      type: 'GET'
+      dataType: 'json'
+      success: (data, textStatus, jqXHR) ->
+        unless data.length
+          $.growl.error({ title: '알림', message: '검색결과가 없습니다.' })
+          return
+
+        template = JST['reservation/typeahead-select']
+        html     = template(data[0])
+        $('#selected').html(html)
+        $('#keypad').hide()
+      error: (jqXHR, textStatus, errorThrown) ->
+        msg = jqXHR.responseJSON.error.str
+        $.growl.error({ title: '알림', message: msg })
+      complete: (jqXHR, textStatus) ->

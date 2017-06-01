@@ -1,13 +1,14 @@
 % layout 'reservation';
 % title '예약확인', jses => [
-%   '/assets/components/typeahead.js/dist/typeahead.bundle.min.js',
 %   '/assets/components/handlebars/handlebars.runtime.min.js',
 %   '/assets/dist/js/templates.min.js',
 %   '/assets/components/jquery-mask-plugin/dist/jquery.mask.min.js',
 %   '/assets/extlib/keypad/jquery.keypad.js',
+%   '/assets/components/growl/javascripts/jquery.growl.js',
 %   '/assets/dist/js/reservation.min.js'
 % ], csses => [
-%   '/assets/extlib/keypad/jquery.keypad.css'
+%   '/assets/extlib/keypad/jquery.keypad.css',
+%   '/assets/components/growl/stylesheets/jquery.growl.css'
 % ];
 
 <div class="row">
