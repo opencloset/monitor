@@ -1,3 +1,7 @@
+v1.0.3
+
+    $ closetpan OpenCloset::Schema    # 0.054
+
 v1.0.2
 
     $ grunt
