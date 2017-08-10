@@ -21,4 +21,4 @@ requires 'experimental';
 # cpan.theopencloset.net
 requires 'OpenCloset::Common', 'v0.0.6';
 requires 'OpenCloset::Plugin::Helpers', 'v0.0.6';
-requires 'OpenCloset::Schema', '0.047';
+requires 'OpenCloset::Schema', '0.054';
