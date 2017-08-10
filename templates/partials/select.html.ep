@@ -23,8 +23,13 @@
       <%= age($user_info->birth) %>
       <small>
         <a href="<%= $config->{opencloset}{uri} %>/user/<%= $user->id %>" target="_blank" class="external-link" title="사용자정보">
-          <i class="fa fa-external-link" aria-hidden="true"></i>
+          <i class="fa-fw fa fa-external-link" aria-hidden="true"></i>
         </a>
+        % if ($order->agent) {
+          <a href="<%= config->{opencloset}{uri} %>/orders/<%= $order->id %>" class="external-link" target="_blank">
+            <i class="fa-fw fa fa-users text-muted" aria-hidden="true"></i>
+          </a>
+        % }
       </small>
     </h2>
     <p class="timeago">
