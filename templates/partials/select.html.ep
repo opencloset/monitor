@@ -224,6 +224,9 @@
     <p class="comment">
       %= $user_info->comment || ''
     </p>
+    <p class="misc">
+      %= $order->misc || ''
+    </p>
   </div>
 </div>
 
