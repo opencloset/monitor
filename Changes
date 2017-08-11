@@ -4,6 +4,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [v1.0.4] - Fri, 11 Aug 2017 16:48:18 +0900
+
 ### Added
 - 의류준비탭에 희망하는 지난대여이력을 표시 (#159)
 
