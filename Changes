@@ -4,6 +4,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+- 구두 또는 타이만 대여할 경우 바로 의류준비 상태로 변경 (#160)
+
 ## [v1.0.4] - Fri, 11 Aug 2017 16:48:18 +0900
 
 ### Added

@@ -5,7 +5,8 @@ use DateTime;
 use DateTime::Format::ISO8601;
 use Try::Tiny;
 
-use OpenCloset::Constants::Status qw/$RESERVATED $RETURNED $VISITED/;
+use OpenCloset::Constants::Category ();
+use OpenCloset::Constants::Status qw/$RESERVATED $RETURNED $VISITED $SELECT/;
 
 has DB => sub { shift->app->DB };
 
@@ -39,6 +40,20 @@ sub visit {
     my $order = $self->DB->resultset('Order')->find( { id => $order_id } );
     return $self->error( 404, { str => "Not found order: $order_id" } ) unless $order;
 
+    my $skip      = 1;
+    my $user      = $order->user;
+    my $user_info = $user->user_info;
+
+    for my $c ( split /,/, $user_info->pre_category ) {
+        next if $c eq $OpenCloset::Constants::Category::SHOES;
+        next if $c eq $OpenCloset::Constants::Category::TIE;
+
+        $skip = 0;
+        last;
+    }
+
+    my $status_id = $skip ? $SELECT : $VISITED;
+
     my $opencloset = $self->config->{opencloset};
     my $cookie     = $self->app->_auth_opencloset;
     my $http       = HTTP::Tiny->new( timeout => 3, cookie_jar => $cookie );
@@ -46,7 +61,7 @@ sub visit {
     my $res        = $http->request(
         'PUT', $url,
         {
-            content => $http->www_form_urlencode( { status_id => $VISITED } ),
+            content => $http->www_form_urlencode( { status_id => $status_id } ),
             headers => { 'content-type' => 'application/x-www-form-urlencoded' }
         }
     );
