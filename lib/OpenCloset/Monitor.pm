@@ -276,6 +276,7 @@ sub _add_task {
             my ( $job, $text ) = @_;
             return unless $text;
 
+            my $task  = 'tts';
             my $app   = $job->app;
             my $redis = $app->redis;
             my $hex   = sha1_hex( encode_utf8($text) );
@@ -283,9 +284,9 @@ sub _add_task {
             my ( $dir, $file ) = $hex =~ m/^(..)(.+)$/;
             my $path = $app->home->child( 'public', 'tts', $dir, $file . $TTS_EXT );
             my $cache = path($path);
-            $self->log->debug("$text");
+            $self->log->debug("[$task] $text");
             if ( $cache->exists ) {
-                $self->log->debug("Cache hit \"$cache\"");
+                $self->log->debug("[$task] Cache hit \"$cache\"");
             }
             else {
                 my $tts = $app->tts;
@@ -294,8 +295,8 @@ sub _add_task {
                 }
                 catch {
                     chomp $_;
-                    $self->log->error("Failed to convert \"$text\" to speech");
-                    $self->log->error("$_");
+                    $self->log->error("[$task] Failed to convert \"$text\" to speech");
+                    $self->log->error("[$task] $_");
                     return;
                 };
 
