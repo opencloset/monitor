@@ -1,0 +1,94 @@
+<%
+use DateTime;
+layout 'default', jses => [
+  '/assets/components/reconnectingWebsocket/reconnecting-websocket.js',
+  '/assets/components/backbone/backbone.js',
+  '/assets/components/bootstrap-datepicker/js/bootstrap-datepicker.js',
+  '/assets/components/bootstrap-datepicker/js/locales/bootstrap-datepicker.kr.js',
+  '/assets/dist/js/index.min.js'
+], csses => [
+  '/assets/components/bootstrap-datepicker/css/datepicker3.css'
+];
+title 'Dashboard';
+
+my @sid = qw/13 16 17 20 6 18 19/;
+my $i = 0;
+%>
+
+<div class="row">
+  <div class="col-md-7">
+    <div id="dashboard">
+      <table class="table table-bordered table-condensed">
+        <thead>
+          <tr>
+            <th>대기중</th>
+            <th>치수측정</th>
+            <th>의류준비중</th>
+            <th>탈의실번호</th>
+            <th>수선</th>
+            <th>포장중</th>
+            <th>결제대기</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            % for my $s (@$orders) {
+              <td class="text-left" id="status-<%= $sid[$i++] %>">
+                % for my $order (@$s) {
+                  % my $hms = $order->booking->date->hms;
+                  % $hms = substr($hms, 0, 5);
+                  <p class="user" id="order-<%= $order->id %>">
+                    <span class="label label-info">
+                      % if ($sid[$i] && $sid[$i] == 6) {
+                        % my $room_no = $order->status_id - 19;
+                        <span class="badge"><%= $room_no %></span>
+                      % }
+                      %= $order->user->name
+                      <span class="date"><%= $hms %></span>
+                    </span>
+                    <abbr title="<%= $order->create_date %>"><%= $order->create_date %></abbr>
+                  </p>
+                % }
+              </td>
+            % }
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="opencloset-info">
+      % my $rent_date = DateTime->now(time_zone => 'Asia/Seoul');
+      % my $return_date = $target_date;
+      % my %WEEK_MAP = (1 => '월', 2 => '화', 3 => '수', 4 => '목', 5 => '금', 6 => '토', 7 => '일');
+      <hr>
+      <h2>
+        대여기간안내
+        <small>3박 4일</small>
+      </h2>
+      <h3>
+        <strong>
+          %= '대여일 ' . $rent_date->month . '월 ' . $rent_date->day . '일(' . $WEEK_MAP{$rent_date->day_of_week} . ')'
+          ~
+          <span class="datepicker">
+            %= '반납일 ' . $return_date->month . '월 ' . $return_date->day . '일(' . $WEEK_MAP{$return_date->day_of_week} . ')'
+          </span> 
+        </strong>
+      </h3>
+      <p>택배 반납은 반납일 1일전 발송</p>
+      <p>
+        오늘 대여하신 옷과 구두에는 기증자의 마음이 담겨있습니다.
+        <br>
+        소중히 입고 깨끗하게 반납 부탁드립니다.
+      </p>
+    </div>
+  </div>
+
+  <div class="col-md-5">
+    <div id="event">
+      <audio src="/assets/audio/whisper.ogg">
+        <p>Your browser does not support the audio element.</p>
+      </audio>
+      <ul class="list-group"></ul>
+    </div>
+  </div>
+</div>
