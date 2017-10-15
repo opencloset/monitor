@@ -1,0 +1,16 @@
+% use OpenCloset::Monitor::Status;
+% my $prev_order = prev_order($n, $OpenCloset::Monitor::Status::STATUS_SELECT);
+
+<div class="well empty" id="room-<%= $n %>">
+  <h3>#<%= $n %></h3>
+  % if ($prev_order) {
+    <p><%= $prev_order->user->name %></p>
+  % } else {
+    % if ($refresh_active->{$n}) {
+      <p class="p-refresh">
+        <br>
+        <i class="fa fa-refresh fa-2x"></i>
+      </p>
+    % }
+  % }
+</div>
