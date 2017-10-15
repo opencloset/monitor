@@ -1,4 +1,5 @@
 .git
+.text_haml_cache
 cache
 *.db
 log
