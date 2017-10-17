@@ -59,7 +59,6 @@ sub startup {
     $self->plugin('Config');
     $self->plugin('OpenCloset::Plugin::Helpers');
     $self->plugin('OpenCloset::Monitor::Plugin::Helpers');
-    $self->plugin('haml_renderer');
     $self->plugin('validator');
     $self->plugin('RemoteAddr');
     $self->plugin( Minion => { SQLite => $self->config->{minion}{SQLite} } );
