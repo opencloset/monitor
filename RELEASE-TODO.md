@@ -1,6 +1,8 @@
     # add below to monitor.conf
     redis_url => $ENV{OPENCLOSET_REDIS_URL} || 'redis://localhost:6379',
 
+    $ cpanm WebService::Naver::TTS    # v0.0.2
+
 v1.0.5
 
 v1.0.4

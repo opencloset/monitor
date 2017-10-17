@@ -291,7 +291,7 @@ sub _add_task {
             else {
                 my $tts = $app->tts;
                 my $mp3 = try {
-                    $tts->tts($text);
+                    $tts->tts( $text, DIR => './db' );
                 }
                 catch {
                     chomp $_;
