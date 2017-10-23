@@ -22,3 +22,5 @@ statistics/
 
 # minion db
 minion.*
+
+.text_haml_cache/
