@@ -18,7 +18,6 @@ requires 'WebService::Naver::TTS', 'v0.0.2';
 requires 'experimental';
 
 # cpan.theopencloset.net
-requires 'OpenCloset::Calculator::LateFee'; # OpenCloset::Plugin::Helpers missing deps
 requires 'OpenCloset::Common', 'v0.0.6';
-requires 'OpenCloset::Plugin::Helpers', 'v0.0.6';
+requires 'OpenCloset::Plugin::Helpers';
 requires 'OpenCloset::Schema', '0.054';
