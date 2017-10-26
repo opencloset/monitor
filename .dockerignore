@@ -6,3 +6,4 @@ log
 node_modules
 public/components
 run
+.cookie.txt
