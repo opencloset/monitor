@@ -15,7 +15,7 @@ use OpenCloset::Monitor::Schema;
 use OpenCloset::Schema;
 use OpenCloset::Monitor::Status;
 
-use version; our $VERSION = qv("v1.0.5");
+use version; our $VERSION = qv("v1.1.0");
 
 our $PREFIX        = 'opencloset:storage';
 our $REDIS_CHANNEL = 'opencloset:monitor';
@@ -59,7 +59,6 @@ sub startup {
     $self->plugin('Config');
     $self->plugin('OpenCloset::Plugin::Helpers');
     $self->plugin('OpenCloset::Monitor::Plugin::Helpers');
-    $self->plugin('haml_renderer');
     $self->plugin('validator');
     $self->plugin('RemoteAddr');
     $self->plugin( Minion => { SQLite => $self->config->{minion}{SQLite} } );
@@ -276,6 +275,7 @@ sub _add_task {
             my ( $job, $text ) = @_;
             return unless $text;
 
+            my $task  = 'tts';
             my $app   = $job->app;
             my $redis = $app->redis;
             my $hex   = sha1_hex( encode_utf8($text) );
@@ -283,19 +283,19 @@ sub _add_task {
             my ( $dir, $file ) = $hex =~ m/^(..)(.+)$/;
             my $path = $app->home->child( 'public', 'tts', $dir, $file . $TTS_EXT );
             my $cache = path($path);
-            $self->log->debug("$text");
+            $app->log->debug("[$task] $text");
             if ( $cache->exists ) {
-                $self->log->debug("Cache hit \"$cache\"");
+                $app->log->debug("[$task] Cache hit \"$cache\"");
             }
             else {
                 my $tts = $app->tts;
                 my $mp3 = try {
-                    $tts->tts($text);
+                    $tts->tts( $text, UNLINK => 0, DIR => './db' );
                 }
                 catch {
                     chomp $_;
-                    $self->log->error("Failed to convert \"$text\" to speech");
-                    $self->log->error("$_");
+                    $app->log->error("[$task] Failed to convert \"$text\" to speech");
+                    $app->log->error("[$task] $_");
                     return;
                 };
 
@@ -303,13 +303,19 @@ sub _add_task {
 
                 my $cache_dir = $cache->parent;
                 $cache_dir->mkpath;
-                $mp3->move("$cache");
+                $cache->spew_raw( $mp3->slurp_raw );
+                try {
+                    $mp3->remove;
+                }
+                catch {
+                    $app->log->error("Failed to remove tempfile: $_");
+                };
             }
 
             my $data = j(
                 {
                     sender => 'tts',
-                    path   => $self->url_for( "/tts/$dir/$file" . $TTS_EXT )->to_abs
+                    path   => $app->url_for( "/tts/$dir/$file" . $TTS_EXT )->to_abs
                 }
             );
             $redis->publish( "$REDIS_CHANNEL:tts" => $data );

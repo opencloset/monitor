@@ -1,0 +1,9 @@
+.git
+.text_haml_cache
+cache
+*.db
+log
+node_modules
+public/components
+run
+.cookie.txt
