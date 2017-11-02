@@ -1,3 +1,5 @@
+v1.1.0
+
     # add below to monitor.conf
     redis_url => $ENV{OPENCLOSET_REDIS_URL} || 'redis://localhost:6379',
 
