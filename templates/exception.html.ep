@@ -1,0 +1,16 @@
+% layout 'reservation';
+% title 'Exception';
+% my $referrer = $self->req->headers->referrer;
+
+<h1>열린옷장</h1>
+<h3>Internal Server Error</h3>
+<hr>
+<div class="alert alert-danger" role="alert">
+  %= $error
+</div>
+<p>
+  <i class="fa fa-frown-o" aria-hidden="true"></i>
+  불편을 드려 죄송합니다.<br>
+  다시 한번 시도해보시고 직원에게 문의해주십시오.
+  <a href="<%= $referrer %>">다시시도</a>
+</p>

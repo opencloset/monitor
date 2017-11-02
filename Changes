@@ -4,6 +4,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Fixed
+- Add exception template for 500 error
+
 ## [v1.1.0] - Thu, 02 Nov 2017 16:10:27 +0900
 
 ### Added
