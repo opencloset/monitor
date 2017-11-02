@@ -4,7 +4,7 @@ Dashboard in waiting room
 
 ## Version ##
 
-v1.0.5
+v1.1.0
 
 ## 요구사항 ##
 
@@ -75,3 +75,8 @@ $ redis-cli
 (empty list or set)
 $
 ```
+
+### Build docker image ###
+
+    $ docker build -t opencloset/monitor .
+    $ docker build -f Dockerfile.minion -t opencloset/monitor/minion .

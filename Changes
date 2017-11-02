@@ -4,6 +4,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [v1.1.0] - Thu, 02 Nov 2017 16:10:27 +0900
+
+### Added
+- dockerize
+
 ### Changed
 - job queue 의 로그메세지를 명확하게 함 (#161)
 - haml 대신 ep 를 사용함
