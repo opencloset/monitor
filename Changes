@@ -4,6 +4,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [v1.1.2] - Tue, 21 Nov 2017 14:59:08 +0900
+
 ### Changed
 - Display avg size instead of clothes-prediction (#165)
 - 추천의류를 구하기 위해 평균값을 허리둘레를 사용 (#165)
