@@ -5,7 +5,7 @@ use Digest::SHA1 qw/sha1_hex/;
 use Encode qw/encode_utf8/;
 use HTTP::CookieJar;
 use HTTP::Tiny;
-use Mojo::JSON qw/j/;
+use Mojo::JSON qw/j decode_json/;
 use Net::IP::AddrRanges;
 use Path::Tiny;
 use Try::Tiny;
@@ -14,8 +14,9 @@ use WebService::Naver::TTS;
 use OpenCloset::Monitor::Schema;
 use OpenCloset::Schema;
 use OpenCloset::Monitor::Status;
+use OpenCloset::Size::Guess;
 
-use version; our $VERSION = qv("v1.1.1");
+use version; our $VERSION = qv("v1.1.2");
 
 our $PREFIX        = 'opencloset:storage';
 our $REDIS_CHANNEL = 'opencloset:monitor';
@@ -50,6 +51,16 @@ has tts => sub {
     WebService::Naver::TTS->new(
         id     => $config->{client_id},
         secret => $config->{client_secret}
+    );
+};
+
+has guess => sub {
+    my $self = shift;
+    OpenCloset::Size::Guess->new(
+        'DB',
+        _time_zone => $self->config->{timezone},
+        _schema    => $self->DB,
+        _range     => 0,
     );
 };
 
@@ -240,7 +251,19 @@ sub _add_task {
             return unless $user_info;
             return unless $user_info->height;
             return unless $user_info->weight;
-            return unless $user_info->waist;
+            unless ( $user_info->waist ) {
+                my $avg = $redis->hget( "$PREFIX:avg", $user_id );
+                unless ($avg) {
+                    $app->log->error("user($user_id) waist is required");
+                    return;
+                }
+
+                $avg = decode_json($avg);
+                my $waist = $avg->{waist};
+                $app->log->info(
+                    "Update user($user_id) user_info.waist(undefined) to avg($waist)");
+                $user_info->update( { waist => $waist } )->discard_changes();
+            }
 
             my $opencloset = $app->config->{opencloset};
             my $cookie     = $app->_auth_opencloset;
