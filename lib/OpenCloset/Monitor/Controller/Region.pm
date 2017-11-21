@@ -1,7 +1,7 @@
 package OpenCloset::Monitor::Controller::Region;
 use Mojo::Base 'Mojolicious::Controller';
 
-use Mojo::JSON qw/j/;
+use Mojo::JSON qw/j decode_json/;
 
 use OpenCloset::Monitor::Status
     qw/$STATUS_SELECT $STATUS_REPAIR $STATUS_FITTING_ROOM1 $STATUS_BOXING/;
@@ -47,6 +47,38 @@ sub selects {
 
     $orders->reset;
 
+    my %avg;
+    my $guess = $self->app->guess;
+    while ( my $order = $orders->next ) {
+        my $user_id = $order->user_id;
+        if ( my $avg = $redis->hget( "$PREFIX:avg", $user_id ) ) {
+            $avg{$user_id} = decode_json($avg);
+        }
+        else {
+            my $user      = $order->user;
+            my $user_info = $user->user_info;
+            next unless $user_info->height;
+            next unless $user_info->weight;
+            next unless $user_info->gender;
+
+            $guess->height( $user_info->height );
+            $guess->weight( $user_info->weight );
+            $guess->gender( $user_info->gender );
+            my $result = $guess->guess;
+            for my $key (%$result) {
+                next if $key eq 'count';
+                next if $key eq 'gender';
+                $result->{$key} = int( $result->{$key} );
+            }
+
+            $redis->hset( "$PREFIX:avg", $user_id, j($avg) );
+            $redis->expire( "$PREFIX:avg", 60 * 60 * 1 );    # +1h
+            $avg{$user_id} = $result;
+        }
+    }
+
+    $orders->reset;
+
     my $select_active = $redis->hkeys("$PREFIX:select");
     unless ( $orders->count ) {
         $redis->del("$PREFIX:select");
@@ -74,6 +106,7 @@ sub selects {
         orders        => $orders,
         select_active => $select_active,
         suggestion    => \%suggestion,
+        avg           => \%avg,
         emptyRooms    => [keys %emptyRoom],
     );
 }

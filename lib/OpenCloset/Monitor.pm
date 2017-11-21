@@ -14,6 +14,7 @@ use WebService::Naver::TTS;
 use OpenCloset::Monitor::Schema;
 use OpenCloset::Schema;
 use OpenCloset::Monitor::Status;
+use OpenCloset::Size::Guess;
 
 use version; our $VERSION = qv("v1.1.1");
 
@@ -50,6 +51,16 @@ has tts => sub {
     WebService::Naver::TTS->new(
         id     => $config->{client_id},
         secret => $config->{client_secret}
+    );
+};
+
+has guess => sub {
+    my $self = shift;
+    OpenCloset::Size::Guess->new(
+        'DB',
+        _time_zone => $self->config->{timezone},
+        _schema    => $self->DB,
+        _range     => 0,
     );
 };
 
