@@ -21,3 +21,5 @@ requires 'experimental';
 requires 'OpenCloset::Common', 'v0.0.6';
 requires 'OpenCloset::Plugin::Helpers', 'v0.0.24';
 requires 'OpenCloset::Schema', '0.054';
+requires 'OpenCloset::Size::Guess';
+requires 'OpenCloset::Size::Guess::DB';

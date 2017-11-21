@@ -2,6 +2,6 @@
 % while (my $order = $orders->next) {
 %   my $is_active = grep { $order->id == $_ } @$select_active;
 <div class="row select<%= $is_active ? ' active' : '' %>" data-order-id="<%= $order->id %>">
-  %= include 'partials/select', order => $order;
+  %= include 'partials/select', order => $order, avg => $avg->{$order->user_id};
 </div>
 % }
