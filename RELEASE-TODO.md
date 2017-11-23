@@ -1,3 +1,5 @@
+v1.1.3
+
 v1.1.2
 
     $ closetpan OpenCloset::Size::Guess
