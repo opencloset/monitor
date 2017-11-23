@@ -68,10 +68,10 @@ sub selects {
             for my $key (%$result) {
                 next if $key eq 'count';
                 next if $key eq 'gender';
-                $result->{$key} = int( $result->{$key} );
+                $result->{$key} = int( $result->{$key} ) if $result->{$key};
             }
 
-            $redis->hset( "$PREFIX:avg", $user_id, j($avg) );
+            $redis->hset( "$PREFIX:avg", $user_id, j($result) );
             $redis->expire( "$PREFIX:avg", 60 * 60 * 1 );    # +1h
             $avg{$user_id} = $result;
         }
