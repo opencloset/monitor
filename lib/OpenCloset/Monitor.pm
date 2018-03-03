@@ -178,7 +178,7 @@ sub _waiting_list {
 
         ## 탈의를 key 한개로 묶는다
         if (   $status_id >= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1
-            && $status_id <= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM11 )
+            && $status_id <= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM15 )
         {
             $waiting{$gender}{$OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1} += $cnt;
         }

@@ -26,10 +26,14 @@ our $STATUS_FITTING_ROOM8  = 27;
 our $STATUS_FITTING_ROOM9  = 28;
 our $STATUS_FITTING_ROOM10 = 29;
 our $STATUS_FITTING_ROOM11 = 30;
+our $STATUS_FITTING_ROOM12 = 31;
+our $STATUS_FITTING_ROOM13 = 32;
+our $STATUS_FITTING_ROOM14 = 33;
+our $STATUS_FITTING_ROOM15 = 34;
 
 our @ACTIVE_STATUS = (
     $STATUS_REPAIR, $STATUS_VISIT, $STATUS_MEASURE, $STATUS_SELECT, $STATUS_BOXING,
-    $STATUS_PAYMENT, $STATUS_BOXED, $STATUS_FITTING_ROOM1 .. $STATUS_FITTING_ROOM11
+    $STATUS_PAYMENT, $STATUS_BOXED, $STATUS_FITTING_ROOM1 .. $STATUS_FITTING_ROOM15
 );
 
 our %MAP = (
@@ -69,6 +73,10 @@ our %ORDER_MAP = (
     $STATUS_FITTING_ROOM9  => 4,
     $STATUS_FITTING_ROOM10 => 4,
     $STATUS_FITTING_ROOM11 => 4,
+    $STATUS_FITTING_ROOM12 => 4,
+    $STATUS_FITTING_ROOM13 => 4,
+    $STATUS_FITTING_ROOM14 => 4,
+    $STATUS_FITTING_ROOM15 => 4,
     $STATUS_REPAIR         => 5,
     $STATUS_BOXING         => 6,
     $STATUS_BOXED          => 6,
@@ -90,6 +98,10 @@ our %REVERSE_ORDER_MAP = (
     '탈의09'     => 4,
     '탈의10'     => 4,
     '탈의11'     => 4,
+    '탈의12'     => 4,
+    '탈의13'     => 4,
+    '탈의14'     => 4,
+    '탈의15'     => 4,
     '수선'       => 5,
     '포장'       => 6,
     '포장완료' => 6,

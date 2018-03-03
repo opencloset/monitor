@@ -47,7 +47,7 @@ sub index {
             when (
                 [
                     $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1 ..
-                        $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM11
+                        $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM15
                 ]
                 )
             {
@@ -198,7 +198,7 @@ sub room {
     my $redis = $self->redis;
 
     my ( @active, @room );
-    for my $n ( 1 .. 11 ) {
+    for my $n ( 1 .. 15 ) {
         my $room;
         my $order
             = $self->DB->resultset('Order')
@@ -352,7 +352,7 @@ sub online {
             when (
                 [
                     $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1 ..
-                        $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM11
+                        $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM15
                 ]
                 )
             {
