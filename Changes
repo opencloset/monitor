@@ -4,6 +4,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [v1.1.4] - Sat, 03 Mar 2018 12:46:47 +0900
+
 ### Changed
 - 탈의실이 11개에서 15개로 변경 (#172)
 
