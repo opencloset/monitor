@@ -64,7 +64,7 @@ sub create {
         my $to   = $self->param('to');
 
         if (   $to >= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1
-            && $to <= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM11 )
+            && $to <= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM15 )
         {
             $self->app->SQLite->resultset('History')
                 ->create( { room_no => $to - 19, order_id => $order->id } );
@@ -109,7 +109,7 @@ sub create {
                 $redis->hset( "$PREFIX:refresh", $history->room_no, 1 ) if $history;
             }
             elsif ($from >= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1
-                && $from <= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM11 )
+                && $from <= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM15 )
             {
                 $redis->hset( "$PREFIX:refresh", $from - 19, 1 );
             }

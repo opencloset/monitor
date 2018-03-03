@@ -8,7 +8,7 @@ $ ->
   PANTS_MAX = 120
 
   SELECT_RANGE = [17]
-  ROOM_RANGE   = [20..30]
+  ROOM_RANGE   = [20..34]
   REPAIR_RANGE = [6]
   BOXING_RANGE = [18]
 

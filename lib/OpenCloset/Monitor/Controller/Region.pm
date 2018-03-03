@@ -66,6 +66,7 @@ sub selects {
             $guess->gender( $user_info->gender );
             my $result = $guess->guess;
             for my $key (%$result) {
+                next unless $key;
                 next if $key eq 'count';
                 next if $key eq 'gender';
                 $result->{$key} = int( $result->{$key} ) if $result->{$key};
@@ -85,7 +86,7 @@ sub selects {
     }
 
     my %emptyRoom;
-    for my $n ( 1 .. 11 ) {
+    for my $n ( 1 .. 15 ) {
         my $order
             = $self->DB->resultset('Order')
             ->search( { status_id => $STATUS_FITTING_ROOM1 + $n - 1 }, { rows => 1 } )
@@ -124,7 +125,7 @@ sub rooms {
     my $redis = $self->redis;
     my ( @active, @room );
 
-    for my $n ( 1 .. 11 ) {
+    for my $n ( 1 .. 15 ) {
         my $room;
         my $order = $self->DB->resultset('Order')
             ->search( { status_id => $STATUS_FITTING_ROOM1 + $n - 1 } )->next;
