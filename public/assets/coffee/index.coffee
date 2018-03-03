@@ -19,6 +19,10 @@ statusMap =
   28: 'undress'
   29: 'undress'
   30: 'undress'
+  31: 'undress'
+  32: 'undress'
+  33: 'undress'
+  34: 'undress'
 
 ## Event
 class EventStream

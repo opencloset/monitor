@@ -16,7 +16,7 @@ use OpenCloset::Schema;
 use OpenCloset::Monitor::Status;
 use OpenCloset::Size::Guess;
 
-use version; our $VERSION = qv("v1.1.3");
+use version; our $VERSION = qv("v1.1.4");
 
 our $PREFIX        = 'opencloset:storage';
 our $REDIS_CHANNEL = 'opencloset:monitor';
@@ -178,7 +178,7 @@ sub _waiting_list {
 
         ## 탈의를 key 한개로 묶는다
         if (   $status_id >= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1
-            && $status_id <= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM11 )
+            && $status_id <= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM15 )
         {
             $waiting{$gender}{$OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1} += $cnt;
         }
