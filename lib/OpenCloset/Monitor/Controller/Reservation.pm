@@ -39,6 +39,8 @@ sub visit {
 
     my $order = $self->DB->resultset('Order')->find( { id => $order_id } );
     return $self->error( 404, { str => "Not found order: $order_id" } ) unless $order;
+    return $self->error( 400, { str => "Order has wrong status " . $order->status_id } )
+        if $order->status_id != $RESERVATED;
 
     my $skip      = 1;
     my $user      = $order->user;
@@ -50,6 +52,16 @@ sub visit {
 
         $skip = 0;
         last;
+    }
+
+    ### https://github.com/opencloset/monitor/issues/175
+    ### 2018년도 서울시쿠폰 예약자는 이용대장 기입을 해야하므로 치수측정 단계를 건너뛰면 안됨
+    my $coupon = $order->coupon;
+    if ( $skip and $coupon ) {
+        my $desc = $coupon->desc || '';
+        if ( $desc =~ m/^seoul-2018/ ) {
+            $skip = 0;
+        }
     }
 
     my $status_id = $skip ? $SELECT : $VISITED;
@@ -69,6 +81,7 @@ sub visit {
     return $self->error( 500, { str => 'Failed to update order' } )
         unless $res->{success};
 
+    $self->log->info("Update order($order_id) status to $status_id");
     return $self->redirect_to('/reservation');
 }
 
