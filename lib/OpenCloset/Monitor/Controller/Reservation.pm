@@ -52,6 +52,16 @@ sub visit {
         last;
     }
 
+    ### https://github.com/opencloset/monitor/issues/175
+    ### 2018년도 서울시쿠폰 예약자는 이용대장 기입을 해야하므로 치수측정 단계를 건너뛰면 안됨
+    my $coupon = $order->coupon;
+    if ( $skip and $coupon ) {
+        my $desc = $coupon->desc || '';
+        if ( $desc =~ m/^seoul-2018/ ) {
+            $skip = 0;
+        }
+    }
+
     my $status_id = $skip ? $SELECT : $VISITED;
 
     my $opencloset = $self->config->{opencloset};
