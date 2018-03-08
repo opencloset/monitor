@@ -4,6 +4,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [v1.1.5] - Thu, 08 Mar 2018 12:36:47 +0900
+
 ### Added
 - 방문으로 변경될때에 디버그용 로그 추가
 - 방문예약 상태에서만 방문으로 상태를 변경할 수 있도록 예외처리
