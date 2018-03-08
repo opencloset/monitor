@@ -39,6 +39,8 @@ sub visit {
 
     my $order = $self->DB->resultset('Order')->find( { id => $order_id } );
     return $self->error( 404, { str => "Not found order: $order_id" } ) unless $order;
+    return $self->error( 400, { str => "Order has wrong status " . $order->status_id } )
+        if $order->status_id != $RESERVATED;
 
     my $skip      = 1;
     my $user      = $order->user;
@@ -79,6 +81,7 @@ sub visit {
     return $self->error( 500, { str => 'Failed to update order' } )
         unless $res->{success};
 
+    $self->log->info("Update order($order_id) status to $status_id");
     return $self->redirect_to('/reservation');
 }
 
