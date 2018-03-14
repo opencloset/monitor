@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Changed
 - Upgrading font-awesome from version 4 to version 5
+- 의류준비탭에서 '입고감' 토글 가능하도록 함 (#168)
 
 ## [v1.1.5] - Thu, 08 Mar 2018 12:36:47 +0900
 
