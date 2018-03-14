@@ -1,3 +1,5 @@
+    $ bower install
+
 v1.1.5
 
 v1.1.4
