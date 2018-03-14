@@ -19,8 +19,8 @@ my $bf = $order->bestfit;
     %= $user->name
     <small><%= age($user_info->birth) %></small>
   </p>
-  <p class="booking-date date">
-    %= substr $order->booking->date->hms, 0, 5
+  <p class="<%= $order->does_wear ? 'does-wear' : 'booking-date date' %>">
+    %= $order->does_wear ? '입고감' : substr $order->booking->date->hms, 0, 5
   </p>
   <p class="timeago">
     <small>

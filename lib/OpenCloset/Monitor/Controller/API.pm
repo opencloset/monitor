@@ -43,11 +43,13 @@ sub update_order {
     my $status_id = $self->param('status_id');
     my $bestfit   = $self->param('bestfit');
     my $pants     = $self->param('pants');
+    my $does_wear = $self->param('does_wear');
 
     my $queries = { id => $order_id };
     $queries->{status_id} = $status_id if defined $status_id;
     $queries->{bestfit}   = $bestfit   if defined $bestfit;
     $queries->{pants}     = $pants     if defined $pants;
+    $queries->{does_wear} = $does_wear if defined $does_wear;
 
     my $redis = $self->redis;
     $redis->hdel( "$PREFIX:room",   $order_id );
@@ -63,8 +65,9 @@ sub update_order {
         unless $res->{success};
 
     ## 주문서의 bestfit 업데이트는 staff 로 부터 이벤트가 오지 않는다.
+    ## does_wear 또한 이벤트가 발생되지 않는다.
     ## 해서 스스로 발생
-    if ( defined $queries->{bestfit} ) {
+    if ( defined $queries->{bestfit} or defined $queries->{does_wear} ) {
         my $channel = $self->app->redis_channel;
         my $extra   = decode_json( $res->{content} );
         my $data    = { extra => $extra };

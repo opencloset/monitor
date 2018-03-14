@@ -145,6 +145,14 @@ $ ->
         console.log textStatus
       complete: (jqXHR, textStatus) ->
 
+  $('#fitting-room').on 'click', '.room .does-wear,.room .booking-date', (e) ->
+    e.preventDefault()
+    e.stopPropagation()
+    $this = $(@)
+
+    order_id = $this.closest('.room').data('order-id')
+    updateOrder(order_id, { does_wear: if $this.hasClass('does-wear') then 0 else 1 })
+
   $('#repair').on 'click', '.btn-success', (e) ->
     e.preventDefault()
     url = $(@).attr('href')

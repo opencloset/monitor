@@ -1,3 +1,8 @@
+v1.1.6
+
+    $ bower install
+    $ grunt
+
 v1.1.5
 
 v1.1.4
