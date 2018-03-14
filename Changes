@@ -4,6 +4,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+- Upgrading font-awesome from version 4 to version 5
+
 ## [v1.1.5] - Thu, 08 Mar 2018 12:36:47 +0900
 
 ### Added
