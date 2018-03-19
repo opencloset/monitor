@@ -9,7 +9,9 @@
        my $bestfit = $order->bestfit;
   %>
   <li class="list-group-item repair text-left <%= $gender %>" data-order-id="<%= $order->id %>">
-    <i class="fa fa-check repair-done<%= $done->{$order->id} ? ' text-success' : '' %>"></i>
+    <span class="fawrapper<%= $done->{$order->id} ? ' text-success' : '' %>">
+      <i class="fa fa-check repair-done"></i>
+    </span>
     <i class="fa fa-<%= $gender %>"></i>
     <strong class="name<%= $bestfit ? ' bestfit' : ''%>"><%= $user->name %></strong>
     <span class="timeago">

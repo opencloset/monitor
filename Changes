@@ -4,6 +4,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [v1.1.7] - Mon, 19 Mar 2018 11:14:02 +0900
+
+### Fixed
+- 의류수선탭내의 토글버튼의 오동작 개선 (#176)
+
 ## [v1.1.6] - Wed, 14 Mar 2018 12:21:13 +0900
 
 ### Changed

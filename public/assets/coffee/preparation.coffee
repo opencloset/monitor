@@ -85,10 +85,10 @@ $ ->
         $("#room-#{data.room_no} .p-refresh").remove()
       when 'brain'
         $('#knock audio').trigger('play')
-        $('#repair .repair-done').removeClass('text-success')
+        $('#repair .fawrapper').removeClass('text-success')
         ids = _.keys data.brain
         _.each ids, (order_id) ->
-          $("#repair li[data-order-id=\"#{order_id}\"] .repair-done").addClass('text-success')
+          $("#repair li[data-order-id=\"#{order_id}\"] .fawrapper").addClass('text-success')
       else ''
   sock.onerror = (e) ->
     location.reload()

@@ -22,7 +22,9 @@
       % my $comment   = $user_info->comment;
       <li class="repair" data-order-id="<%= $order->id %>">
         <h2>
-          <i class="fa fa-check-square repair-done<%= $done->{$order->id} ? ' text-success' : '' %>"></i>
+          <span class="fawrapper<%= $done->{$order->id} ? ' text-success' : '' %>">
+            <i class="fa fa-check-square repair-done"></i>
+          </span>
           <i class="fa fa-<%= $gender%> <%= $gender %>"></i> <%= $user->name %>
           <small>
             <abbr class="timeago" 

@@ -14,10 +14,10 @@ $ ->
     data   = JSON.parse(e.data)
     sender = data.sender
     if sender is 'brain'
-      $('.repair-done').removeClass('text-success')
+      $('.fawrapper').removeClass('text-success')
       ids = _.keys data.brain
       _.each ids, (order_id) ->
-        $("li.repair[data-order-id=\"#{order_id}\"] .repair-done").addClass('text-success')
+        $("li.repair[data-order-id=\"#{order_id}\"] .fawrapper").addClass('text-success')
     return if sender isnt 'order'
     if parseInt(data.from) is 6 or parseInt(data.to) is 6
       return location.reload()
@@ -63,7 +63,7 @@ $ ->
         return false
   , 60 * 1000
 
-  $('.repair-done').on 'click', ->
+  $('#dashboard-repair').on 'click', '.repair-done', (e) ->
     $this = $(@)
     order_id = $this.closest('li.repair').data('order-id')
     $.ajax "/events",
