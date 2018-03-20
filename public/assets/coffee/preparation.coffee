@@ -66,12 +66,12 @@ $ ->
                 m = male[key] or 0
                 $male = $td.find('span.male')
                 _.each _.range(m), ->
-                  $male.append "<i class=\"fa fa-male male\"></i>"
+                  $male.append "<i class=\"fas fa-male male\"></i>"
               if female
                 f = female[key] or 0
                 $female = $td.find('span.female')
                 _.each _.range(f), ->
-                  $female.append "<i class=\"fa fa-female female\"></i>"
+                  $female.append "<i class=\"fas fa-female female\"></i>"
           error: (jqXHR, textStatus, errorThrown) ->
             console.log textStatus
           complete: (jqXHR, textStatus) ->

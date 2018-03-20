@@ -12,7 +12,7 @@ my $bf = $order->bestfit;
 
 <div class="well <%= $gender %>" id="room-<%= $n %>">
   <h3>
-    <i class="fa fa-<%= $gender %>"></i>
+    <i class="fas fa-<%= $gender %>"></i>
     %= "#$n"
   </h3>
   <p class="name<%= $bf ? ' bestfit' : '' %>">
