@@ -14,10 +14,10 @@ $ ->
     data   = JSON.parse(e.data)
     sender = data.sender
     if sender is 'brain'
-      $('.fawrapper').removeClass('text-success')
+      $('.repair-done').removeClass('text-success')
       ids = _.keys data.brain
       _.each ids, (order_id) ->
-        $("li.repair[data-order-id=\"#{order_id}\"] .fawrapper").addClass('text-success')
+        $("li.repair[data-order-id=\"#{order_id}\"] .repair-done").addClass('text-success')
     return if sender isnt 'order'
     if parseInt(data.from) is 6 or parseInt(data.to) is 6
       return location.reload()
