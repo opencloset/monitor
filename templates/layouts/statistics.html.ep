@@ -7,6 +7,7 @@
     <title><%= title %></title>
 
     <link rel="stylesheet" href="/assets/components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/assets/components/font-awesome/css/font-awesome.css">
     % for my $css (@$csses) {
       <link rel="stylesheet" href="<%= $css %>">
     % }
@@ -28,8 +29,6 @@
     <script src="/assets/components/jquery/dist/jquery.min.js"></script>
     <script src="/assets/components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="/assets/components/underscore/underscore.js"></script>
-    <script defer src="/assets/components/font-awesome-5/svg-with-js/js/fontawesome-all.min.js"></script>
-    <script defer src="/assets/components/font-awesome-5/svg-with-js/js/fa-v4-shims.min.js"></script>
     % for my $js (@$jses) {
       <script src="<%= $js %>"></script>
     % }
