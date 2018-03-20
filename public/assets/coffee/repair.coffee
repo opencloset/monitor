@@ -14,10 +14,10 @@ $ ->
     data   = JSON.parse(e.data)
     sender = data.sender
     if sender is 'brain'
-      $('.fawrapper').removeClass('text-success')
+      $('.repair-done').removeClass('text-success')
       ids = _.keys data.brain
       _.each ids, (order_id) ->
-        $("li.repair[data-order-id=\"#{order_id}\"] .fawrapper").addClass('text-success')
+        $("li.repair[data-order-id=\"#{order_id}\"] .repair-done").addClass('text-success')
     return if sender isnt 'order'
     if parseInt(data.from) is 6 or parseInt(data.to) is 6
       return location.reload()
@@ -37,12 +37,12 @@ $ ->
             m = male[key] or 0
             $male = $td.find('span.male')
             _.each _.range(m), ->
-              $male.append "<i class=\"fa fa-male male\"></i>"
+              $male.append "<i class=\"fas fa-male male\"></i>"
           if female
             f = female[key] or 0
             $female = $td.find('span.female')
             _.each _.range(f), ->
-              $female.append "<i class=\"fa fa-female female\"></i>"
+              $female.append "<i class=\"fas fa-female female\"></i>"
       error: (jqXHR, textStatus, errorThrown) ->
         console.log textStatus
       complete: (jqXHR, textStatus) ->

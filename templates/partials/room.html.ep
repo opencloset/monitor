@@ -19,7 +19,7 @@ my $pre_order = previous_order($n);
   % }
 
   <p class="name">
-    <i class="fa fa-<%= $gender %>"></i>
+    <i class="fas fa-<%= $gender %>"></i>
     %= $user->name
     <small><%= age($user_info->birth) %></small>
   </p>

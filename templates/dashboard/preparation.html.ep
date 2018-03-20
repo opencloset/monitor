@@ -23,16 +23,16 @@
     <div class="navbar-header">
       <p class="navbar-text">
         today
-        <i class="fa fa-male male"></i>
+        <i class="fas fa-male male"></i>
         <samp><%= $bestfit->{today}{male} || 0 %></samp>
-        <i class="fa fa-female female"></i>
+        <i class="fas fa-female female"></i>
         <samp><%= $bestfit->{today}{female} || 0 %></samp>
       </p>
       <p class="navbar-text">
         week
-        <i class="fa fa-male male"></i>
+        <i class="fas fa-male male"></i>
         <samp><%= $bestfit->{week}{male} || 0 %></samp>
-        <i class="fa fa-female female"></i>
+        <i class="fas fa-female female"></i>
         <samp><%= $bestfit->{week}{female} || 0 %></samp>
       </p>
     </div>

@@ -16,18 +16,18 @@
 <div class="row">
   <div class="col-md-2 profile">
     <h1 class="name<%= $_bestfit ? ' bestfit' : '' %>">
-      <i class="fa fa-<%= $gender %>"></i>
+      <i class="fas fa-<%= $gender %>"></i>
       %= $user->name
     </h1>
     <h2 class="age">
       <%= age($user_info->birth) %>
       <small>
         <a href="<%= $config->{opencloset}{uri} %>/user/<%= $user->id %>" target="_blank" class="external-link" title="사용자정보">
-          <i class="fa-fw fa fa-external-link" aria-hidden="true"></i>
+          <i class="fa-fw fas fa-external-link-alt" aria-hidden="true"></i>
         </a>
         % if ($order->agent) {
           <a href="<%= config->{opencloset}{uri} %>/orders/<%= $order->id %>" class="external-link" target="_blank">
-            <i class="fa-fw fa fa-users text-muted" aria-hidden="true"></i>
+            <i class="fa-fw fas fa-users text-muted" aria-hidden="true"></i>
           </a>
         % }
       </small>

@@ -9,7 +9,7 @@
     % if ($refresh_active->{$n}) {
       <p class="p-refresh">
         <br>
-        <i class="fa fa-refresh fa-2x"></i>
+        <i class="fas fa-sync-alt fa-2x"></i>
       </p>
     % }
   % }

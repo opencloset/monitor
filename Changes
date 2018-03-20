@@ -4,6 +4,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+- font-awesome js svg 대신에 css web-fonts 를 사용 (#176)
+
 ## [v1.1.7] - Mon, 19 Mar 2018 11:14:02 +0900
 
 ### Fixed

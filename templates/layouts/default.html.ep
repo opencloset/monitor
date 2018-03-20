@@ -7,7 +7,8 @@
     <title><%= title %></title>
 
     <link rel="stylesheet" href="/assets/components/bootstrap/dist/css/bootstrap.css">
-    <link rel="stylesheet" href="/assets/components/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="/assets/components/font-awesome-5/web-fonts-with-css/css/fa-solid.min.css">
+    <link rel="stylesheet" href="/assets/components/font-awesome-5/web-fonts-with-css/css/fontawesome.min.css">
     <link rel="stylesheet" href="/assets/css/cover.css">
     % for my $css (@$csses) {
       <link rel="stylesheet" href="<%= $css %>">
