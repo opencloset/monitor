@@ -66,12 +66,12 @@ $ ->
                 m = male[key] or 0
                 $male = $td.find('span.male')
                 _.each _.range(m), ->
-                  $male.append "<i class=\"fa fa-male male\"></i>"
+                  $male.append "<i class=\"fas fa-male male\"></i>"
               if female
                 f = female[key] or 0
                 $female = $td.find('span.female')
                 _.each _.range(f), ->
-                  $female.append "<i class=\"fa fa-female female\"></i>"
+                  $female.append "<i class=\"fas fa-female female\"></i>"
           error: (jqXHR, textStatus, errorThrown) ->
             console.log textStatus
           complete: (jqXHR, textStatus) ->
@@ -85,10 +85,10 @@ $ ->
         $("#room-#{data.room_no} .p-refresh").remove()
       when 'brain'
         $('#knock audio').trigger('play')
-        $('#repair .fawrapper').removeClass('text-success')
+        $('#repair .repair-done').removeClass('text-success')
         ids = _.keys data.brain
         _.each ids, (order_id) ->
-          $("#repair li[data-order-id=\"#{order_id}\"] .fawrapper").addClass('text-success')
+          $("#repair li[data-order-id=\"#{order_id}\"] .repair-done").addClass('text-success')
       else ''
   sock.onerror = (e) ->
     location.reload()

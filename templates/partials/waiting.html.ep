@@ -21,12 +21,12 @@
         <td data-status="<%= $sid %>">
           <span class="male">
             % for (0 .. $male - 1) {
-              <i class="fa fa-male male"></i>
+              <i class="fas fa-male male"></i>
             % }
           </span>
           <span class="female">
             % for (0 .. $female - 1) {
-              <i class="fa fa-female female"></i>
+              <i class="fas fa-female female"></i>
             % }
           </span>
         </td>
