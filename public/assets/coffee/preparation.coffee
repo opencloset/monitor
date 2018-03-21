@@ -150,8 +150,10 @@ $ ->
     e.stopPropagation()
     $this = $(@)
 
-    order_id = $this.closest('.room').data('order-id')
-    updateOrder(order_id, { does_wear: if $this.hasClass('does-wear') then 0 else 1 })
+    order_id  = $this.closest('.room').data('order-id')
+    does_wear = parseInt($this.data('does-wear')) + 1
+    does_wear = 0 if does_wear > 3
+    updateOrder(order_id, { does_wear: does_wear })
 
   $('#repair').on 'click', '.btn-success', (e) ->
     e.preventDefault()

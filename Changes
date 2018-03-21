@@ -4,6 +4,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [v1.1.9] - Thu, 22 Mar 2018 00:08:41 +0900
+
+### Changed
+- 의류준비탭의 입고감 버튼을 '입고감|기록요망|입고감+기록요망' 으로 확장해서 사용 (#168)
+
 ## [v1.1.8] - Wed, 21 Mar 2018 08:35:14 +0900
 
 ### Changed
