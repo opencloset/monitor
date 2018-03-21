@@ -16,7 +16,7 @@ use OpenCloset::Schema;
 use OpenCloset::Monitor::Status;
 use OpenCloset::Size::Guess;
 
-use version; our $VERSION = qv("v1.1.8");
+use version; our $VERSION = qv("v1.1.9");
 
 our $PREFIX        = 'opencloset:storage';
 our $REDIS_CHANNEL = 'opencloset:monitor';

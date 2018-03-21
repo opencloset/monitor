@@ -18,7 +18,7 @@ requires 'WebService::Naver::TTS', 'v0.0.2';
 requires 'experimental';
 
 # cpan.theopencloset.net
-requires 'OpenCloset::Common', 'v0.0.6';
+requires 'OpenCloset::Common', 'v0.1.6';
 requires 'OpenCloset::Plugin::Helpers', 'v0.0.24';
 requires 'OpenCloset::Schema', '0.054';
 requires 'OpenCloset::Size::Guess';
