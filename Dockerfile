@@ -36,6 +36,7 @@ COPY --from=builder /build .
 COPY . .
 RUN sqlite3 db/monitor.db < db/init.sql
 RUN chown -R opencloset:opencloset .
+RUN mv monitor.conf.sample monitor.conf
 
 USER opencloset
 ENV MOJO_HOME=/home/opencloset/service/monitor.theopencloset.net
