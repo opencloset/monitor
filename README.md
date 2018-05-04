@@ -1,12 +1,12 @@
 # Monitor #
 
-[![Build Status](https://travis-ci.org/opencloset/monitor.svg?branch=v1.1.9)](https://travis-ci.org/opencloset/monitor)
+[![Build Status](https://travis-ci.org/opencloset/monitor.svg?branch=v1.1.10)](https://travis-ci.org/opencloset/monitor)
 
 Dashboard in waiting room
 
 ## Version ##
 
-v1.1.9
+v1.1.10
 
 ## 요구사항 ##
 
