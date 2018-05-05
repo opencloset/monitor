@@ -4,6 +4,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [v1.1.12] - Sat, 05 May 2018 16:32:21 +0900
+
+### Changed
+- `./db` 을 volume 으로 지정
+
 ## [v1.1.11] - Fri, 04 May 2018 20:47:48 +0900
 
 ### Fixed
