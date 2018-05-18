@@ -14,7 +14,7 @@ requires 'Net::IP::AddrRanges';
 requires 'Path::Tiny';
 requires 'Time::HiRes';
 requires 'Try::Tiny';
-requires 'WebService::Naver::TTS', 'v0.0.2';
+requires 'WebService::Naver::TTS', 'v0.0.3';
 requires 'experimental';
 
 # cpan.theopencloset.net
