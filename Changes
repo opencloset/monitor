@@ -4,6 +4,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [v1.1.13] - Fri, 18 May 2018 11:28:16 +0900
+
 ### Changed
 - TTS API 변경에 따른 패치적용 (#177)
 

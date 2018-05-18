@@ -1,3 +1,14 @@
+v1.1.13
+
+    $ cpanm WebService::Naver::TTS # v0.0.3
+
+환경변수
+
+- `OPENCLOSET_NAVER_TTS_CLIENT_ID`
+- `OPENCLOSET_NAVER_TTS_CLIENT_SECRET`
+
+를 새것으로 교체
+
 v1.1.12
 
 v1.1.11
