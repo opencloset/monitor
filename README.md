@@ -32,27 +32,25 @@ v1.1.12
 
 ## 환경변수 ##
 
-- `OPENCLOSET_WHITELIST`
-
-접속가능한 IP 목록입니다.
-
-        # 192.168.0.* 이랑 182.73.2.57 을 허용
-        $ export OPENCLOSET_WHITELIST=192.168.0.0/24,182.73.2.57
-
-- `OPENCLOSET_MONITOR_PORT`
-
-defaults to `8002`
-
 - `OPENCLOSET_DATABASE_DSN`
 - `OPENCLOSET_DATABASE_NAME`
-- `OPENCLOSET_DATABASE_USER`
-- `OPENCLOSET_DATABASE_PASS`
 - `OPENCLOSET_DATABASE_OPTS`
+- `OPENCLOSET_DATABASE_PASS`
+- `OPENCLOSET_DATABASE_USER`
 - `OPENCLOSET_MONITOR_EMAIL`
-
-defaults to `monitor@theopencloset.net`
-
+  staff 서비스에 인증하기 위한 계정 이메일
 - `OPENCLOSET_MONITOR_PASSWORD`
+  staff 서비스에 인증하기 위한 계정 비밀번호
+- `OPENCLOSET_NAVER_TTS_CLIENT_ID`
+  https://www.ncloud.com/ 에서 추가한 애플리케이션(CSS)의 key
+- `OPENCLOSET_NAVER_TTS_CLIENT_SECRET`
+  https://www.ncloud.com/ 에서 추가한 애플리케이션(CSS)의 secret
+- `OPENCLOSET_REDIS_URL` `redis://localhost:6379`
+- `OPENCLOSET_STAFF_URL`
+- `OPENCLOSET_WHITELIST`
+  접속가능한 IP 목록
+- `PORT`
+  Listening port
 
 ## FAQ ##
 
