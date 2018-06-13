@@ -11,10 +11,7 @@ v1.1.13
 ## 요구사항 ##
 
     $ sudo apt-get install redis-server
-    $ npm install
-
-    # install front-end pkg deps & build
-    $ bower install
+    $ yarn
 
     $ cpanm --installdeps .
     $ cpanm --mirror https://cpan.theopencloset.net OpenCloset::Schema
