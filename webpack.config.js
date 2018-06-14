@@ -29,6 +29,11 @@ module.exports = {
       './public/assets/dist/js/common.js',
       './public/assets/dist/js/room.js',
       './public/assets/dist/js/default-css.js'
+    ],
+    select: [
+      './public/assets/dist/js/common.js',
+      './public/assets/dist/js/select.js',
+      './public/assets/dist/js/default-css.js'
     ]
   },
   output: {
