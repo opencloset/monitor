@@ -5,7 +5,6 @@ require("timeago/locales/jquery.timeago.ko.js")
 require("typeahead.js/dist/typeahead.jquery.js")
 Bloodhound = require("typeahead.js/dist/bloodhound.js")
 ReconnectingWebSocket = require("reconnectingwebsocket")
-require("../css/dashboard.min.css")
 
 $ ->
   $("abbr.timeago").timeago()
