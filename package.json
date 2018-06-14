@@ -4,13 +4,15 @@
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "grunt"
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
     "url": "git@github.com:opencloset/monitor.git"
   },
   "devDependencies": {
+    "css-loader": "^0.28.11",
+    "file-loader": "^1.1.11",
     "grunt": "^0.4.5",
     "grunt-contrib-clean": "^0.7.0",
     "grunt-contrib-coffee": "^0.8.2",
@@ -23,7 +25,9 @@
     "grunt-contrib-watch": "^0.5.3",
     "grunt-csscomb": "^3.1.0",
     "grunt-webpack": "^3.1.2",
+    "imports-loader": "^0.8.0",
     "load-grunt-tasks": "^3.3.0",
+    "style-loader": "^0.21.0",
     "time-grunt": "^1.2.2",
     "webpack": "^4.12.0",
     "webpack-cli": "^3.0.4"
@@ -43,6 +47,7 @@
     "nvd3": "^1.8.6",
     "opencloset.css": "https://github.com/opencloset/opencloset.css.git",
     "reconnectingwebsocket": "^1.0.0",
+    "timeago": "^1.6.3",
     "typeahead.js": "^0.11.1",
     "underscore": "^1.9.1"
   }
