@@ -1,36 +1,42 @@
 const path = require("path");
+const webpack = require("webpack");
 
 module.exports = {
-  mode: "production", // TODO: production 이랑 development 를 나누던데
-  entry: "./_typescripts/dashboard/room.tsx",
+  mode: "production",
+  devtool: "inline-source-map",
+  entry: {
+    index: [
+      "./public/assets/dist/js/common.js",
+      "./public/assets/dist/js/index.js",
+      "./public/assets/dist/js/default-css.js"
+    ]
+  },
+  output: {
+    filename: "[name].js",
+    path: path.resolve(__dirname, "public", "assets", "dist")
+  },
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
-        use: "ts-loader",
-        exclude: /node_modules/
-      },
-      {
-        test: /\.scss$/,
-        use: [
-          "style-loader", // creates style nodes from JS strings
-          "css-loader", // translates CSS into CommonJS
-          "sass-loader" // compiles Sass to CSS
-        ]
-      },
-      {
         test: /\.css$/,
         use: ["style-loader", "css-loader"]
+      },
+      {
+        test: /\.(eot|svg|ttf|woff|woff2|otf)$/,
+        use: {
+          loader: "file-loader",
+          options: {
+            publicPath: "/assets/dist/"
+          }
+        }
       }
     ]
   },
-  resolve: {
-    // Add '.ts' and '.tsx' as resolvable extensions.
-    extensions: [".ts", ".tsx", ".js", ".json"]
-  },
-  output: {
-    path: path.resolve(__dirname, "public", "dist"),
-    publicPath: "/dist/",
-    filename: "dashboard-room.js"
-  }
+  plugins: [
+    new webpack.ProvidePlugin({
+      $: "jquery",
+      jQuery: "jquery",
+      _: "underscore"
+    })
+  ]
 };
