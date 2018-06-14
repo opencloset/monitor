@@ -1,12 +1,5 @@
 % use utf8;
-% layout 'default', jses => [
-%   '/assets/components/jquery-timeago/jquery.timeago.js',
-%   '/assets/components/jquery-timeago/locales/jquery.timeago.ko.js',
-%   '/assets/components/reconnectingWebsocket/reconnecting-websocket.js',
-%   '/assets/components/jQuery-contextMenu/src/jquery.ui.position.js',
-%   '/assets/components/jQuery-contextMenu/src/jquery.contextMenu.js',
-%   '/assets/dist/js/preparation.min.js'
-% ], csses => ['/assets/components/jQuery-contextMenu/src/jquery.contextMenu.css'];
+% layout 'default', jses => ['/assets/dist/preparation.js'];
 % title 'Preparation';
 % use OpenCloset::Monitor::Status;
 

@@ -1,4 +1,12 @@
 "use strict"
+
+require("timeago")
+require("timeago/locales/jquery.timeago.ko.js")
+ReconnectingWebSocket = require("reconnectingwebsocket")
+require("jquery-contextmenu/dist/jquery.ui.position.js")
+require("jquery-contextmenu/dist/jquery.contextMenu.js")
+require("jquery-contextmenu/dist/jquery.contextMenu.css")
+
 $ ->
   ##---------------------
   ## Constanst & variables
