@@ -9,6 +9,11 @@ module.exports = {
       "./public/assets/dist/js/common.js",
       "./public/assets/dist/js/index.js",
       "./public/assets/dist/js/default-css.js"
+    ],
+    preparation: [
+      "./public/assets/dist/js/common.js",
+      "./public/assets/dist/js/preparation.js",
+      "./public/assets/dist/js/default-css.js"
     ]
   },
   output: {
