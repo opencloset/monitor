@@ -1,4 +1,9 @@
 "use strict"
+
+require("timeago")
+require("timeago/locales/jquery.timeago.ko.js")
+ReconnectingWebSocket = require("reconnectingwebsocket")
+
 $ ->
   hostname = location.hostname
   port = location.port
