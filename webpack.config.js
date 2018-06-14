@@ -19,6 +19,11 @@ module.exports = {
       './public/assets/dist/js/common.js',
       './public/assets/dist/js/online.js',
       './public/assets/dist/js/dashboard-css.js'
+    ],
+    repair: [
+      './public/assets/dist/js/common.js',
+      './public/assets/dist/js/repair.js',
+      './public/assets/dist/js/default-css.js'
     ]
   },
   output: {
