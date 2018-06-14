@@ -1,3 +1,5 @@
+webpackConfig = require('./webpack.config')
+
 module.exports = (grunt) ->
   'use strict'
 
@@ -6,7 +8,7 @@ module.exports = (grunt) ->
 
     # Task configuration
     clean:
-      dist: 'public/assets/dist'
+      dist: 'public/assets/dist/'
 
     coffee:
       dist:
@@ -86,6 +88,11 @@ module.exports = (grunt) ->
         files:
           'public/assets/dist/js/templates.js': ['public/assets/jst/**/*.hbs', 'public/assets/jst/**/*.html', 'public/assets/jst/**/*.jst']
 
+    webpack:
+      options:
+        stats: true
+      prod: webpackConfig
+
     watch:
       coffee:
         files: 'public/assets/coffee/*.coffee'
@@ -101,10 +108,10 @@ module.exports = (grunt) ->
   require('time-grunt')(grunt)
 
   grunt.registerTask('lint-js', ['jshint:dist'])
-  grunt.registerTask('dist-js', ['coffee:dist', 'uglify:dist'])
+  grunt.registerTask('dist-js', ['coffee:dist', 'webpack:prod'])
   grunt.registerTask('dist-css', ['less:dist', 'csscomb:dist', 'cssmin:dist'])
   grunt.registerTask('dist-template', ['handlebars:compile', 'uglify:jst'])
-  grunt.registerTask('dist', ['clean', 'dist-template', 'dist-js', 'dist-css'])
+  grunt.registerTask('dist', ['clean', 'dist-template', 'dist-css', 'dist-js'])
 
   # Default task
   grunt.registerTask('default', ['dist'])
