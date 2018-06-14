@@ -34,6 +34,11 @@ module.exports = {
       "./public/assets/dist/js/common.js",
       "./public/assets/dist/js/select.js",
       "./public/assets/dist/js/default-css.js"
+    ],
+    reservation: [
+      "./public/assets/dist/js/common.js",
+      "./public/assets/dist/js/reservation.js",
+      "./public/assets/dist/js/reservation-css.js"
     ]
   },
   output: {
@@ -54,6 +59,10 @@ module.exports = {
             publicPath: "/assets/dist/"
           }
         }
+      },
+      {
+        test: /\.html$/,
+        loader: "handlebars-loader"
       }
     ]
   },

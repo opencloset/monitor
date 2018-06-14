@@ -29,6 +29,7 @@
     "grunt-contrib-watch": "^0.5.3",
     "grunt-csscomb": "^3.1.0",
     "grunt-webpack": "^3.1.2",
+    "handlebars-loader": "^1.7.0",
     "imports-loader": "^0.8.0",
     "load-grunt-tasks": "^3.3.0",
     "node-sass": "^4.9.0",
