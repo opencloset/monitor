@@ -1,12 +1,5 @@
-<%
-layout 'default', jses => [
-  '/assets/components/jquery-timeago/jquery.timeago.js',
-  '/assets/components/jquery-timeago/locales/jquery.timeago.ko.js',
-  '/assets/components/reconnectingWebsocket/reconnecting-websocket.js',
-  '/assets/dist/js/room.min.js'
-];
-title 'Fitting room';
-%>
+% layout 'default', jses => ['/assets/dist/room.js'];
+% title 'Fitting room';
 
 <div id="fitting-room">
   <div class="row">
