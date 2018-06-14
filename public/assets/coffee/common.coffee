@@ -1,0 +1,6 @@
+$ = require("jquery")
+_ = require("underscore")
+require("bootstrap3")
+require("bootstrap3/dist/css/bootstrap.min.css")
+require("font-awesome5/css/fa-solid.min.css")
+require("font-awesome5/css/fontawesome.min.css")

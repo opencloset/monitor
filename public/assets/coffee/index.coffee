@@ -1,4 +1,11 @@
 "use strict"
+
+ReconnectingWebSocket = require("reconnectingwebsocket")
+Backbone = require("backbone")
+require("bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js")
+require("bootstrap-datepicker/dist/locales/bootstrap-datepicker.ko.min.js")
+require("bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css")
+
 ## Status map
 statusMap =
   6:  'repair'
@@ -189,7 +196,7 @@ $ ->
     location.reload()
 
   $('.datepicker').datepicker
-    language: 'kr'
+    language: 'ko'
     todayHighlight: true
     format: 'yyyy-mm-dd'
     autoclose: true
