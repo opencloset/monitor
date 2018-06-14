@@ -14,6 +14,11 @@ module.exports = {
       './public/assets/dist/js/common.js',
       './public/assets/dist/js/preparation.js',
       './public/assets/dist/js/default-css.js'
+    ],
+    online: [
+      './public/assets/dist/js/common.js',
+      './public/assets/dist/js/online.js',
+      './public/assets/dist/js/dashboard-css.js'
     ]
   },
   output: {
