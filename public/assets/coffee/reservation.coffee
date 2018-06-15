@@ -1,8 +1,20 @@
-require("jquery.growl")
-require("jquery.growl/stylesheets/jquery.growl.css")
-require("jquery-mask-plugin")
-require("../extlib/keypad/jquery.keypad.js")
-require("../extlib/keypad/jquery.keypad.css")
+# common
+import $ from "jquery"
+import _ from "underscore"
+import "bootstrap3"
+import "bootstrap3/dist/css/bootstrap.min.css"
+import "font-awesome5/css/fa-solid.min.css"
+import "font-awesome5/css/fontawesome.min.css"
+import "opencloset.css/dist/css/opencloset.min.css"
+
+import "jquery.growl"
+import "jquery.growl/stylesheets/jquery.growl.css"
+import "jquery-mask-plugin"
+import "../extlib/keypad/jquery.keypad.js"
+import "../extlib/keypad/jquery.keypad.css"
+
+# reservation-layout
+import "../less/reservation.less"
 
 $ ->
   $('#query').mask('000-0000-0000')
