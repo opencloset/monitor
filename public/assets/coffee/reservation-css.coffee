@@ -1,1 +1,1 @@
-require("../css/reservation.min.css")
+require("../less/reservation.less")

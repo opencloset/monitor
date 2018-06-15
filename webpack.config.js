@@ -6,39 +6,39 @@ module.exports = {
   devtool: 'inline-source-map',
   entry: {
     index: [
-      './public/assets/dist/js/common.js',
-      './public/assets/dist/js/index.js',
-      './public/assets/dist/js/default-css.js'
+      './public/assets/coffee/common.coffee',
+      './public/assets/coffee/index.coffee',
+      './public/assets/coffee/default-css.coffee'
     ],
     preparation: [
-      './public/assets/dist/js/common.js',
-      './public/assets/dist/js/preparation.js',
-      './public/assets/dist/js/default-css.js'
+      './public/assets/coffee/common.coffee',
+      './public/assets/coffee/preparation.coffee',
+      './public/assets/coffee/default-css.coffee'
     ],
     online: [
-      './public/assets/dist/js/common.js',
-      './public/assets/dist/js/online.js',
-      './public/assets/dist/js/dashboard-css.js'
+      './public/assets/coffee/common.coffee',
+      './public/assets/coffee/online.coffee',
+      './public/assets/coffee/dashboard-css.coffee'
     ],
     repair: [
-      './public/assets/dist/js/common.js',
-      './public/assets/dist/js/repair.js',
-      './public/assets/dist/js/default-css.js'
+      './public/assets/coffee/common.coffee',
+      './public/assets/coffee/repair.coffee',
+      './public/assets/coffee/default-css.coffee'
     ],
     room: [
-      './public/assets/dist/js/common.js',
-      './public/assets/dist/js/room.js',
-      './public/assets/dist/js/default-css.js'
+      './public/assets/coffee/common.coffee',
+      './public/assets/coffee/room.coffee',
+      './public/assets/coffee/default-css.coffee'
     ],
     select: [
-      './public/assets/dist/js/common.js',
-      './public/assets/dist/js/select.js',
-      './public/assets/dist/js/default-css.js'
+      './public/assets/coffee/common.coffee',
+      './public/assets/coffee/select.coffee',
+      './public/assets/coffee/default-css.coffee'
     ],
     reservation: [
-      './public/assets/dist/js/common.js',
-      './public/assets/dist/js/reservation.js',
-      './public/assets/dist/js/reservation-css.js'
+      './public/assets/coffee/common.coffee',
+      './public/assets/coffee/reservation.coffee',
+      './public/assets/coffee/reservation-css.coffee'
     ]
   },
   output: {
@@ -63,6 +63,14 @@ module.exports = {
       {
         test: /\.html$/,
         loader: 'handlebars-loader'
+      },
+      {
+        test: /\.coffee$/,
+        use: ['coffee-loader']
+      },
+      {
+        test: /\.less$/,
+        use: ['style-loader', 'css-loader', 'less-loader']
       }
     ]
   },

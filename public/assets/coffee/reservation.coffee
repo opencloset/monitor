@@ -1,8 +1,8 @@
 require("jquery.growl")
 require("jquery.growl/stylesheets/jquery.growl.css")
 require("jquery-mask-plugin")
-require("../../extlib/keypad/jquery.keypad.js")
-require("../../extlib/keypad/jquery.keypad.css")
+require("../extlib/keypad/jquery.keypad.js")
+require("../extlib/keypad/jquery.keypad.css")
 
 $ ->
   $('#query').mask('000-0000-0000')
@@ -23,7 +23,7 @@ $ ->
           return
 
         # template = JST['reservation/typeahead-select']
-        template = require('../../jst/reservation/typeahead-select.html')
+        template = require('../jst/reservation/typeahead-select.html')
         html     = template(data[0])
         $('#selected').html(html)
         $('#keypad').hide()
