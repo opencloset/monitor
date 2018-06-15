@@ -8,45 +8,28 @@ module.exports = {
   mode: "production",
   devtool: "inline-source-map",
   entry: {
-    index: [
-      "./public/assets/coffee/common.coffee",
-      "./public/assets/coffee/index.coffee",
-      "./public/assets/coffee/default-css.coffee"
-    ],
-    preparation: [
-      "./public/assets/coffee/common.coffee",
-      "./public/assets/coffee/preparation.coffee",
-      "./public/assets/coffee/default-css.coffee"
-    ],
-    online: [
-      "./public/assets/coffee/common.coffee",
-      "./public/assets/coffee/online.coffee",
-      "./public/assets/coffee/dashboard-css.coffee"
-    ],
-    repair: [
-      "./public/assets/coffee/common.coffee",
-      "./public/assets/coffee/repair.coffee",
-      "./public/assets/coffee/default-css.coffee"
-    ],
-    room: [
-      "./public/assets/coffee/common.coffee",
-      "./public/assets/coffee/room.coffee",
-      "./public/assets/coffee/default-css.coffee"
-    ],
-    select: [
-      "./public/assets/coffee/common.coffee",
-      "./public/assets/coffee/select.coffee",
-      "./public/assets/coffee/default-css.coffee"
-    ],
-    reservation: [
-      "./public/assets/coffee/common.coffee",
-      "./public/assets/coffee/reservation.coffee",
-      "./public/assets/coffee/reservation-css.coffee"
-    ]
+    index: "./public/assets/coffee/index.coffee",
+    preparation: "./public/assets/coffee/preparation.coffee",
+    online: "./public/assets/coffee/online.coffee",
+    repair: "./public/assets/coffee/repair.coffee",
+    room: "./public/assets/coffee/room.coffee",
+    select: "./public/assets/coffee/select.coffee",
+    reservation: "./public/assets/coffee/reservation.coffee"
   },
   output: {
     filename: "[name].js",
     path: path.resolve(__dirname, "public", "assets", "dist")
+  },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          chunks: "initial",
+          name: "commons",
+          minChunks: 2
+        }
+      }
+    }
   },
   module: {
     rules: [

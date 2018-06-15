@@ -1,10 +1,23 @@
 "use strict"
 
-ReconnectingWebSocket = require("reconnectingwebsocket")
-Backbone = require("backbone")
-require("bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js")
-require("bootstrap-datepicker/dist/locales/bootstrap-datepicker.ko.min.js")
-require("bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css")
+# common
+import $ from "jquery"
+import _ from "underscore"
+import "bootstrap3"
+import "bootstrap3/dist/css/bootstrap.min.css"
+import "font-awesome5/css/fa-solid.min.css"
+import "font-awesome5/css/fontawesome.min.css"
+import "opencloset.css/dist/css/opencloset.min.css"
+
+import ReconnectingWebSocket from "reconnectingwebsocket"
+import Backbone from "backbone"
+import "bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"
+import "bootstrap-datepicker/dist/locales/bootstrap-datepicker.ko.min.js"
+import "bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css"
+
+# default-layout
+import "../css/cover.css"
+import "../less/screen.less"
 
 ## Status map
 statusMap =

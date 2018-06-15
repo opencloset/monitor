@@ -17,8 +17,9 @@
     <div class="text-center opencloset-logo">
       <img alt="열린옷장" src="/assets/img/opencloset_CI.png" class="img-rounded" width="150">
     </div>
+    <script src="<%= url_for('/assets/dist/commons.js') %>"></script>
+    % for my $js (@$jses) {
+      <script src="<%= $js %>"></script>
+    % }
   </body>
-  % for my $js (@$jses) {
-    <script src="<%= $js %>"></script>
-  % }
 </html>

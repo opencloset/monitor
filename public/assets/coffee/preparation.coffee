@@ -1,11 +1,24 @@
 "use strict"
 
-require("timeago")
-require("timeago/locales/jquery.timeago.ko.js")
-ReconnectingWebSocket = require("reconnectingwebsocket")
-require("jquery-contextmenu/dist/jquery.ui.position.js")
-require("jquery-contextmenu/dist/jquery.contextMenu.js")
-require("jquery-contextmenu/dist/jquery.contextMenu.css")
+# common
+import $ from "jquery"
+import _ from "underscore"
+import "bootstrap3"
+import "bootstrap3/dist/css/bootstrap.min.css"
+import "font-awesome5/css/fa-solid.min.css"
+import "font-awesome5/css/fontawesome.min.css"
+import "opencloset.css/dist/css/opencloset.min.css"
+
+import "timeago"
+import "timeago/locales/jquery.timeago.ko.js"
+import ReconnectingWebSocket from "reconnectingwebsocket"
+import "jquery-contextmenu/dist/jquery.ui.position.js"
+import "jquery-contextmenu/dist/jquery.contextMenu.js"
+import "jquery-contextmenu/dist/jquery.contextMenu.css"
+
+# default-layout
+import "../css/cover.css"
+import "../less/screen.less"
 
 $ ->
   ##---------------------
