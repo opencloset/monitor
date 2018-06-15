@@ -1,3 +1,21 @@
+# common
+import $ from "jquery"
+import _ from "underscore"
+import "bootstrap3"
+import "bootstrap3/dist/css/bootstrap.min.css"
+import "font-awesome5/css/fa-solid.min.css"
+import "font-awesome5/css/fontawesome.min.css"
+import "opencloset.css/dist/css/opencloset.min.css"
+
+import "jquery.growl"
+import "jquery.growl/stylesheets/jquery.growl.css"
+import "jquery-mask-plugin"
+import "../extlib/keypad/jquery.keypad.js"
+import "../extlib/keypad/jquery.keypad.css"
+
+# reservation-layout
+import "../less/reservation.less"
+
 $ ->
   $('#query').mask('000-0000-0000')
 
@@ -16,7 +34,8 @@ $ ->
           $.growl.error({ title: '알림', message: '검색결과가 없습니다.' })
           return
 
-        template = JST['reservation/typeahead-select']
+        # template = JST['reservation/typeahead-select']
+        template = require('../jst/reservation/typeahead-select.html')
         html     = template(data[0])
         $('#selected').html(html)
         $('#keypad').hide()

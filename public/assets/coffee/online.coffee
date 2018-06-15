@@ -1,4 +1,25 @@
 "use strict"
+
+# common
+import $ from "jquery"
+import _ from "underscore"
+import "bootstrap3"
+import "bootstrap3/dist/css/bootstrap.min.css"
+import "font-awesome5/css/fa-solid.min.css"
+import "font-awesome5/css/fontawesome.min.css"
+import "opencloset.css/dist/css/opencloset.min.css"
+
+import "timeago"
+import "timeago/locales/jquery.timeago.ko.js"
+import "typeahead.js/dist/typeahead.jquery.js"
+import Bloodhound from "typeahead.js/dist/bloodhound.js"
+import ReconnectingWebSocket from "reconnectingwebsocket"
+
+# dashboard-layout
+import "jquery.growl"
+import "jquery.growl/stylesheets/jquery.growl.css"
+import "../less/dashboard.less"
+
 $ ->
   $("abbr.timeago").timeago()
 

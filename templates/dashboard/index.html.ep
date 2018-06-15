@@ -1,14 +1,6 @@
 <%
 use DateTime;
-layout 'default', jses => [
-  '/assets/components/reconnectingWebsocket/reconnecting-websocket.js',
-  '/assets/components/backbone/backbone.js',
-  '/assets/components/bootstrap-datepicker/js/bootstrap-datepicker.js',
-  '/assets/components/bootstrap-datepicker/js/locales/bootstrap-datepicker.kr.js',
-  '/assets/dist/js/index.min.js'
-], csses => [
-  '/assets/components/bootstrap-datepicker/css/datepicker3.css'
-];
+layout 'default', jses => ['/assets/dist/index.js'];
 title 'Dashboard';
 
 my @sid = qw/13 16 17 20 6 18 19/;
