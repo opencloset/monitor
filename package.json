@@ -12,6 +12,7 @@
     "url": "git@github.com:opencloset/monitor.git"
   },
   "devDependencies": {
+    "clean-webpack-plugin": "^0.1.19",
     "coffee-loader": "^0.9.0",
     "coffeescript": "^2.3.1",
     "css-loader": "^0.28.11",

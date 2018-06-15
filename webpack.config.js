@@ -1,5 +1,8 @@
 const path = require('path');
 const webpack = require('webpack');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+
+let pathsToClean = ['public/assets/dist'];
 
 module.exports = {
   mode: 'production',
@@ -79,6 +82,7 @@ module.exports = {
       $: "jquery",
       jQuery: "jquery",
       _: "underscore"
-    })
+    }),
+    new CleanWebpackPlugin(pathsToClean)
   ]
 };
