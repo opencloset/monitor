@@ -5,7 +5,11 @@
     "type": "git",
     "url": "git@github.com:opencloset/monitor.git"
   },
+  "scripts": {
+    "build": "webpack"
+  },
   "devDependencies": {
+    "css-loader": "^0.28.11",
     "grunt": "^0.4.5",
     "grunt-contrib-clean": "^0.7.0",
     "grunt-contrib-coffee": "^0.8.2",
@@ -18,6 +22,16 @@
     "grunt-contrib-watch": "^0.5.3",
     "grunt-csscomb": "^3.1.0",
     "load-grunt-tasks": "^3.3.0",
-    "time-grunt": "^1.2.2"
+    "node-sass": "^4.9.0",
+    "sass-loader": "^7.0.3",
+    "style-loader": "^0.21.0",
+    "time-grunt": "^1.2.2",
+    "ts-loader": "^4.4.2",
+    "typescript": "^2.9.2",
+    "webpack": "^4.15.0",
+    "webpack-cli": "^3.0.8"
+  },
+  "dependencies": {
+    "bulma": "^0.7.1"
   }
 }
