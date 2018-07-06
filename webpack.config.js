@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
   mode: 'none',    // TODO: production 이랑 development 를 나누던데
-  entry: './_typescripts/src/dashboard/room.ts',
+  entry: './_typescripts/dashboard/room.ts',
   module: {
     rules: [
       {
