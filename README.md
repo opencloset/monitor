@@ -11,10 +11,17 @@ v1.1.13
 ## 요구사항 ##
 
     $ sudo apt-get install redis-server
-    $ npm install
+    $ npm install --global yarn
+    $ yarn install
 
     # install front-end pkg deps & build
-    $ bower install
+    $ bower install    # bower is deprecated but still use.
+
+    # for build front-end distributions.
+    $ grunt
+
+    # for build `dashboard#room`.
+    $ yarn build
 
     $ cpanm --installdeps .
     $ cpanm --mirror https://cpan.theopencloset.net OpenCloset::Schema
@@ -22,8 +29,6 @@ v1.1.13
     $ sqlite3 db/monitor.db < db/init.sql
 
 ## 실행 ##
-
-    $ grunt
 
     $ ln -s monitor.conf.sample monitor.conf
     $ MOJO_CONFIG=monitor.conf morbo -l 'http://*:5000' scripts/monitor    # http://localhost:5000
