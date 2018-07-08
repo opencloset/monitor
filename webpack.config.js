@@ -2,11 +2,11 @@ const path = require('path');
 
 module.exports = {
   mode: 'none',    // TODO: production 이랑 development 를 나누던데
-  entry: './_typescripts/dashboard/room.ts',
+  entry: './_typescripts/dashboard/room.tsx',
   module: {
     rules: [
       {
-        test: /\.ts$/,
+        test: /\.tsx?$/,
         use: 'ts-loader',
         exclude: /node_modules/
       },
@@ -26,6 +26,10 @@ module.exports = {
         ]
       }
     ]
+  },
+  resolve: {
+    // Add '.ts' and '.tsx' as resolvable extensions.
+    extensions: [".ts", ".tsx", ".js", ".json"]
   },
   output: {
     path: path.resolve(__dirname, 'public', 'dist'),
