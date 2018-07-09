@@ -1,10 +1,18 @@
 import * as React from 'react';
 
-export interface RoomProps { no: string; name: string; }
+export interface RoomProps { no: number, name: string };
 
-export const Room = (props: RoomProps) => <div className="tile is-parent">
-  <div className="tile is-child notification is-warning box">
-    <p className="subtitle">{props.no}</p>
-    <p className="title">{props.name}</p>
-  </div>
-</div>;
+export class Room extends React.Component<RoomProps, {}> {
+  constructor(props: RoomProps) {
+    super(props);
+  }
+
+  render() {
+    return <div className="tile is-parent">
+      <div className="tile is-child notification is-warning box">
+        <p className="subtitle">{this.props.no}</p>
+        <p className="title">{this.props.name}</p>
+      </div>
+    </div>;
+  }
+}
