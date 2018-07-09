@@ -203,7 +203,23 @@ sub room {
         { status_id => { -between => [$STATUS_FITTING_ROOM1, $STATUS_FITTING_ROOM15] } }
         );
 
-    $self->respond_to( json => { json => {} }, html => sub { $self->render } );
+    my %rooms;
+    while ( my $order = $orders->next ) {
+        my $room_no = $order->status_id - 19;
+        my $user    = $order->user;
+        $rooms{$room_no} = { $order->get_columns };
+        $rooms{$room_no}{name} = $user->name;
+    }
+
+    my @rooms;
+    for my $room_no ( 1 .. 15 ) {
+        push @rooms, $rooms{$room_no} || { name => '' };
+    }
+
+    $self->respond_to(
+        json => { json => { rooms => \@rooms } },
+        html => sub    { $self->render }
+    );
 }
 
 =head2 select
