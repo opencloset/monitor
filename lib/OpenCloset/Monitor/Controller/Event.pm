@@ -121,8 +121,8 @@ sub create {
                     {
                         sender => $sender,
                         order  => $self->order_flatten($order),
-                        from   => $from,
-                        to     => $to,
+                        from   => int($from),
+                        to     => int($to),
                         extra  => $extra
                     }
                 )
