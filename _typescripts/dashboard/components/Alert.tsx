@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-export interface AlertProps { header: string; body: string; }
+export interface AlertProps { body: string }
 
 export class Alert extends React.Component<AlertProps, any> {
   constructor(props: AlertProps) {
@@ -8,13 +8,8 @@ export class Alert extends React.Component<AlertProps, any> {
   }
 
   render() {
-    return <article className="message is-large">
-      <div className="message-header">
-        <p>{this.props.header}</p>
-      </div>
-      <div className="message-body">
-        {this.props.body}
-      </div>
+    return <article className="message is-primary is-large">
+      <div className="message-body">{this.props.body}</div>
     </article>;
   }
 }
