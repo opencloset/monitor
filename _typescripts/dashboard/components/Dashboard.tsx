@@ -22,7 +22,7 @@ interface EventMsg {
 export class Dashboard extends React.Component<DashboardProps, any> {
   constructor(props: DashboardProps) {
     super(props);
-    this.state = { rooms: [], notification: {} };
+    this.state = { rooms: [], notifications: [] };
   }
 
   componentDidMount() {
@@ -41,7 +41,7 @@ export class Dashboard extends React.Component<DashboardProps, any> {
     ws.onmessage = (e) => {
       let data = JSON.parse(e.data);
       this.refreshRooms();
-      this.refreshNotification(data);
+      this.refreshNotifications(data);
     }
 
     ws.onerror = (e) => {
@@ -69,42 +69,51 @@ export class Dashboard extends React.Component<DashboardProps, any> {
       })
   }
 
-  refreshNotification(msg: EventMsg) {
+  refreshNotifications(msg: EventMsg) {
     let to = msg.to;
     let name = msg.order.user.name;
     let room_no = to - 19;
     if (room_no >= 1 && room_no <= 15) {
-      this.setState({
-        notification: {
-          no: room_no,
-          name: name
-        }
+      this.setState((prevState: any, props: any) => {
+        let noti = prevState.notifications;
+        noti.unshift({ no: room_no, name: name })
+        noti.splice(5);
+        return { notifications: noti };
       });
     }
   }
 
   render() {
     const topRooms = [6, 7, 8, 9, 10].map(i => (
-      <Room key={i} no={i} name={this.state.rooms[i - 1] && this.state.rooms[i - 1].name || ''} />
+      <Room
+        key={i}
+        no={i}
+        name={this.state.rooms[i - 1] && this.state.rooms[i - 1].name || ''}
+        gender={this.state.rooms[i - 1] && this.state.rooms[i - 1].gender || ''}
+      />
     ));
 
     const leftRooms = [5, 4, 3, 2, 1].map(i => (
-      <Room key={i} no={i} name={this.state.rooms[i - 1] && this.state.rooms[i - 1].name || ''} />
+      <Room
+        key={i}
+        no={i}
+        name={this.state.rooms[i - 1] && this.state.rooms[i - 1].name || ''}
+        gender={this.state.rooms[i - 1] && this.state.rooms[i - 1].gender || ''}
+      />
     ));
 
     const rightRooms = [11, 12, 13, 14, 15].map(i => (
-      <Room key={i} no={i} name={this.state.rooms[i - 1] && this.state.rooms[i - 1].name || ''} />
+      <Room
+        key={i}
+        no={i}
+        name={this.state.rooms[i - 1] && this.state.rooms[i - 1].name || ''}
+        gender={this.state.rooms[i - 1] && this.state.rooms[i - 1].gender || ''}
+      />
     ));
 
-    let alert;
-    if (this.state.notification.no) {
-      let no = this.state.notification.no;
-      let name = this.state.notification.name;
-      let body = `${name}님 ${no}번 탈의실에 의류가 준비되었습니다.`;
-      alert = <Alert header={no} body={body} />;
-    } else {
-      alert = <div />;
-    }
+    const alerts = this.state.notifications.map((noti: any) => (
+      <Alert body={noti.name + '님 ' + noti.no + '번 탈의실에 의류가 준비되었습니다.'} />
+    ));
 
     return <div>
       <div className="tile is-ancestor tile-top">
@@ -122,13 +131,13 @@ export class Dashboard extends React.Component<DashboardProps, any> {
           {leftRooms}
         </div>
         <div className="tile is-8 is-parent">
-          <div className="tile is-child notification is-danger box box-content">
+          <div className="tile is-child notification box box-content">
             <p className="title is-size-1">탈의실 안내</p>
             <p className="subtitle is-size-3">
               탈의실 번호와 이름을 확인한 후 들어가세요.
               도움이 필요하시면 탈의실 내부 벨을 눌러주세요.
             </p>
-            {alert}
+            {alerts}
           </div>
         </div>
         <div className="tile is-2 is-vertical is-parent">
