@@ -205,15 +205,17 @@ sub room {
 
     my %rooms;
     while ( my $order = $orders->next ) {
-        my $room_no = $order->status_id - 19;
-        my $user    = $order->user;
-        $rooms{$room_no} = { $order->get_columns };
-        $rooms{$room_no}{name} = $user->name;
+        my $room_no   = $order->status_id - 19;
+        my $user      = $order->user;
+        my $user_info = $user->user_info;
+        $rooms{$room_no}         = { $order->get_columns };
+        $rooms{$room_no}{name}   = $user->name;
+        $rooms{$room_no}{gender} = $user_info->gender;
     }
 
     my @rooms;
     for my $room_no ( 1 .. 15 ) {
-        push @rooms, $rooms{$room_no} || { name => '' };
+        push @rooms, $rooms{$room_no} || { name => '', gender => '' };
     }
 
     $self->respond_to(
