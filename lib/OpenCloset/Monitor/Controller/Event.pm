@@ -84,6 +84,11 @@ sub create {
                         )
                     ]
                 );
+
+                ## GH #181
+                ## 치수측정 -> 탈의가 첫번째라면 history 캐시만 저장하고 상태를 의류준비로 변경한다.
+                $to = $OpenCloset::Monitor::Status::STATUS_SELECT;
+                $order->update( { status_id => $to } );
             }
         }
 
