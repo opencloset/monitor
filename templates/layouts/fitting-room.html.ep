@@ -12,10 +12,5 @@
       </div>
     </section>
   </body>
-  <!-- Dependencies -->
-  <script src="/assets/vendor/react.development.js"></script>
-  <script src="/assets/vendor/react-dom.development.js"></script>
-
-  <!-- Main -->
   <script src="/dist/dashboard-room.js"></script>
 </html>
