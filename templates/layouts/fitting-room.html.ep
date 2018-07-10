@@ -6,7 +6,7 @@
     <title>Fitting rooms</title>
   </head>
   <body>
-    <section class="section">
+    <section class="section has-background-black">
       <div class="container">
         %= content
       </div>

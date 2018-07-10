@@ -3,9 +3,12 @@
 .tile-hide {
     visibility: hidden;
 }
-.tile-top .is-child.box {
-    min-height: 120px;
+.tile-bottom .is-child.box {
+    min-height: 130px;
 }
 .box-content {
     min-height: 800px;
+}
+article.message.is-large {
+    font-size: 2rem;
 }
