@@ -77,64 +77,54 @@ export class Dashboard extends React.Component<DashboardProps, any> {
       this.setState((prevState: any, props: any) => {
         let noti = prevState.notifications;
         noti.unshift({ no: room_no, name: name })
-        noti.splice(5);
+        noti.splice(3);
         return { notifications: noti };
       });
     }
   }
 
   render() {
-    const topRooms = [6, 7, 8, 9, 10].map(i => (
+    const bottomRooms = [10, 9, 8, 7, 6].map(i => (
       <Room
-        key={i}
+        key={i.toString()}
         no={i}
         name={this.state.rooms[i - 1] && this.state.rooms[i - 1].name || ''}
         gender={this.state.rooms[i - 1] && this.state.rooms[i - 1].gender || ''}
       />
     ));
 
-    const leftRooms = [5, 4, 3, 2, 1].map(i => (
+    const leftRooms = [15, 14, 13, 12, 11].map(i => (
       <Room
-        key={i}
+        key={i.toString()}
         no={i}
         name={this.state.rooms[i - 1] && this.state.rooms[i - 1].name || ''}
         gender={this.state.rooms[i - 1] && this.state.rooms[i - 1].gender || ''}
       />
     ));
 
-    const rightRooms = [11, 12, 13, 14, 15].map(i => (
+    const rightRooms = [1, 2, 3, 4, 5].map(i => (
       <Room
-        key={i}
+        key={i.toString()}
         no={i}
         name={this.state.rooms[i - 1] && this.state.rooms[i - 1].name || ''}
         gender={this.state.rooms[i - 1] && this.state.rooms[i - 1].gender || ''}
       />
     ));
 
-    const alerts = this.state.notifications.map((noti: any) => (
-      <Alert body={noti.name + '님 ' + noti.no + '번 탈의실에 의류가 준비되었습니다.'} />
+    const alerts = this.state.notifications.map((noti: any, i: number) => (
+      <Alert key={i.toString()} title={noti.name + '님 ' + noti.no + '번 탈의실'} subtitle="에 의류가 준비되었습니다." />
     ));
 
     return <div>
-      <div className="tile is-ancestor tile-top">
-        <div className="tile is-parent tile-hide">
-          <div className="tile is-child box"></div>
-        </div>
-        {topRooms}
-        <div className="tile is-parent tile-hide">
-          <div className="tile is-child box"></div>
-        </div>
-      </div>
-
       <div className="tile is-ancestor">
         <div className="tile is-2 is-vertical is-parent">
           {leftRooms}
         </div>
         <div className="tile is-8 is-parent">
-          <div className="tile is-child notification box box-content">
-            <p className="title is-size-1">탈의실 안내</p>
-            <p className="subtitle is-size-3">
-              탈의실 번호와 이름을 확인한 후 들어가세요.
+          <div className="tile is-child notification box box-content has-background-black">
+            <p className="title is-size-1 has-text-warning">탈의실 안내</p>
+            <p className="subtitle is-size-3 has-text-white">
+              탈의실 번호와 이름을 확인한 후 들어가세요.<br />
               도움이 필요하시면 탈의실 내부 벨을 눌러주세요.
             </p>
             {alerts}
@@ -142,6 +132,16 @@ export class Dashboard extends React.Component<DashboardProps, any> {
         </div>
         <div className="tile is-2 is-vertical is-parent">
           {rightRooms}
+        </div>
+      </div>
+
+      <div className="tile is-ancestor tile-bottom">
+        <div className="tile is-parent tile-hide">
+          <div className="tile is-child box"></div>
+        </div>
+        {bottomRooms}
+        <div className="tile is-parent tile-hide">
+          <div className="tile is-child box"></div>
         </div>
       </div>
     </div>;
