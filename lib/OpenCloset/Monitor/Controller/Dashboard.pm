@@ -1,7 +1,7 @@
 package OpenCloset::Monitor::Controller::Dashboard;
 use Mojo::Base 'Mojolicious::Controller';
 
-use OpenCloset::Monitor::Status;
+use OpenCloset::Monitor::Status qw/$STATUS_FITTING_ROOM1 $STATUS_FITTING_ROOM15/;
 
 use DateTime;
 use DateTime::Format::ISO8601;
@@ -197,20 +197,31 @@ sub room {
     my $self  = shift;
     my $redis = $self->redis;
 
-    my ( @active, @room );
-    for my $n ( 1 .. 15 ) {
-        my $room;
-        my $order
-            = $self->DB->resultset('Order')
-            ->search(
-            { status_id => $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1 + $n - 1 } )
-            ->next;
-        $active[$n] = $redis->hget( "$PREFIX:room", $order->id ) if $order;
-        $room[$n] = $order;
+    my $orders
+        = $self->DB->resultset('Order')
+        ->search(
+        { status_id => { -between => [$STATUS_FITTING_ROOM1, $STATUS_FITTING_ROOM15] } }
+        );
+
+    my %rooms;
+    while ( my $order = $orders->next ) {
+        my $room_no   = $order->status_id - 19;
+        my $user      = $order->user;
+        my $user_info = $user->user_info;
+        $rooms{$room_no}         = { $order->get_columns };
+        $rooms{$room_no}{name}   = $user->name;
+        $rooms{$room_no}{gender} = $user_info->gender;
     }
 
-    $redis->del("$PREFIX:room") unless @active;
-    $self->stash( rooms => [@room], active => [@active] );
+    my @rooms;
+    for my $room_no ( 1 .. 15 ) {
+        push @rooms, $rooms{$room_no} || { name => '', gender => '' };
+    }
+
+    $self->respond_to(
+        json => { json => { rooms => \@rooms } },
+        html => sub    { $self->render }
+    );
 }
 
 =head2 select

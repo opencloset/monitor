@@ -1,3 +1,7 @@
+    $ npm install
+    $ npm run build
+    $ grunt
+
 v1.1.13
 
     $ cpanm WebService::Naver::TTS # v0.0.3

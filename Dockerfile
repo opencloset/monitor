@@ -17,6 +17,10 @@ COPY public/assets/less/ public/assets/less/
 COPY Gruntfile.coffee Gruntfile.coffee
 RUN grunt
 
+# for dashboard#room react app
+RUN npm run build
+COPY public/dist/ public/dist/
+
 
 # https://docs.docker.com/engine/userguide/eng-image/multistage-build/
 FROM registry.theopencloset.net/opencloset/perl:latest
