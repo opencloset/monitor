@@ -46,7 +46,7 @@ $ ->
     switch sender
       when 'order'
         if from in SELECT_RANGE or to in SELECT_RANGE then reloadSelect()
-        if from in ROOM_RANGE   or to in ROOM_RANGE   then reloadRoom()
+        if from in ROOM_RANGE   or to in ROOM_RANGE.concat(SELECT_RANGE) then reloadRoom()
         if from in REPAIR_RANGE or to in REPAIR_RANGE then reloadRepair()
         if from in BOXING_RANGE or to in BOXING_RANGE then reloadBoxing()
 
