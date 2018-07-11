@@ -1,3 +1,5 @@
+v1.1.14
+
     $ npm install
     $ npm run build
     $ grunt
