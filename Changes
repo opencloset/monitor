@@ -4,6 +4,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Added
+- 탈의실용 대시보드 추가 dashboard#room (#181)
+
 ## [v1.1.13] - Fri, 18 May 2018 11:28:16 +0900
 
 ### Changed
