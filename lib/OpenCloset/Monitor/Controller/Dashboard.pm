@@ -215,7 +215,24 @@ sub room {
 
     my @rooms;
     for my $room_no ( 1 .. 15 ) {
-        push @rooms, $rooms{$room_no} || { name => '', gender => '' };
+        my $data = {};
+        unless ( $rooms{$room_no} ) {
+            my $order = $self->prev_order( $room_no,
+                $OpenCloset::Monitor::Status::STATUS_SELECT );
+            if ($order) {
+                my $room_no   = $order->status_id - 19;
+                my $user      = $order->user;
+                my $user_info = $user->user_info;
+                $data           = { $order->get_columns };
+                $data->{name}   = $user->name;
+                $data->{gender} = $user_info->gender;
+            }
+            else {
+                $data = { name => '', gender => '' };
+            }
+        }
+
+        push @rooms, $rooms{$room_no} || $data;
     }
 
     $self->respond_to(

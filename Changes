@@ -4,6 +4,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+- 탈의에서 의류준비가 된 주문서를 dashboard#room 에 표시
+
 ## [v1.1.14] - Wed, 11 Jul 2018 12:46:15 +0900
 
 ### Added
