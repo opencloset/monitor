@@ -16,7 +16,7 @@ use OpenCloset::Schema;
 use OpenCloset::Monitor::Status;
 use OpenCloset::Size::Guess;
 
-use version; our $VERSION = qv("v1.1.14");
+use version; our $VERSION = qv("v1.1.15");
 
 our $PREFIX        = 'opencloset:storage';
 our $REDIS_CHANNEL = 'opencloset:monitor';
@@ -127,6 +127,7 @@ sub _private_routes {
 
     $r->put('/api/orders/:order_id')->to('API#update_order');
     $r->put('/api/users/:user_id')->to('API#update_user');
+    $r->get('/api/status')->to('API#status');
 
     $r->get('/address')->to('API#address')->name('address');
     $r->post('/sms')->to('API#create_sms')->name('sms.create');

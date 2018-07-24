@@ -5,6 +5,8 @@ use DateTime;
 use Encode 'decode_utf8';
 use HTTP::Tiny;
 use Mojo::JSON qw/decode_json j/;
+use OpenCloset::Constants::Status
+    qw/$RESERVATED $NOT_VISITED $NOT_RENTAL $NO_SIZE $VISITED $MEASUREMENT $SELECT $FITTING_ROOM1 $FITTING_ROOM2 $FITTING_ROOM3 $FITTING_ROOM4 $FITTING_ROOM5 $FITTING_ROOM6 $FITTING_ROOM7 $FITTING_ROOM8 $FITTING_ROOM9 $FITTING_ROOM10 $FITTING_ROOM11 $FITTING_ROOM12 $FITTING_ROOM13 $FITTING_ROOM14 $FITTING_ROOM15 $REPAIR $BOX/;
 
 use OpenCloset::Constants::Category
     qw/%REVERSE_MAP $LABEL_JACKET $LABEL_PANTS $LABEL_SHIRT $LABEL_TIE $LABEL_SHOES $LABEL_SKIRT $LABEL_BLOUSE $LABEL_BELT/;
@@ -309,6 +311,58 @@ sub cors {
     $self->res->headers->header( 'Access-Control-Allow-Origin'  => $origin );
     $self->res->headers->header( 'Access-Control-Allow-Methods' => $method );
     $self->respond_to( any => { data => '', status => 200 } );
+}
+
+our @AVAILABLE_STATUS = (
+    $RESERVATED,     $NOT_VISITED,    $NOT_RENTAL,     $NO_SIZE,        $VISITED,
+    $MEASUREMENT,    $SELECT,         $FITTING_ROOM1,  $FITTING_ROOM2,  $FITTING_ROOM3,
+    $FITTING_ROOM4,  $FITTING_ROOM5,  $FITTING_ROOM6,  $FITTING_ROOM7,  $FITTING_ROOM8,
+    $FITTING_ROOM9,  $FITTING_ROOM10, $FITTING_ROOM11, $FITTING_ROOM12, $FITTING_ROOM13,
+    $FITTING_ROOM14, $FITTING_ROOM15, $REPAIR,         $BOX
+);
+
+=head2 status
+
+    GET /api/status?available
+
+C<available> param 이 있으면 사용중인 탈의실과 예약된 탈의실을 제외하고 응답.
+그 외에는 모든 상태목록을 응답.
+
+=cut
+
+sub status {
+    my $self      = shift;
+    my $available = defined $self->param('available');
+
+    my %except;
+    if ($available) {
+        my $orders
+            = $self->DB->resultset('Order')
+            ->search( { status_id => { -in => [$FITTING_ROOM1 .. $FITTING_ROOM15] } },
+            undef );
+
+        while ( my $order = $orders->next ) {
+            $except{ $order->status_id }++;
+        }
+    }
+
+    for my $status ( $FITTING_ROOM1 .. $FITTING_ROOM15 ) {
+        my $room_no = $status - 19;
+        next if $except{$status};
+
+        my $order = $self->prev_order( $room_no, $SELECT );
+        $except{$status}++ if $order;
+    }
+
+    my @status;
+    for my $s (@AVAILABLE_STATUS) {
+        next if $except{$s};
+        push @status,
+            { value => $s, text => $OpenCloset::Constants::Status::LABEL_MAP{$s} };
+    }
+
+    $self->res->headers->header( 'Access-Control-Allow-Origin' => '*' );
+    $self->render( json => \@status );
 }
 
 1;

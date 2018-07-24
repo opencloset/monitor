@@ -11,15 +11,15 @@ export class Room extends React.Component<RoomProps, {}> {
     let tileColor: string;
     switch (this.props.gender) {
       case 'male': {
-        tileColor = 'is-info';
+        tileColor = 'is-warning';
         break;
       }
       case 'female': {
-        tileColor = 'is-danger';
+        tileColor = 'is-warning';
         break;
       }
       default: {
-        tileColor = 'is-warning';
+        tileColor = '';
         break;
       }
     }

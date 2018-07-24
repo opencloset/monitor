@@ -4,6 +4,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [v1.1.15] - Tue, 24 Jul 2018 13:39:50 +0900
+
+### Added
+- 변경 가능한 상태를 응답하는 `api#status` route 추가 (#183)
+
+### Changed
+- 탈의에서 의류준비가 된 주문서를 dashboard#room 에 표시
+
 ## [v1.1.14] - Wed, 11 Jul 2018 12:46:15 +0900
 
 ### Added
@@ -219,7 +227,7 @@ v0.6.4    Fri, 26 Feb 2016 16:58:02 +0900
   - Use in-memory brain rather than local brain
 
 v0.6.3    Fri, 26 Feb 2016 16:19:05 +0900
-  - Save brain data explicitly for refresh room 
+  - Save brain data explicitly for refresh room
   - Brain 을 file 대신에 redis 에 저장
 
 v0.6.2    Fri, 26 Feb 2016 12:03:54 +0900
