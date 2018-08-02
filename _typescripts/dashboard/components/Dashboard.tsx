@@ -60,11 +60,11 @@ export class Dashboard extends React.Component<DashboardProps, any> {
         let data = res.data;
         this.setState({ rooms: data.rooms });
       })
-      .catch(function(err: AxiosError) {
+      .catch(function (err: AxiosError) {
         console.log(err);
         location.reload();
       })
-      .then(function() {
+      .then(function () {
         // always executed
       })
   }
