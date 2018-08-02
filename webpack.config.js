@@ -1,13 +1,13 @@
-const path = require('path');
+const path = require("path");
 
 module.exports = {
-  mode: 'none',    // TODO: production 이랑 development 를 나누던데
-  entry: './_typescripts/dashboard/room.tsx',
+  mode: "production", // TODO: production 이랑 development 를 나누던데
+  entry: "./_typescripts/dashboard/room.tsx",
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        use: 'ts-loader',
+        use: "ts-loader",
         exclude: /node_modules/
       },
       {
@@ -20,10 +20,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [
-          "style-loader",
-          "css-loader"
-        ]
+        use: ["style-loader", "css-loader"]
       }
     ]
   },
@@ -32,8 +29,8 @@ module.exports = {
     extensions: [".ts", ".tsx", ".js", ".json"]
   },
   output: {
-    path: path.resolve(__dirname, 'public', 'dist'),
-    publicPath: '/dist/',
-    filename: 'dashboard-room.js'
+    path: path.resolve(__dirname, "public", "dist"),
+    publicPath: "/dist/",
+    filename: "dashboard-room.js"
   }
 };
