@@ -4,6 +4,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Fixed
+- `GET /room` 에서 발생하는 SecurityError 를 해결
+
 ## [v1.1.15] - Tue, 24 Jul 2018 13:39:50 +0900
 
 ### Added

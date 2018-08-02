@@ -31,8 +31,8 @@ export class Dashboard extends React.Component<DashboardProps, any> {
     const hostname = location.hostname;
     const port = location.port;
     const protocol = location.protocol;
-    const schema = protocol === 'https' ? 'wss' : 'ws';
-    const url = `${schema}://${hostname}:${port}/socket`;
+    const schema = protocol === 'https:' ? 'wss:' : 'ws:';
+    const url = `${schema}//${hostname}:${port}/socket`;
     const ws = new ReconnectingWebSocket(url);
     ws.onopen = (e) => {
       ws.send('/subscribe order');
