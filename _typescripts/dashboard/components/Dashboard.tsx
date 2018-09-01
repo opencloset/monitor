@@ -74,6 +74,10 @@ export class Dashboard extends React.Component<DashboardProps, any> {
     let name = msg.order.user.name;
     let room_no = to - 19;
     if (room_no >= 1 && room_no <= 15) {
+      let mp3 = "/tts/room/" + room_no + ".mp3"
+      let audio = new Audio(mp3)
+      audio.play()
+
       this.setState((prevState: any, props: any) => {
         let noti = prevState.notifications;
         noti.unshift({ no: room_no, name: name })
