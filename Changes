@@ -4,6 +4,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [v1.1.17] - Sat, 01 Sep 2018 17:04:43 +0900
+
 ### Added
 - /room 에 TTS 기능 추가 (#181)
 

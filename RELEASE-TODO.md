@@ -1,3 +1,5 @@
+v1.1.17
+
     # make sure "public/tts/room/1.mp3" ~ "public/tts/room/15.mp3"
     $ npm run build
 
