@@ -18,17 +18,6 @@ module.exports = {
     filename: "[name].js",
     path: path.resolve(__dirname, "public", "assets", "dist")
   },
-  optimization: {
-    splitChunks: {
-      cacheGroups: {
-        commons: {
-          chunks: "initial",
-          name: "commons",
-          minChunks: 2
-        }
-      }
-    }
-  },
   module: {
     rules: [
       {

@@ -22,7 +22,6 @@
         <%= content %>
       </div>
     </div>
-    <script src="<%= url_for('/assets/dist/commons.js') %>"></script>
     % for my $js (@$jses) {
       <script src="<%= $js %>"></script>
     % }
