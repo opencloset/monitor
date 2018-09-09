@@ -6,16 +6,17 @@ let pathsToClean = ["public/assets/dist"];
 
 module.exports = {
   entry: {
-    index: "./public/assets/coffee/index.coffee",
-    preparation: "./public/assets/coffee/preparation.coffee",
-    online: "./public/assets/coffee/online.coffee",
-    repair: "./public/assets/coffee/repair.coffee",
-    select: "./public/assets/coffee/select.coffee",
-    reservation: "./public/assets/coffee/reservation.coffee"
+    "assets/dist/index": "./public/assets/coffee/index.coffee",
+    "assets/dist/preparation": "./public/assets/coffee/preparation.coffee",
+    "assets/dist/online": "./public/assets/coffee/online.coffee",
+    "assets/dist/repair": "./public/assets/coffee/repair.coffee",
+    "assets/dist/select": "./public/assets/coffee/select.coffee",
+    "assets/dist/reservation": "./public/assets/coffee/reservation.coffee",
+    "dist/dashboard-room": "./_typescripts/dashboard/room.tsx"
   },
   output: {
     filename: "[name].js",
-    path: path.resolve(__dirname, "public", "assets", "dist")
+    path: path.resolve(__dirname, "public")
   },
   module: {
     rules: [
@@ -28,6 +29,7 @@ module.exports = {
         use: {
           loader: "file-loader",
           options: {
+            outputPath: "/assets/dist/",
             publicPath: "/assets/dist/"
           }
         }
@@ -62,8 +64,25 @@ module.exports = {
             presets: ["env"]
           }
         }
+      },
+      {
+        test: /\.tsx?$/,
+        use: "ts-loader",
+        exclude: /node_modules/
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          "style-loader", // creates style nodes from JS strings
+          "css-loader", // translates CSS into CommonJS
+          "sass-loader" // compiles Sass to CSS
+        ]
       }
     ]
+  },
+  resolve: {
+    // Add '.ts' and '.tsx' as resolvable extensions.
+    extensions: [".ts", ".tsx", ".js", ".json"]
   },
   plugins: [
     new webpack.ProvidePlugin({
