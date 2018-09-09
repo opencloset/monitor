@@ -10,7 +10,6 @@ module.exports = {
     preparation: "./public/assets/coffee/preparation.coffee",
     online: "./public/assets/coffee/online.coffee",
     repair: "./public/assets/coffee/repair.coffee",
-    room: "./public/assets/coffee/room.coffee",
     select: "./public/assets/coffee/select.coffee",
     reservation: "./public/assets/coffee/reservation.coffee"
   },
