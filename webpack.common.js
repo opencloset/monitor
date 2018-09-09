@@ -50,7 +50,16 @@ module.exports = {
       },
       {
         test: /\.coffee$/,
-        use: ["coffee-loader"]
+        use: [
+          {
+            loader: "coffee-loader",
+            options: {
+              transpile: {
+                presets: ["env"]
+              }
+            }
+          }
+        ]
       },
       {
         test: /\.less$/,
