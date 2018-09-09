@@ -1,122 +1,122 @@
-import * as React from 'react';
-import ReconnectingWebSocket from 'reconnectingwebsocket';
-import axios, { AxiosResponse, AxiosError } from 'axios';
+import * as React from "react";
+import ReconnectingWebSocket from "reconnectingwebsocket";
 
-import { Room } from './Room';
-import { Alert } from './Alert';
+import axios, { AxiosError, AxiosResponse } from "axios";
 
-export interface DashboardProps { }
+import { Room } from "./Room";
 
-interface EventMsgExtra {
-  nth: number
+import { Alert } from "./Alert";
+
+interface IEventMsgExtra {
+  nth: number;
 }
 
-interface EventMsg {
-  extra: EventMsgExtra,
-  from: number,
-  to: number,
-  sender: string,
-  order: any
+interface IEventMsg {
+  extra: IEventMsgExtra;
+  from: number;
+  to: number;
+  sender: string;
+  order: any;
 }
 
-export class Dashboard extends React.Component<DashboardProps, any> {
-  constructor(props: DashboardProps) {
+export class Dashboard extends React.Component<{}, any> {
+  constructor(props: {}) {
     super(props);
     this.state = { rooms: [], notifications: [] };
   }
 
-  componentDidMount() {
+  public componentDidMount() {
     this.refreshRooms();
 
     const hostname = location.hostname;
     const port = location.port;
     const protocol = location.protocol;
-    const schema = protocol === 'https:' ? 'wss:' : 'ws:';
+    const schema = protocol === "https:" ? "wss:" : "ws:";
     const url = `${schema}//${hostname}:${port}/socket`;
     const ws = new ReconnectingWebSocket(url);
     ws.onopen = (e) => {
-      ws.send('/subscribe order');
-    }
+      ws.send("/subscribe order");
+    };
 
     ws.onmessage = (e) => {
-      let data = JSON.parse(e.data);
+      const data = JSON.parse(e.data);
       this.refreshRooms();
       this.refreshNotifications(data);
-    }
+    };
 
     ws.onerror = (e) => {
-      console.log('ws error');
+      console.log("ws error");
       location.reload();
-    }
+    };
 
     ws.onclose = (e) => {
-      console.log('ws closed');
-    }
+      console.log("ws closed");
+    };
   }
 
-  refreshRooms() {
-    axios.get(location.href, { headers: { Accept: 'application/json' } })
+  public refreshRooms() {
+    axios.get(location.href, { headers: { Accept: "application/json" } })
       .then((res: AxiosResponse) => {
-        let data = res.data;
+        const data = res.data;
         this.setState({ rooms: data.rooms });
       })
-      .catch(function (err: AxiosError) {
+      .catch((err: AxiosError) => {
         console.log(err);
         location.reload();
       })
-      .then(function () {
+      .then(() => {
         // always executed
-      })
+      });
   }
 
-  refreshNotifications(msg: EventMsg) {
-    let to = msg.to;
-    let name = msg.order.user.name;
-    let room_no = to - 19;
-    if (room_no >= 1 && room_no <= 15) {
-      let mp3 = "/tts/room/" + room_no + ".mp3"
-      let audio = new Audio(mp3)
-      audio.play()
+  public refreshNotifications(msg: IEventMsg) {
+    const to = msg.to;
+    const name = msg.order.user.name;
+    const roomNo = to - 19;
+    if (roomNo >= 1 && roomNo <= 15) {
+      const mp3 = "/tts/room/" + roomNo + ".mp3";
+      const audio = new Audio(mp3);
+      audio.play();
 
       this.setState((prevState: any, props: any) => {
-        let noti = prevState.notifications;
-        noti.unshift({ no: room_no, name: name })
+        const noti = prevState.notifications;
+        noti.unshift({ no: roomNo, name: name });
         noti.splice(3);
         return { notifications: noti };
       });
     }
   }
 
-  render() {
-    const bottomRooms = [10, 9, 8, 7, 6].map(i => (
+  public render() {
+    const bottomRooms = [10, 9, 8, 7, 6].map((i) => (
       <Room
         key={i.toString()}
         no={i}
-        name={this.state.rooms[i - 1] && this.state.rooms[i - 1].name || ''}
-        gender={this.state.rooms[i - 1] && this.state.rooms[i - 1].gender || ''}
+        name={this.state.rooms[i - 1] && this.state.rooms[i - 1].name || ""}
+        gender={this.state.rooms[i - 1] && this.state.rooms[i - 1].gender || ""}
       />
     ));
 
-    const leftRooms = [15, 14, 13, 12, 11].map(i => (
+    const leftRooms = [15, 14, 13, 12, 11].map((i) => (
       <Room
         key={i.toString()}
         no={i}
-        name={this.state.rooms[i - 1] && this.state.rooms[i - 1].name || ''}
-        gender={this.state.rooms[i - 1] && this.state.rooms[i - 1].gender || ''}
+        name={this.state.rooms[i - 1] && this.state.rooms[i - 1].name || ""}
+        gender={this.state.rooms[i - 1] && this.state.rooms[i - 1].gender || ""}
       />
     ));
 
-    const rightRooms = [1, 2, 3, 4, 5].map(i => (
+    const rightRooms = [1, 2, 3, 4, 5].map((i) => (
       <Room
         key={i.toString()}
         no={i}
-        name={this.state.rooms[i - 1] && this.state.rooms[i - 1].name || ''}
-        gender={this.state.rooms[i - 1] && this.state.rooms[i - 1].gender || ''}
+        name={this.state.rooms[i - 1] && this.state.rooms[i - 1].name || ""}
+        gender={this.state.rooms[i - 1] && this.state.rooms[i - 1].gender || ""}
       />
     ));
 
     const alerts = this.state.notifications.map((noti: any, i: number) => (
-      <Alert key={i.toString()} title={noti.name + '님 ' + noti.no + '번 탈의실'} subtitle="에 의류가 준비되었습니다." />
+      <Alert key={i.toString()} title={noti.name + "님 " + noti.no + "번 탈의실"} subtitle="에 의류가 준비되었습니다." />
     ));
 
     return <div>
