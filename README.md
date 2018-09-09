@@ -14,17 +14,12 @@ v1.1.17
     $ npm install --global yarn
     $ yarn install
 
-    # install front-end pkg deps & build
-    $ bower install    # bower is deprecated but still use.
+    $ yarn build    # for build frontend distribution
+    $ yarn watch    # for development
 
-    # for build front-end distributions.
-    $ grunt
-
-    # for build `dashboard#room`.
-    $ yarn build
-
-    $ cpanm --installdeps .
-    $ cpanm --mirror https://cpan.theopencloset.net OpenCloset::Schema
+    $ cpanm --mirror http://www.cpan.org \
+        --mirror http://cpan.theopencloset.net \
+        --installdeps .
 
     $ sqlite3 db/monitor.db < db/init.sql
 
@@ -32,8 +27,6 @@ v1.1.17
 
     $ ln -s monitor.conf.sample monitor.conf
     $ MOJO_CONFIG=monitor.conf morbo -l 'http://*:5000' scripts/monitor    # http://localhost:5000
-
-    $ OPENCLOSET_MONITOR_EMAIL=xx OPENCLOSET_MONITOR_PASSWORD=xx perl bin/suggestion_consumer.pl &
 
 ## 환경변수 ##
 
