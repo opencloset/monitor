@@ -5,8 +5,6 @@ const CleanWebpackPlugin = require("clean-webpack-plugin");
 let pathsToClean = ["public/assets/dist"];
 
 module.exports = {
-  mode: "production",
-  devtool: "inline-source-map",
   entry: {
     index: "./public/assets/coffee/index.coffee",
     preparation: "./public/assets/coffee/preparation.coffee",
@@ -57,6 +55,16 @@ module.exports = {
       {
         test: /\.less$/,
         use: ["style-loader", "css-loader", "less-loader"]
+      },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: ["env"]
+          }
+        }
       }
     ]
   },
