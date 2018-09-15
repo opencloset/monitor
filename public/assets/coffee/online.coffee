@@ -1,13 +1,7 @@
 "use strict"
 
 # common
-import $ from "jquery"
-import _ from "underscore"
-import "bootstrap3"
-import "bootstrap3/dist/css/bootstrap.min.css"
-import "font-awesome5/css/fa-solid.min.css"
-import "font-awesome5/css/fontawesome.min.css"
-import "opencloset.css/dist/css/opencloset.min.css"
+import "./_common.coffee"
 
 import "timeago"
 import "timeago/locales/jquery.timeago.ko.js"
@@ -91,7 +85,7 @@ $ ->
 
 3. 대여기간 연장 / 연체
  - 1일 연장시 전체 대여비의 20%에 해당하는 금액이 청구됩니다.
-(대여기간 연장이 필요하신 경우에는 대여시 받으신 문자메시지를 확인하여 기간연장에 필요한 정보를 입력해서 보내주세요) 
+(대여기간 연장이 필요하신 경우에는 대여시 받으신 문자메시지를 확인하여 기간연장에 필요한 정보를 입력해서 보내주세요)
  - 연장 신청 하지 않고 연체가 발생될 경우: 1일당 전체 대여비의 30%에 해당하는 금액이 청구됩니다.
 
 4. 대여기간 의류 손상 및 분실 배상규정
