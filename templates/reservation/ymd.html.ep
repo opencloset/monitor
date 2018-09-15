@@ -1,15 +1,5 @@
-% layout 'reservation';
-% title '예약확인', jses => [
-%   '/assets/components/handlebars/handlebars.runtime.min.js',
-%   '/assets/dist/js/templates.min.js',
-%   '/assets/components/jquery-mask-plugin/dist/jquery.mask.min.js',
-%   '/assets/extlib/keypad/jquery.keypad.js',
-%   '/assets/components/growl/javascripts/jquery.growl.js',
-%   '/assets/dist/js/reservation.min.js'
-% ], csses => [
-%   '/assets/extlib/keypad/jquery.keypad.css',
-%   '/assets/components/growl/stylesheets/jquery.growl.css'
-% ];
+% layout 'reservation', jses => ['/assets/dist/reservation.js'];
+% title '예약확인';
 
 <div class="row">
   <div class="col-sm-6 col-sm-offset-3">

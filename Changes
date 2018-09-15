@@ -3,6 +3,8 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Changed
+- frontend build system 을 bower+grunt 에서 webpack 으로 변경
 
 ## [v1.1.17] - Sat, 01 Sep 2018 17:04:43 +0900
 

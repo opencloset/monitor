@@ -1,11 +1,5 @@
-% layout 'dashboard';
-% title 'Online dashboard', jses => [
-%   '/assets/components/jquery-timeago/jquery.timeago.js',
-%   '/assets/components/jquery-timeago/locales/jquery.timeago.ko.js',
-%   '/assets/components/reconnectingWebsocket/reconnecting-websocket.js',
-%   '/assets/components/typeahead.js/dist/typeahead.bundle.min.js',
-%   '/assets/dist/js/online.min.js'
-% ];
+% layout 'dashboard', jses => ['/assets/dist/online.js'];
+% title 'Online dashboard';
 
 <h1>열린옷장 <small><%= title %></small></h1>
 

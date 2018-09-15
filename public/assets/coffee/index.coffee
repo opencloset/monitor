@@ -1,4 +1,18 @@
 "use strict"
+
+# common
+import "./_common.coffee"
+
+import ReconnectingWebSocket from "reconnectingwebsocket"
+import Backbone from "backbone"
+import "bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"
+import "bootstrap-datepicker/dist/locales/bootstrap-datepicker.ko.min.js"
+import "bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css"
+
+# default-layout
+import "../css/cover.css"
+import "../less/screen.less"
+
 ## Status map
 statusMap =
   6:  'repair'
@@ -189,7 +203,7 @@ $ ->
     location.reload()
 
   $('.datepicker').datepicker
-    language: 'kr'
+    language: 'ko'
     todayHighlight: true
     format: 'yyyy-mm-dd'
     autoclose: true
@@ -202,4 +216,3 @@ $ ->
         location.reload()
       error: (jqXHR, textStatus, errorThrown) ->
       complete: (jqXHR, textStatus) ->
-
