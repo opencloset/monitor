@@ -26,8 +26,8 @@ export class Room extends React.Component<IRoomProps, {}> {
 
     return <div className="tile is-parent">
       <div className={"tile is-child notification box " + tileColor}>
-        <p className="subtitle is-size-3">{this.props.no}</p>
-        <p className="title is-size-3">{this.props.name.substring(0, 3)}</p>
+        <p className="subtitle is-size-2">{this.props.no}</p>
+        <p className="title is-size-2">{this.props.name.substring(0, 3)}</p>
       </div>
     </div>;
   }
