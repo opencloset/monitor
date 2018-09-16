@@ -1,4 +1,16 @@
 "use strict"
+
+# common
+import "./_common.coffee"
+
+import "timeago"
+import "timeago/locales/jquery.timeago.ko.js"
+import ReconnectingWebSocket from "reconnectingwebsocket"
+
+# default-layout
+import "../css/cover.css"
+import "../less/screen.less"
+
 $ ->
   $("abbr.timeago").timeago()
   hostname = location.hostname

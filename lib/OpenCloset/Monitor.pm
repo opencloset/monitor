@@ -15,8 +15,9 @@ use OpenCloset::Monitor::Schema;
 use OpenCloset::Schema;
 use OpenCloset::Monitor::Status;
 use OpenCloset::Size::Guess;
+use OpenCloset::Constants qw/$MONITOR_TTS_TO_INDEX $MONITOR_TTS_TO_ROOM/;
 
-use version; our $VERSION = qv("v1.1.17");
+use version; our $VERSION = qv("v1.1.18");
 
 our $PREFIX        = 'opencloset:storage';
 our $REDIS_CHANNEL = 'opencloset:monitor';
@@ -296,9 +297,10 @@ sub _add_task {
     our $TTS_EXT = '.mp3';
     $minion->add_task(
         tts => sub {
-            my ( $job, $text ) = @_;
+            my ( $job, $text, $type, $room_no ) = @_;
             return unless $text;
 
+            $type ||= $MONITOR_TTS_TO_INDEX;
             my $task  = 'tts';
             my $app   = $job->app;
             my $redis = $app->redis;
@@ -336,12 +338,26 @@ sub _add_task {
                 };
             }
 
+            my @path;
+            if ($type == $MONITOR_TTS_TO_INDEX) {
+                push @path, $app->url_for( "/tts/$dir/$file" . $TTS_EXT )->to_abs;
+                push @path, $app->url_for( "/tts/index/$room_no" . $TTS_EXT )->to_abs;
+            } elsif ($type == $MONITOR_TTS_TO_ROOM) {
+                push @path, $app->url_for( "/tts/$dir/$file" . $TTS_EXT )->to_abs;
+                push @path, $app->url_for( "/tts/room/$room_no" . $TTS_EXT )->to_abs;
+            } else {
+                $app->log->error("Wrong type: $type");
+                return;
+            }
+
             my $data = j(
                 {
                     sender => 'tts',
-                    path   => $app->url_for( "/tts/$dir/$file" . $TTS_EXT )->to_abs
+                    type   => $type,
+                    path   => \@path
                 }
             );
+
             $redis->publish( "$REDIS_CHANNEL:tts" => $data );
         }
     );

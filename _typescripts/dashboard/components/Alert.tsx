@@ -1,13 +1,13 @@
-import * as React from 'react';
+import * as React from "react";
 
-export interface AlertProps { title: string, subtitle: string }
+export interface IAlertProps { title: string; subtitle: string; }
 
-export class Alert extends React.Component<AlertProps, any> {
-  constructor(props: AlertProps) {
+export class Alert extends React.Component<IAlertProps, any> {
+  constructor(props: IAlertProps) {
     super(props);
   }
 
-  render() {
+  public render() {
     return <article className="message is-primary is-large">
       <div className="message-body">
         <strong>{this.props.title}</strong>

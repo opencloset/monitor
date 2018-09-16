@@ -1,3 +1,11 @@
+v1.1.18
+
+    $ closetpan OpenCloset::Common    # v0.1.9
+    $ yarn install
+    $ yarn build
+    # install 1.mp3 ~ 15.mp3 to public/tts/index/
+    # public/tts/index/1.mp3    # 1번 탈의실로 입장해주세요
+
 v1.1.17
 
     # make sure "public/tts/room/1.mp3" ~ "public/tts/room/15.mp3"

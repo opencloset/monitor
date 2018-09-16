@@ -1,12 +1,12 @@
 # Monitor #
 
-[![Build Status](https://travis-ci.org/opencloset/monitor.svg?branch=v1.1.17)](https://travis-ci.org/opencloset/monitor)
+[![Build Status](https://travis-ci.org/opencloset/monitor.svg?branch=v1.1.18)](https://travis-ci.org/opencloset/monitor)
 
 Dashboard in waiting room
 
 ## Version ##
 
-v1.1.17
+v1.1.18
 
 ## 요구사항 ##
 
@@ -14,26 +14,26 @@ v1.1.17
     $ npm install --global yarn
     $ yarn install
 
-    # install front-end pkg deps & build
-    $ bower install    # bower is deprecated but still use.
+    $ yarn build    # for build frontend distribution
+    $ yarn watch    # for development
 
-    # for build front-end distributions.
-    $ grunt
-
-    # for build `dashboard#room`.
-    $ yarn build
-
-    $ cpanm --installdeps .
-    $ cpanm --mirror https://cpan.theopencloset.net OpenCloset::Schema
+    $ cpanm --mirror http://www.cpan.org \
+        --mirror http://cpan.theopencloset.net \
+        --installdeps .
 
     $ sqlite3 db/monitor.db < db/init.sql
+
+### Install TTS mp3 files ###
+
+- `public/tts/index`: `1번 탈의실로 입장해주세요`
+  `1.mp3` ~ `15.mp3`
+- `public/tts/room`: `1번 탈의실에 의류가 준비되었습니다`
+  `1.mp3` ~ `15.mp3`
 
 ## 실행 ##
 
     $ ln -s monitor.conf.sample monitor.conf
     $ MOJO_CONFIG=monitor.conf morbo -l 'http://*:5000' scripts/monitor    # http://localhost:5000
-
-    $ OPENCLOSET_MONITOR_EMAIL=xx OPENCLOSET_MONITOR_PASSWORD=xx perl bin/suggestion_consumer.pl &
 
 ## 환경변수 ##
 

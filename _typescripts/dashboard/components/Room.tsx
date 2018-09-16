@@ -1,33 +1,33 @@
-import * as React from 'react';
+import * as React from "react";
 
-export interface RoomProps { no: number, name: string, gender: string };
+export interface IRoomProps { no: number; name: string; gender: string };
 
-export class Room extends React.Component<RoomProps, {}> {
-  constructor(props: RoomProps) {
+export class Room extends React.Component<IRoomProps, {}> {
+  constructor(props: IRoomProps) {
     super(props);
   }
 
-  render() {
+  public render() {
     let tileColor: string;
     switch (this.props.gender) {
-      case 'male': {
-        tileColor = 'is-warning';
+      case "male": {
+        tileColor = "is-warning";
         break;
       }
-      case 'female': {
-        tileColor = 'is-warning';
+      case "female": {
+        tileColor = "is-warning";
         break;
       }
       default: {
-        tileColor = '';
+        tileColor = "";
         break;
       }
     }
 
     return <div className="tile is-parent">
       <div className={"tile is-child notification box " + tileColor}>
-        <p className="subtitle is-size-3">{this.props.no}</p>
-        <p className="title is-size-3">{this.props.name.substring(0, 3)}</p>
+        <p className="subtitle is-size-2">{this.props.no}</p>
+        <p className="title is-size-2">{this.props.name.substring(0, 3)}</p>
       </div>
     </div>;
   }
