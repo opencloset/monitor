@@ -179,7 +179,7 @@ guessBooking = ($el) ->
   return $el
 
 distanceHours = (millis) ->
-  seconds = Math.abs(millis) / 1000;
+  seconds = Math.abs(millis) / 1000
   minutes = seconds / 60
   hours = minutes / 60
   days = hours / 24
@@ -187,7 +187,7 @@ distanceHours = (millis) ->
   return hours
 
 distanceMinutes = (millis) ->
-  seconds = Math.abs(millis) / 1000;
+  seconds = Math.abs(millis) / 1000
   minutes = seconds / 60
   hours = minutes / 60
   days = hours / 24
