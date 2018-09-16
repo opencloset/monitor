@@ -5,7 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## [Unreleased]
 ### Changed
 - frontend build system 을 bower+grunt 에서 webpack 으로 변경
-- 탈의실안내 화면의 대여자이름과 탈의실 번호를 더 크게 함
+- 탈의실안내 화면의 대여자이름과 탈의실 번호를 더 크게 함 (#181)
+- 탈의실안내 화면에 TTS 기능 강화 (#181)
 
 ## [v1.1.17] - Sat, 01 Sep 2018 17:04:43 +0900
 

@@ -36,10 +36,24 @@ export class Dashboard extends React.Component<{}, any> {
     const ws = new ReconnectingWebSocket(url);
     ws.onopen = (e) => {
       ws.send("/subscribe order");
+      ws.send("/subscribe tts");
     };
 
     ws.onmessage = (e) => {
       const data = JSON.parse(e.data);
+      if (data.sender === "tts" && data.type === 2) {
+        const path = data.path;
+        const audio1 = new Audio(path[0]);
+        const audio2 = new Audio(path[1]);
+
+        // TODO: async await 로 convert
+        audio1.addEventListener("ended", () => {
+          audio2.play();
+        });
+        audio1.play();
+        return;
+      }
+
       this.refreshRooms();
       this.refreshNotifications(data);
     };
@@ -74,10 +88,6 @@ export class Dashboard extends React.Component<{}, any> {
     const name = msg.order.user.name;
     const roomNo = to - 19;
     if (roomNo >= 1 && roomNo <= 15) {
-      const mp3 = "/tts/room/" + roomNo + ".mp3";
-      const audio = new Audio(mp3);
-      audio.play();
-
       this.setState((prevState: any, props: any) => {
         const noti = prevState.notifications;
         noti.unshift({ no: roomNo, name: name });

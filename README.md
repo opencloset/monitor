@@ -23,6 +23,13 @@ v1.1.17
 
     $ sqlite3 db/monitor.db < db/init.sql
 
+### Install TTS mp3 files ###
+
+- `public/tts/index`: `1번 탈의실로 입장해주세요`
+  `1.mp3` ~ `15.mp3`
+- `public/tts/room`: `1번 탈의실에 의류가 준비되었습니다`
+  `1.mp3` ~ `15.mp3`
+
 ## 실행 ##
 
     $ ln -s monitor.conf.sample monitor.conf
