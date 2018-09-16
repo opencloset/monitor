@@ -69,20 +69,27 @@ class NotificationModel extends Backbone.Model
       data = JSON.parse(e.data)
       return if @get 'order_id'
 
-      if data.sender is 'tts'
-        audio = new Audio(data.path)
-        audio.play()
+      ## async await 를 사용하면 더 우아함?
+      if data.sender is 'tts' and data.type is 1
+        path = data.path
+        audio1 = new Audio(path[0])
+        audio2 = new Audio(path[1])
+
+        audio1.addEventListener "ended", ->
+          audio2.play()
+
+        audio1.play()
         return
 
       @set
         count: opts.count
-        order_id: data.order.id
-        create_date: data.order.create_date.replace(' ', 'T') + 'Z'
-        booking_date: data.order.booking.date.substr(11, 5)
+        order_id: if data.order then data.order.id else ''
+        create_date: if data.order then data.order.create_date.replace(' ', 'T') + 'Z' else ''
+        booking_date: if data.order then data.order.booking.date.substr(11, 5) else ''
         from: data.from
         to: data.to
         extra: data.extra
-        username: data.order.user.name
+        username: if data.order then data.order.user.name else ''
         desc: switch statusMap[data.to]
           when 'visit'   then '대기중입니다'
           when 'select'  then '의류 준비를 기다려주세요'
@@ -179,7 +186,7 @@ guessBooking = ($el) ->
   return $el
 
 distanceHours = (millis) ->
-  seconds = Math.abs(millis) / 1000;
+  seconds = Math.abs(millis) / 1000
   minutes = seconds / 60
   hours = minutes / 60
   days = hours / 24
@@ -187,7 +194,7 @@ distanceHours = (millis) ->
   return hours
 
 distanceMinutes = (millis) ->
-  seconds = Math.abs(millis) / 1000;
+  seconds = Math.abs(millis) / 1000
   minutes = seconds / 60
   hours = minutes / 60
   days = hours / 24

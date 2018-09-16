@@ -4,6 +4,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use Encode 'decode_utf8';
 use Mojo::JSON 'j';
 
+use OpenCloset::Constants qw/$MONITOR_TTS_TO_INDEX $MONITOR_TTS_TO_ROOM/;
 use OpenCloset::Monitor::Status;
 
 our $PREFIX = 'opencloset:storage';
@@ -66,29 +67,41 @@ sub create {
         if (   $to >= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM1
             && $to <= $OpenCloset::Monitor::Status::STATUS_FITTING_ROOM15 )
         {
+            my $room_no = $to - 19;
             $self->app->SQLite->resultset('History')
-                ->create( { room_no => $to - 19, order_id => $order->id } );
+                ->create( { room_no => $room_no, order_id => $order->id } );
 
             my $count = $self->app->SQLite->resultset('History')
                 ->search( { order_id => $order->id } )->count;
 
             if ( $count == 1 ) {
                 my $user = $order->user;
-                my $name = $user->name;
+                my $name = $user->name . '님';
                 $name = join( '.', split //, $name );
-                $self->minion->enqueue(
-                    tts => [
-                        sprintf(
-                            '%s.님. %d번 탈의실로 입장해주세요',
-                            $name, $to - 19
-                        )
-                    ]
-                );
+                $self->minion->enqueue(tts => [
+                    $name,
+                    $MONITOR_TTS_TO_INDEX,
+                    $room_no
+                ]);
 
                 ## GH #181
                 ## 치수측정 -> 탈의가 첫번째라면 history 캐시만 저장하고 상태를 의류준비로 변경한다.
                 $to = $OpenCloset::Monitor::Status::STATUS_SELECT;
                 $order->update( { status_id => $to } );
+            } elsif ( $count == 2 ) {
+                ## GH #181
+                ## > 2> 000님, n번 탈의실에 의류가 준비되었습니다 멘트가 최초 한번만 나오게 요청드립니다.
+                ## > 교환으로 인해 다시 넣을 때마다 안내멘트가 나올 필요는 없다는 의견입니다.
+
+                ## 옷장지기가 의류준비 -> 탈의n 으로 변경했을때가 count: 2
+                my $user = $order->user;
+                my $name = $user->name . '님';
+                $name = join( '.', split //, $name );
+                $self->minion->enqueue(tts => [
+                    $name,
+                    $MONITOR_TTS_TO_ROOM,
+                    $room_no
+                ]);
             }
         }
 
