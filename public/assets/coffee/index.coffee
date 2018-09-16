@@ -76,13 +76,13 @@ class NotificationModel extends Backbone.Model
 
       @set
         count: opts.count
-        order_id: data.order.id
-        create_date: data.order.create_date.replace(' ', 'T') + 'Z'
-        booking_date: data.order.booking.date.substr(11, 5)
+        order_id: if data.order then data.order.id else ''
+        create_date: if data.order then data.order.create_date.replace(' ', 'T') + 'Z' else ''
+        booking_date: if data.order then data.order.booking.date.substr(11, 5) else ''
         from: data.from
         to: data.to
         extra: data.extra
-        username: data.order.user.name
+        username: if data.order then data.order.user.name else ''
         desc: switch statusMap[data.to]
           when 'visit'   then '대기중입니다'
           when 'select'  then '의류 준비를 기다려주세요'
