@@ -3,6 +3,8 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [v1.1.19] - Sun, 30 Sep 2018 12:48:40 +0900
 ### Fixed
 - 탈의실 이름영역의 style 조정 (#181)
 
