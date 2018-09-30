@@ -4,6 +4,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [v1.1.19] - Sun, 30 Sep 2018 12:48:40 +0900
+### Fixed
+- 탈의실 이름영역의 style 조정 (#181)
+
 ## [v1.1.18] - Sun, 16 Sep 2018 14:18:57 +0900
 ### Changed
 - frontend build system 을 bower+grunt 에서 webpack 으로 변경

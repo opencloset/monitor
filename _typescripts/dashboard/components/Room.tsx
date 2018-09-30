@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export interface IRoomProps { no: number; name: string; gender: string };
+export interface IRoomProps { no: number; name: string; gender: string; }
 
 export class Room extends React.Component<IRoomProps, {}> {
   constructor(props: IRoomProps) {
