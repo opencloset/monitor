@@ -4,6 +4,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+- 대기실 화면에서 택배반납과 관련된 내용 삭제 (#193)
+
 ## [v1.1.20] - Sun, 21 Apr 2019 12:08:19 +0900
 ### Fixed
 - 의류선택화면에서 기증이 없는 의류에 대한 예외처리 (#191)
