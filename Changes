@@ -4,6 +4,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [v1.1.21] - Tue, 07 May 2019 21:30:16 +0900
 ### Changed
 - 대기실 화면에서 택배반납과 관련된 내용 삭제 (#193)
 
