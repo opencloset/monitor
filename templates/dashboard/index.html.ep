@@ -63,10 +63,9 @@ my $i = 0;
           ~
           <span class="datepicker">
             %= '반납일 ' . $return_date->month . '월 ' . $return_date->day . '일(' . $WEEK_MAP{$return_date->day_of_week} . ')'
-          </span> 
+          </span>
         </strong>
       </h3>
-      <p>택배 반납은 반납일 1일전 발송</p>
       <p>
         오늘 대여하신 옷과 구두에는 기증자의 마음이 담겨있습니다.
         <br>
