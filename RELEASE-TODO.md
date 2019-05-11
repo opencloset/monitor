@@ -1,3 +1,5 @@
+v1.1.22
+
     $ closetpan OpenCloset::Common   # v0.1.10
     $ yarn build
 
