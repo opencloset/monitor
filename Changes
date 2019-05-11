@@ -4,6 +4,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [v1.1.22] - Sat, 11 May 2019 14:20:50 +0900
+### Changed
+- 최근 대여의류의 자켓에 팔길이 추가 (#189)
+- "입고감"에 "온라인예정" 추가
+
 ## [v1.1.21] - Tue, 07 May 2019 21:30:16 +0900
 ### Changed
 - 대기실 화면에서 택배반납과 관련된 내용 삭제 (#193)

@@ -20,7 +20,7 @@
       % my $comment   = $clothes->comment || '';
       % $donation     = $clothes->donation;
       % $color        = $clothes->color || '';
-      % $size         = $clothes->topbelly if $category eq $JACKET;
+      % $size         = $clothes->topbelly . ' ' . $clothes->arm || '' if $category eq $JACKET;
       % $size         = $clothes->waist    if $category eq $PANTS;
       % $size         = $clothes->hip . ' ' . $clothes->waist if $category eq $SKIRT;
       % my @tags = map { $_->name } $clothes->tags;
