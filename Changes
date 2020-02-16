@@ -3,6 +3,7 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
+## [v1.1.23] - Sun, 16 Feb 2020 10:34:44 +0900
 ### Changed
 - 영문이름은 자연스럽게 TTS 가 읽을 수 있도록 함 (#195)
 
