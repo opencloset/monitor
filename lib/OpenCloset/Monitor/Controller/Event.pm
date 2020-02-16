@@ -77,7 +77,9 @@ sub create {
             if ( $count == 1 ) {
                 my $user = $order->user;
                 my $name = $user->name . '님';
-                $name = join( '.', split //, $name );
+                ## GH #195
+                ## 또박또박 읽기 위해서 이름 사이에 `.` 을 넣는데, 영문은 자연스럽게 둔다.
+                $name = join( '.', split //, $name ) if $user->name !~ m/^[a-zA-Z0-9 ]+$/;
                 $self->minion->enqueue(tts => [
                     $name,
                     $MONITOR_TTS_TO_INDEX,
