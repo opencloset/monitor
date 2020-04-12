@@ -48,6 +48,32 @@
   </div>
 
   <div class="col-md-5 size">
+    <%
+      my $ready_to_wear_size = ready_to_wear_size({
+        gender   => $user_info->gender,
+        height   => $user_info->height,
+        weight   => $user_info->weight,
+        waist    => $user_info->waist    || $avg->{waist},
+        topbelly => $user_info->topbelly || $avg->{topbelly},
+        bust     => $user_info->bust     || $avg->{bust},
+        hip      => $user_info->hip      || $avg->{hip},
+        thigh    => $user_info->thigh    || $avg->{thigh}
+      });
+    %>
+    <% if ($ready_to_wear_size) { %>
+      <ul>
+        <li>
+          <span class="label label-primary" title="상의사이즈">
+            %= $ready_to_wear_size->{top}
+          </span>
+        </li>
+        <li>
+          <span class="label label-primary" title="하의사이즈">
+            %= $ready_to_wear_size->{bottom}
+          </span>
+        </li>
+      </ul>
+    <% } %>
     <ul>
       <li>
         <span class="label label-success" title="중동">
