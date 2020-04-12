@@ -70,6 +70,7 @@ sub startup {
 
     $self->plugin('Config');
     $self->plugin('OpenCloset::Plugin::Helpers');
+    $self->plugin('OpenCloset::Plugin::Private::Helpers');
     $self->plugin('OpenCloset::Monitor::Plugin::Helpers');
     $self->plugin('validator');
     $self->plugin('RemoteAddr');
