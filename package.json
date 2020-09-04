@@ -44,7 +44,7 @@
     "bulma": "^0.7.1",
     "font-awesome": "^4.7.0",
     "font-awesome5": "^1.0.5",
-    "handlebars": "^4.3.0",
+    "handlebars": "^4.5.3",
     "jquery": "^3.4.0",
     "jquery-contextmenu": "^2.6.4",
     "jquery-mask-plugin": "^1.14.15",
