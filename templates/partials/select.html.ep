@@ -195,7 +195,7 @@
   <div class="col-md-4">
     <%
        my @man_category    = qw/jacket pants shirt tie shoes belt/;
-       my @woman_category  = qw/jacket skirt blouse shoes/;
+       my @woman_category  = qw/jacket skirt blouse shoes onepiece/;
        my @common_category = qw/jacket shoes/;
        my ($for_man, $for_woman);
        for my $clothes (@clothes) {
