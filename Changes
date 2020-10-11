@@ -3,6 +3,9 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Changed
+- 의류준비 화면에 여성의 의류품목에 원피스 추가 (#214)
+
 ## [v1.1.24] - Sun, 12 Apr 2020 11:45:32 +0900
 ### Added
 - 의류준비 화면에 사용자 치수에 따른 열린옷장 기성복 사이즈 표시 (#206)
