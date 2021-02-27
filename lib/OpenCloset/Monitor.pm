@@ -17,7 +17,7 @@ use OpenCloset::Monitor::Status;
 use OpenCloset::Size::Guess;
 use OpenCloset::Constants qw/$MONITOR_TTS_TO_INDEX $MONITOR_TTS_TO_ROOM/;
 
-use version; our $VERSION = qv("v1.1.25");
+use version; our $VERSION = qv("v1.1.26");
 
 our $PREFIX        = 'opencloset:storage';
 our $REDIS_CHANNEL = 'opencloset:monitor';
