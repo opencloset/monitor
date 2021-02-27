@@ -245,7 +245,13 @@
     % }
     <div class="purpose">
       <p>
+        % my @ot = $order->order_tags;
         %= $user_info->purpose || ''
+        % for my $ot (@ot) {
+          <small>
+            %= $ot->tag->name
+          </small>
+        % }
       </p>
       /
       <p>
