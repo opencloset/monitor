@@ -3,6 +3,9 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Changed
+- 착용여부 목록에서 "입고감+기록요망"을 "보관요망"으로 변경 (#228)
+
 ## [v1.1.26] - Sun, 28 Feb 2021 08:48:48 +0900
 ### Added
 - 의류준비 화면에 주문서 태그 노출 - 웨딩촬영 및 본식 (#219)
