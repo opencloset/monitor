@@ -2,6 +2,7 @@ package OpenCloset::Monitor::Controller::Region;
 use Mojo::Base 'Mojolicious::Controller';
 
 use Mojo::JSON qw/j decode_json/;
+use Try::Tiny;
 
 use OpenCloset::Monitor::Status
     qw/$STATUS_SELECT $STATUS_REPAIR $STATUS_FITTING_ROOM1 $STATUS_BOXING/;
@@ -37,7 +38,12 @@ sub selects {
             my $active = $redis->get("$PREFIX:workers:$user_id");
             next if $active;
 
-            $self->minion->enqueue( suggestion => [$user_id] );
+            try {
+                $self->minion->enqueue( suggestion => [$user_id] );
+            } catch {
+                $self->log->error("Failed enqueue 'suggestion' task to Minion");
+            };
+
             $redis->set( "$PREFIX:workers:$user_id", 1 );
             next;
         }
