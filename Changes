@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
+## [v1.1.28] - Sun, 30 May 2021 11:19:36 +0900
+### Fixed
+- job queue backend storage 의 오류발생에 대비해 enqueue 할때에 예외처리 추가 (#171)
+
 ## [v1.1.27] - 2021-05-17 05:35:19 Asia/Seoul
 ### Changed
 - 착용여부 목록에서 "입고감+기록요망"을 "보관요망"으로 변경 (#228)
