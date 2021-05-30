@@ -3,6 +3,7 @@ use Mojo::Base 'Mojolicious::Controller';
 
 use Encode 'decode_utf8';
 use Mojo::JSON 'j';
+use Try::Tiny;
 
 use OpenCloset::Constants qw/$MONITOR_TTS_TO_INDEX $MONITOR_TTS_TO_ROOM/;
 use OpenCloset::Monitor::Status;
@@ -80,11 +81,15 @@ sub create {
                 ## GH #195
                 ## 또박또박 읽기 위해서 이름 사이에 `.` 을 넣는데, 영문은 자연스럽게 둔다.
                 $name = join( '.', split //, $name ) if $user->name !~ m/^[a-zA-Z0-9 ]+$/;
-                $self->minion->enqueue(tts => [
-                    $name,
-                    $MONITOR_TTS_TO_INDEX,
-                    $room_no
-                ]);
+                try {
+                    $self->minion->enqueue(tts => [
+                        $name,
+                        $MONITOR_TTS_TO_INDEX,
+                        $room_no
+                    ]);
+                } catch {
+                    $self->log->error("Failed enqueue TTS task to Minion");
+                };
 
                 ## GH #181
                 ## 치수측정 -> 탈의가 첫번째라면 history 캐시만 저장하고 상태를 의류준비로 변경한다.
@@ -99,11 +104,15 @@ sub create {
                 my $user = $order->user;
                 my $name = $user->name . '님';
                 $name = join( '.', split //, $name );
-                $self->minion->enqueue(tts => [
-                    $name,
-                    $MONITOR_TTS_TO_ROOM,
-                    $room_no
-                ]);
+                try {
+                    $self->minion->enqueue(tts => [
+                        $name,
+                        $MONITOR_TTS_TO_ROOM,
+                        $room_no
+                    ]);
+                } catch {
+                    $self->log->error("Failed enqueue TTS task to Minion");
+                };
             }
         }
 
